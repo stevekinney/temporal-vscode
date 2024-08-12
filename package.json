@@ -1,0 +1,80 @@
+{
+  "name": "temporal-vscode",
+  "displayName": "Temporal",
+  "description": "Support for Temporal",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.92.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "main": "./dist/extension.js",
+  "activationEvents": [
+    "onCommand:extension.listWorkflows"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "temporal-vscode.listWorkflows",
+        "title": "Temporal: List Workflows"
+      },
+      {
+        "command": "temporal-vscode.listNamespaces",
+        "title": "Temporal: List Namespaces"
+      }
+    ],
+    "configuration": {
+      "type": "object",
+      "title": "Temporal",
+      "properties": {
+        "temporal.address": {
+          "type": "string",
+          "default": "localhost:7233",
+          "description": "The address where Temporal is running."
+        },
+        "temporal.web-ui": {
+          "type": "string",
+          "default": "localhost:8233",
+          "description": "The address where the Temporal Web UI is running."
+        },
+        "temporal.namespace": {
+          "type": "string",
+          "default": "default",
+          "description": "The namespace to use for workflow queries."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "pnpm run package",
+    "compile": "pnpm run check-types && pnpm run lint && node esbuild.js",
+    "watch": "npm-run-all -p watch:*",
+    "watch:esbuild": "node esbuild.js --watch",
+    "watch:tsc": "tsc --noEmit --watch --project tsconfig.json",
+    "package": "pnpm run check-types && pnpm run lint && node esbuild.js --production",
+    "compile-tests": "tsc -p . --outDir out",
+    "watch-tests": "tsc -p . -w --outDir out",
+    "pretest": "pnpm run compile-tests && pnpm run compile && pnpm run lint",
+    "check-types": "tsc --noEmit",
+    "lint": "eslint src --ext ts",
+    "test": "vscode-test"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.7",
+    "@types/node": "20.x",
+    "@types/vscode": "^1.92.0",
+    "@typescript-eslint/eslint-plugin": "^7.14.1",
+    "@typescript-eslint/parser": "^7.11.0",
+    "@vscode/test-cli": "^0.0.9",
+    "@vscode/test-electron": "^2.4.0",
+    "esbuild": "^0.21.5",
+    "eslint": "^8.57.0",
+    "npm-run-all": "^4.1.5",
+    "typescript": "^5.4.5"
+  },
+  "packageManager": "pnpm@9.7.0+sha512.dc09430156b427f5ecfc79888899e1c39d2d690f004be70e05230b72cb173d96839587545d09429b55ac3c429c801b4dc3c0e002f653830a420fa2dd4e3cf9cf",
+  "dependencies": {
+    "@temporalio/client": "^1.10.3"
+  }
+}
