@@ -1,16 +1,9 @@
 import * as vscode from 'vscode';
-import type { Client } from '@temporalio/client';
+import { registerCommand } from '../utilities/register-command';
 
-export const listWorkflows = ({
-  client,
-  namespace,
-  webUI,
-}: {
-  client: Client;
-  namespace: string;
-  webUI: string;
-}) =>
-  vscode.commands.registerCommand('temporal-vscode.listWorkflows', async () => {
+export const listWorkflows = registerCommand(
+  'listWorkflows',
+  async ({ client, namespace, openUI }) => {
     try {
       const workflows = await client.workflowService
         .listWorkflowExecutions({ namespace })
@@ -47,9 +40,9 @@ export const listWorkflows = ({
 
       const { workflowId, runId } = selectedWorkflow.execution;
 
-      const url = `http://${webUI}/namespaces/${namespace}/workflows/${workflowId}/${runId}`;
-      vscode.env.openExternal(vscode.Uri.parse(url));
+      openUI(`workflows/${workflowId}/${runId}`);
     } catch (error) {
-      vscode.window.showErrorMessage(`Error: ${(error as Error).message}`);
+      vscode.window.showErrorMessage((error as Error).message);
     }
-  });
+  },
+);

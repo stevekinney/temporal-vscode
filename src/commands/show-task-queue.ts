@@ -1,22 +1,21 @@
 import * as vscode from 'vscode';
+import { registerCommand } from '../utilities/register-command';
 
-export const showTaskQueue = ({
-  namespace,
-  webUI,
-}: {
-  namespace: string;
-  webUI: string;
-}) =>
-  vscode.commands.registerCommand('temporal-vscode.showTaskQueue', async () => {
-    const taskQueue = await vscode.window.showInputBox({
-      placeHolder: 'Enter task queue name',
-    });
+export const showTaskQueue = registerCommand(
+  'showTaskQueue',
+  async ({ openUI }) => {
+    try {
+      const taskQueue = await vscode.window.showInputBox({
+        placeHolder: 'Enter task queue name',
+      });
 
-    if (!taskQueue) {
-      return;
+      if (!taskQueue) {
+        return;
+      }
+
+      openUI(`task-queues/${taskQueue}`);
+    } catch (error) {
+      vscode.window.showErrorMessage((error as Error).message);
     }
-
-    const url = `http://${webUI}/namespaces/${namespace}/task-queues/${taskQueue}`;
-
-    vscode.env.openExternal(vscode.Uri.parse(url));
-  });
+  },
+);

@@ -31,6 +31,22 @@
       {
         "command": "temporal-vscode.showTaskQueue",
         "title": "Temporal: Show Task Queue"
+      },
+      {
+        "command": "temporal-vscode.startDevelopmentServer",
+        "title": "Temporal: Start Development Server"
+      },
+      {
+        "command": "temporal-vscode.setDefaultNamespace.workspace",
+        "title": "Temporal: Set Default Namespace (Workspace)"
+      },
+      {
+        "command": "temporal-vscode.setDefaultNamespace.user",
+        "title": "Temporal: Set Default Namespace (User)"
+      },
+      {
+        "command": "temporal-vscode.openSettings",
+        "title": "Temporal: Open Settings"
       }
     ],
     "configuration": {
@@ -38,16 +54,19 @@
       "title": "Temporal",
       "properties": {
         "temporal.address": {
+          "title": "Temporal Address",
           "type": "string",
           "default": "localhost:7233",
           "description": "The address where Temporal is running."
         },
-        "temporal.web-ui": {
+        "temporal.webUI": {
+          "title": "Temporal Web UI Address",
           "type": "string",
           "default": "localhost:8233",
           "description": "The address where the Temporal Web UI is running."
         },
         "temporal.namespace": {
+          "title": "Default Namespace",
           "type": "string",
           "default": "default",
           "description": "The namespace to use for workflow queries."
@@ -79,8 +98,10 @@
     "@vscode/test-electron": "^2.4.0",
     "esbuild": "^0.21.5",
     "eslint": "^8.57.0",
+    "lit": "^3.2.0",
     "npm-run-all": "^4.1.5",
-    "typescript": "^5.4.5"
+    "typescript": "^5.4.5",
+    "vite": "^5.4.0"
   },
   "packageManager": "pnpm@9.7.0+sha512.dc09430156b427f5ecfc79888899e1c39d2d690f004be70e05230b72cb173d96839587545d09429b55ac3c429c801b4dc3c0e002f653830a420fa2dd4e3cf9cf",
   "dependencies": {
