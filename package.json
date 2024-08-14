@@ -22,6 +22,18 @@
       {
         "command": "temporal-vscode.listNamespaces",
         "title": "Temporal: List Namespaces"
+      },
+      {
+        "command": "temporal-vscode.listSchedules",
+        "title": "Temporal: List Schedules"
+      },
+      {
+        "command": "temporal-vscode.listBatchOperations",
+        "title": "Temporal: List Batch Operations"
+      },
+      {
+        "command": "temporal-vscode.showTaskQueue",
+        "title": "Temporal: Show Task Queue"
       }
     ],
     "configuration": {
