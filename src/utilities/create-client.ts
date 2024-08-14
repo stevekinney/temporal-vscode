@@ -6,8 +6,12 @@ const configuration = vscode.workspace.getConfiguration('temporal');
 export const createClient = async (): Promise<Client> => {
   try {
     const address = configuration.get('address') as string;
-    const connection = await Connection.connect({ address });
-    const client = new Client({ connection });
+    const namespace = configuration.get('namespace') as string;
+    const identity = configuration.get('identity') as string | undefined;
+    const apiKey = configuration.get('APIKey') as string | undefined;
+
+    const connection = await Connection.connect({ address, apiKey });
+    const client = new Client({ connection, namespace, identity });
 
     return client;
   } catch (error) {
