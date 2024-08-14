@@ -39,7 +39,6 @@ export const listWorkflows = registerCommand(
       }
 
       const { workflowId, runId } = selectedWorkflow.execution;
-
       openUI(`workflows/${workflowId}/${runId}`);
     } catch (error) {
       vscode.window.showErrorMessage((error as Error).message);
