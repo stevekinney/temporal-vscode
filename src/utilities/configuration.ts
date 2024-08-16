@@ -34,4 +34,11 @@ export const configuration = {
       | string
       | undefined;
   },
+  get codecEndpoint() {
+    const address = vscode.workspace
+      .getConfiguration('temporal')
+      .get('address.codecEndpoint') as string;
+
+    return new URL(address);
+  },
 };

@@ -66,6 +66,12 @@
           "default": "http://localhost:8233",
           "markdownDescription": "The address where the Temporal Web UI is running. This should be a fully-qualified URL (e.g. `http://localhost:8233`)."
         },
+        "temporal.address.codecEndpoint": {
+          "title": "Temporal Codec Endpoint",
+          "type": "url",
+          "default": "",
+          "markdownDescription": "**Optional**: The address where the Temporal codec server is running."
+        },
         "temporal.namespace": {
           "title": "Default Namespace",
           "type": "string",

@@ -62,10 +62,13 @@ export const temporalServer = {
       return;
     }
 
-    this.terminal.sendText(
-      `temporal server start-dev --ip ${configuration.host} --port ${configuration.port} --ui-ip ${configuration.ui.hostname} --ui-port ${configuration.ui.port}`,
-    );
+    let command = `temporal server start-dev --ip ${configuration.host} --port ${configuration.port} --ui-ip ${configuration.ui.hostname} --ui-port ${configuration.ui.port}`;
 
+    if (configuration.codecEndpoint) {
+      command += ` --ui-codec-endpoint ${configuration.codecEndpoint.href}`;
+    }
+
+    this.terminal.sendText(command);
     this.terminal.show();
 
     window.showInformationMessage('Temporal server started.');
