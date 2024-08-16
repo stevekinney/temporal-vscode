@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
-import { createClient } from './create-client';
-import { openUI } from './open-ui';
+import { createClient } from '$utilities/create-client';
+import { openUI } from '$utilities/open-ui';
 
 import type { Client } from '@temporalio/client';
 

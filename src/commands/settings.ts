@@ -1,5 +1,5 @@
 import { window, workspace, commands } from 'vscode';
-import { registerCommand } from '../utilities/register-command';
+import { registerCommand } from '$register';
 
 type Property = {
   title: string;

@@ -11,7 +11,12 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "noUnusedParameters": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "paths": {
+      "$utilities/*": ["./src/utilities/*"],
+      "$commands/*": ["./src/commands/*"],
+      "$register": ["./src/register/index.ts"]
+    }
   },
   "include": ["src/**/*.d.ts", "src/**/*.ts"],
   "exclude": ["node_modules/**"]

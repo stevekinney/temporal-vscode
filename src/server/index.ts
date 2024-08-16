@@ -1,6 +1,6 @@
 import { window, type Terminal } from 'vscode';
-import { registerCommand } from '../utilities/register-command';
-import { configuration } from '../utilities/configuration';
+import { registerCommand } from '$register';
+import { configuration } from '$utilities/configuration';
 import { isPortInUse } from './is-port-in-use';
 import { getServerCommand } from './server-options';
 

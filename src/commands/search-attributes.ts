@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
-import { registerCommand } from '../utilities/register-command';
-import { html, render, each } from '../utilities/html';
+import { registerCommand } from '$register';
+import { html, render, each } from '$utilities/html';
 
 let currentPanel: vscode.WebviewPanel | undefined = undefined;
 

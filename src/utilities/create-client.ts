@@ -1,7 +1,9 @@
 import * as vscode from 'vscode';
-import { configuration } from './configuration';
 import { Connection, Client } from '@temporalio/client';
+import { configuration } from './configuration';
 import { temporalServer } from '../server';
+
+export type TemporalClient = Client;
 
 export const createClient = async (): Promise<Client> => {
   try {

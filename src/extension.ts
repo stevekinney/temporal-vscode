@@ -10,18 +10,18 @@ import {
   countWorkflows,
   viewWorkflows,
   openWorkflow,
-} from './commands/list-workflows';
+} from './commands/workflows';
 import { startWorkflow } from './commands/start-workflow';
-import { showTaskQueue } from './commands/show-task-queue';
-import { openSchedule, viewSchedules } from './commands/list-schedules';
-import { openBatchOperation } from './commands/list-batch-operations';
+import { showTaskQueue } from './commands/task-queue';
+import { openSchedule, viewSchedules } from './commands/schedules';
+import { openBatchOperation } from './commands/batch-operations';
+import { getSearchAttributes } from './commands/search-attributes';
+import { getClusterInfo, getSystemInfo } from './commands/information';
 import {
   openSettings,
   updateDefaultNamespaceForUser,
   updateDefaultNamespaceForWorkspace,
-} from './commands/set-configuration';
-import { getSearchAttributes } from './commands/search-attributes';
-import { getClusterInfo, getSystemInfo } from './commands/information';
+} from './commands/settings';
 
 export async function activate(context: vscode.ExtensionContext) {
   getSearchAttributes({ context });

@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { registerCommand } from '../utilities/register-command';
+import { registerCommand } from '$register';
 
 export const viewWorkflows = registerCommand('viewWorkflows', ({ openUI }) => {
   return openUI('workflows');

@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { registerCommand } from '../utilities/register-command';
+import { registerCommand } from '$register';
 
 export const viewBatchOperations = registerCommand(
   'viewBatchOperations',
