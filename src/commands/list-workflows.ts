@@ -7,9 +7,10 @@ export const listWorkflows = registerCommand('listWorkflows', ({ openUI }) => {
 
 export const countWorkflows = registerCommand(
   'countWorkflows',
-  async ({ client, namespace }) => {
+  async ({ getClient }) => {
+    const client = await getClient();
     const result = await client.workflowService.countWorkflowExecutions({
-      namespace,
+      namespace: client.options.namespace,
     });
 
     vscode.window.showInformationMessage(`Total workflows: ${result.count}`);
@@ -18,8 +19,11 @@ export const countWorkflows = registerCommand(
 
 export const openWorkflow = registerCommand(
   'openWorkflow',
-  async ({ client, namespace, openUI }) => {
+  async ({ getClient, openUI }) => {
     try {
+      const client = await getClient();
+      const namespace = client.options.namespace;
+
       const workflows = await client.workflowService
         .listWorkflowExecutions({ namespace })
         .then((workflows) => workflows.executions);

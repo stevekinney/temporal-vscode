@@ -3,8 +3,11 @@ import { registerCommand } from '../utilities/register-command';
 
 export const openSchedules = registerCommand(
   'openSchedule',
-  async ({ client, namespace, openUI }) => {
+  async ({ getClient, openUI }) => {
     try {
+      const client = await getClient();
+      const { namespace } = client.options;
+
       const schedules = await client.workflowService
         .listSchedules({ namespace })
         .then(({ schedules }) => schedules);

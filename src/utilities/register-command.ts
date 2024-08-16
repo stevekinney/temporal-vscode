@@ -6,21 +6,23 @@ import type { Client } from '@temporalio/client';
 
 const extensionId = 'temporal-vscode';
 
-type Configuration = {
-  client: Client;
-  namespace: string;
-  openUI: typeof openUI;
-  context: vscode.ExtensionContext;
-};
-
-type ConfigurationWithoutClient = Omit<Configuration, 'client'>;
-
-type Command<
-  T extends Configuration | ConfigurationWithoutClient = Configuration,
-> = (
+type Command = (
   command: string,
-  callback: (configuration: T) => any,
+  callback: (configuration: CommandParameters) => any,
 ) => ({ context }: { context: vscode.ExtensionContext }) => vscode.Disposable;
+
+class CommandParameters {
+  public openUI = openUI;
+  public context: vscode.ExtensionContext;
+
+  constructor(context: vscode.ExtensionContext) {
+    this.context = context;
+  }
+
+  getClient(): Promise<Client> {
+    return createClient();
+  }
+}
 
 /**
  *
@@ -28,47 +30,15 @@ type Command<
  * @param callback The function that will be called when the command is executed.
  * @returns
  */
-export const registerCommand: Command<Configuration> =
+export const registerCommand: Command =
   (command, callback) =>
   ({ context }) => {
     const fn = vscode.commands.registerCommand(
       `${extensionId}.${command}`,
       async () => {
         try {
-          const configuration = vscode.workspace.getConfiguration('temporal');
-          const namespace = configuration.get('namespace') as string;
-
-          const client = await createClient();
-
-          if (!client) {
-            return;
-          }
-
-          callback({ client, namespace, openUI, context });
-        } catch (error) {
-          vscode.window.showErrorMessage((error as Error).message);
-        }
-      },
-    );
-
-    context.subscriptions.push(fn);
-
-    return fn;
-  };
-
-export const registerCommandWithoutClient: Command<
-  ConfigurationWithoutClient
-> =
-  (command, callback) =>
-  ({ context }) => {
-    const fn = vscode.commands.registerCommand(
-      `${extensionId}.${command}`,
-      async () => {
-        try {
-          const configuration = vscode.workspace.getConfiguration('temporal');
-          const namespace = configuration.get('namespace') as string;
-
-          callback({ namespace, openUI, context });
+          const parameters = new CommandParameters(context);
+          callback(parameters);
         } catch (error) {
           vscode.window.showErrorMessage((error as Error).message);
         }

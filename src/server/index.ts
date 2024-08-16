@@ -1,7 +1,7 @@
 import { window, type Terminal, type ExtensionContext } from 'vscode';
-import { registerCommandWithoutClient } from '../utilities/register-command';
-import { isPortInUse } from './is-port-in-use';
+import { registerCommand } from '../utilities/register-command';
 import { configuration } from '../utilities/configuration';
+import { isPortInUse } from './is-port-in-use';
 import { getServerCommand } from './server-options';
 
 let terminal: Terminal | undefined;
@@ -63,8 +63,6 @@ export const temporalServer = {
       return;
     }
 
-    console.log({ terminal: this });
-
     const command = getServerCommand();
 
     this.terminal.sendText(command);
@@ -98,12 +96,12 @@ export const temporalServer = {
   },
 };
 
-export const startDevelopmentServer = registerCommandWithoutClient(
+export const startDevelopmentServer = registerCommand(
   'startDevelopmentServer',
   () => temporalServer.start(),
 );
 
-export const stopDevelopmentServer = registerCommandWithoutClient(
+export const stopDevelopmentServer = registerCommand(
   'stopDevelopmentServer',
   () => temporalServer.start(),
 );

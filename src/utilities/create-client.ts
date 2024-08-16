@@ -21,10 +21,9 @@ export const createClient = async (): Promise<Client> => {
     }
 
     const address = configuration.address;
-
+    const apiKey = configuration.apiKey;
     const namespace = configuration.namespace;
     const identity = configuration.identity;
-    const apiKey = configuration.apiKey;
 
     const connection = await Connection.connect({ address, apiKey });
     const client = new Client({ connection, namespace, identity });

@@ -3,8 +3,11 @@ import { registerCommand } from '../utilities/register-command';
 
 export const listBatchOperations = registerCommand(
   'listBatchOperations',
-  async ({ client, namespace, openUI }) => {
+  async ({ getClient, openUI }) => {
     try {
+      const client = await getClient();
+      const { namespace } = client.options;
+
       const batchOperations = await client.workflowService
         .listBatchOperations({ namespace })
         .then((batchOperations) => batchOperations.operationInfo);

@@ -17,12 +17,13 @@ const searchAttributeTypes = [
 
 export const getSearchAttributes = registerCommand(
   'getSearchAttributes',
-  async ({ client, namespace, context }) => {
+  async ({ getClient, context }) => {
+    const client = await getClient();
+    const { namespace } = client.options;
+
     const result = await client.workflowService.getSearchAttributes({
       namespace,
     });
-
-    client.workflowService.scanWorkflowExecutions;
 
     const content = html`
       <table>
