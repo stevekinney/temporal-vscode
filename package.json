@@ -13,13 +13,8 @@
   "contributes": {
     "commands": [
       {
-        "command": "temporal-vscode.getSearchAttributes",
-        "title": "Get Search Attributes",
-        "category": "Temporal"
-      },
-      {
-        "command": "temporal-vscode.listWorkflows",
-        "title": "List Workflows",
+        "command": "temporal-vscode.viewWorkflows",
+        "title": "View Workflows",
         "category": "Temporal"
       },
       {
@@ -33,13 +28,23 @@
         "category": "Temporal"
       },
       {
-        "command": "temporal-vscode.listSchedules",
-        "title": "List Schedules",
+        "command": "temporal-vscode.viewSchedules",
+        "title": "View Schedules",
         "category": "Temporal"
       },
       {
-        "command": "temporal-vscode.listBatchOperations",
-        "title": "List Batch Operations",
+        "command": "temporal-vscode.openSchedule",
+        "title": "Open Schedule",
+        "category": "Temporal"
+      },
+      {
+        "command": "temporal-vscode.viewBatchOperations",
+        "title": "View Batch Operations",
+        "category": "Temporal"
+      },
+      {
+        "command": "temporal-vscode.openBatchOperation",
+        "title": "Open Batch Operation",
         "category": "Temporal"
       },
       {
@@ -50,6 +55,11 @@
       {
         "command": "temporal-vscode.startDevelopmentServer",
         "title": "Start Development Server",
+        "category": "Temporal"
+      },
+      {
+        "command": "temporal-vscode.startDevelopmentServer",
+        "title": "Stop Development Server",
         "category": "Temporal"
       },
       {
@@ -65,6 +75,21 @@
       {
         "command": "temporal-vscode.openSettings",
         "title": "Open Settings",
+        "category": "Temporal"
+      },
+      {
+        "command": "temporal-vscode.getSearchAttributes",
+        "title": "Get Search Attributes",
+        "category": "Temporal"
+      },
+      {
+        "command": "temporal-vscode.getSystemInfo",
+        "title": "Get System Information",
+        "category": "Temporal"
+      },
+      {
+        "command": "temporal-vscode.getClusterInfo",
+        "title": "Get Cluster Information",
         "category": "Temporal"
       }
     ],

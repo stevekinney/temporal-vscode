@@ -1,4 +1,4 @@
-import { window, type Terminal, type ExtensionContext } from 'vscode';
+import { window, type Terminal } from 'vscode';
 import { registerCommand } from '../utilities/register-command';
 import { configuration } from '../utilities/configuration';
 import { isPortInUse } from './is-port-in-use';
@@ -19,21 +19,15 @@ const findTerminal = () => {
 export const onTerminalChanges = () => {
   return [
     window.onDidCloseTerminal((closedTerminal) => {
-      console.log('closed', closedTerminal);
       if (closedTerminal.name === terminalName) {
         terminal = undefined;
       }
     }),
 
     window.onDidOpenTerminal((openedTerminal) => {
-      console.log('opened', openedTerminal);
       if (openedTerminal.name === terminalName) {
         terminal = openedTerminal;
       }
-    }),
-
-    window.onDidChangeTerminalState((terminal) => {
-      console.log('state-change', terminal);
     }),
   ];
 };

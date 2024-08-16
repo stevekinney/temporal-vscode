@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import { registerCommand } from '../utilities/register-command';
 
-export const listWorkflows = registerCommand('listWorkflows', ({ openUI }) => {
+export const viewWorkflows = registerCommand('viewWorkflows', ({ openUI }) => {
   return openUI('workflows');
 });
 

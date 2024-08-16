@@ -1,7 +1,11 @@
 import * as vscode from 'vscode';
 import { registerCommand } from '../utilities/register-command';
 
-export const openSchedules = registerCommand(
+export const viewSchedules = registerCommand('viewSchedules', ({ openUI }) => {
+  return openUI('schedules');
+});
+
+export const openSchedule = registerCommand(
   'openSchedule',
   async ({ getClient, openUI }) => {
     try {

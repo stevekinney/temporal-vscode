@@ -28,10 +28,7 @@ const updateConfiguration = async (
   }
 
   workspace.getConfiguration().update(key, value, global);
-
-  window.showInformationMessage(
-    `Temporal: Updated ${title.toLowerCase()} to ${value}.`,
-  );
+  window.showInformationMessage(`Updated ${title.toLowerCase()} to ${value}.`);
 };
 
 const updateDefaultNamespace = (global: boolean) =>
