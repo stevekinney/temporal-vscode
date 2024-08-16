@@ -15,23 +15,9 @@ export const configuration = {
   get ui() {
     const address = vscode.workspace
       .getConfiguration('temporal')
-      .get('address.webUI');
-
-    return vscode.Uri.parse(`http://${address}`);
-  },
-  get uiHost() {
-    const address = vscode.workspace
-      .getConfiguration('temporal')
       .get('address.webUI') as string;
 
-    return address.split(':')[0];
-  },
-  get uiPort() {
-    const address = vscode.workspace
-      .getConfiguration('temporal')
-      .get('address.webUI') as string;
-
-    return parseInt(address.split(':')[1]);
+    return new URL(address);
   },
   get namespace() {
     return vscode.workspace
@@ -44,7 +30,7 @@ export const configuration = {
       | undefined;
   },
   get apiKey() {
-    return vscode.workspace.getConfiguration('temporal').get('APIKey') as
+    return vscode.workspace.getConfiguration('temporal').get('apiKey') as
       | string
       | undefined;
   },

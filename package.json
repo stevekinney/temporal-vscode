@@ -53,23 +53,36 @@
       "type": "object",
       "title": "Temporal",
       "properties": {
-        "temporal.address": {
+        "temporal.address.server": {
           "title": "Temporal Address",
           "type": "string",
           "default": "localhost:7233",
           "description": "The address where Temporal is running."
         },
-        "temporal.webUI": {
+        "temporal.address.webUI": {
           "title": "Temporal Web UI Address",
           "type": "string",
-          "default": "localhost:8233",
-          "description": "The address where the Temporal Web UI is running."
+          "format": "uri",
+          "default": "http://localhost:8233",
+          "markdownDescription": "The address where the Temporal Web UI is running. This should be a fully-qualified URL (e.g. `http://localhost:8233`)."
         },
         "temporal.namespace": {
           "title": "Default Namespace",
           "type": "string",
           "default": "default",
           "description": "The namespace to use for workflow queries."
+        },
+        "temporal.client.identity": {
+          "title": "Client Identity",
+          "type": "string",
+          "default": "",
+          "description": "The identity to use when making requests to Temporal."
+        },
+        "temporal.connection.apiKey": {
+          "title": "API Key",
+          "type": "string",
+          "default": "",
+          "description": "The API key to use when making requests to Temporal."
         }
       }
     }

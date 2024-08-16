@@ -63,7 +63,7 @@ export const temporalServer = {
     }
 
     this.terminal.sendText(
-      `temporal server start-dev --ip ${configuration.host} --port ${configuration.port} --ui-ip ${configuration.uiHost} --ui-port ${configuration.uiPort}`,
+      `temporal server start-dev --ip ${configuration.host} --port ${configuration.port} --ui-ip ${configuration.ui.hostname} --ui-port ${configuration.ui.port}`,
     );
 
     this.terminal.show();

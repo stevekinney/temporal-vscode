@@ -27,9 +27,7 @@ export const startWorkflow = registerCommand(
       currentPanel.webview.html = render(content);
 
       currentPanel.onDidDispose(
-        () => {
-          currentPanel = undefined;
-        },
+        () => (currentPanel = undefined),
         null,
         context.subscriptions,
       );

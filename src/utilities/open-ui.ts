@@ -1,4 +1,5 @@
-import { env, Uri, workspace } from 'vscode';
+import { env, Uri } from 'vscode';
+import { configuration } from './configuration';
 
 type Options = {
   base?: Uri;
@@ -19,14 +20,12 @@ type Route = {
   schedule: `${Route['schedules']}/${string}`;
 };
 
-const configuration = workspace.getConfiguration('temporal');
-
-const getBase = () => Uri.parse(`http://${configuration.get('webUI')}`);
-const getNamespace = () => configuration.get('namespace') as string;
-
 export async function openUI<R extends keyof Route>(
   path: Route[R] | undefined = undefined,
-  { base = getBase(), namespace = getNamespace() }: Options = {},
+  {
+    base = Uri.parse(configuration.ui.href),
+    namespace = configuration.namespace,
+  }: Options = {},
 ) {
   const uri = Uri.joinPath(base, 'namespaces', namespace, path ?? '');
   env.openExternal(uri);
