@@ -151,6 +151,7 @@
   "scripts": {
     "vscode:prepublish": "pnpm run package",
     "compile": "pnpm run check-types && pnpm run lint && node esbuild.js",
+    "generate:types": "node generate-types.js",
     "watch": "npm-run-all -p watch:*",
     "watch:esbuild": "node esbuild.js --watch",
     "watch:tsc": "tsc --noEmit --watch --project tsconfig.json",
@@ -175,7 +176,8 @@
     "eslint": "^8.57.0",
     "lit": "^3.2.0",
     "npm-run-all": "^4.1.5",
-    "typescript": "^5.4.5",
+    "prettier": "^3.3.3",
+    "typescript": "^5.5.4",
     "vite": "^5.4.0"
   },
   "packageManager": "pnpm@9.7.0+sha512.dc09430156b427f5ecfc79888899e1c39d2d690f004be70e05230b72cb173d96839587545d09429b55ac3c429c801b4dc3c0e002f653830a420fa2dd4e3cf9cf",

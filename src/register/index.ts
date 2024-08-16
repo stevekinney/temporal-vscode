@@ -25,3 +25,7 @@ export const registerCommand = (
 
   context.subscriptions.push(fn);
 };
+
+export const executeCommand = async (command: CommandName) => {
+  await vscode.commands.executeCommand(`${extensionId}.${command}`);
+};
