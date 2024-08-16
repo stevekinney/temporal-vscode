@@ -50,3 +50,20 @@ export const render = (
     </html>
   `;
 };
+
+export const each = <T>(
+  data: Record<string, T> | T[],
+  callback: (keyOrValue: string | T, value?: T) => string,
+): string => {
+  if (Array.isArray(data)) {
+    // Handle array: pass only the value to the callback
+    return data.reduce((result, value) => {
+      return result + callback(value);
+    }, '');
+  } else {
+    // Handle object: pass both key and value to the callback
+    return Object.entries(data).reduce((result, [key, value]) => {
+      return result + callback(key, value);
+    }, '');
+  }
+};

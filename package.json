@@ -13,40 +13,59 @@
   "contributes": {
     "commands": [
       {
-        "command": "temporal-vscode.listWorkflows",
-        "title": "Temporal: List Workflows"
+        "command": "temporal-vscode.getSearchAttributes",
+        "title": "Get Search Attributes",
+        "category": "Temporal"
       },
       {
-        "command": "temporal-vscode.listNamespaces",
-        "title": "Temporal: List Namespaces"
+        "command": "temporal-vscode.listWorkflows",
+        "title": "List Workflows",
+        "category": "Temporal"
+      },
+      {
+        "command": "temporal-vscode.openWorkflow",
+        "title": "Open Workflow",
+        "category": "Temporal"
+      },
+      {
+        "command": "temporal-vscode.countWorkflows",
+        "title": "Count Workflows",
+        "category": "Temporal"
       },
       {
         "command": "temporal-vscode.listSchedules",
-        "title": "Temporal: List Schedules"
+        "title": "List Schedules",
+        "category": "Temporal"
       },
       {
         "command": "temporal-vscode.listBatchOperations",
-        "title": "Temporal: List Batch Operations"
+        "title": "List Batch Operations",
+        "category": "Temporal"
       },
       {
         "command": "temporal-vscode.showTaskQueue",
-        "title": "Temporal: Show Task Queue"
+        "title": "Show Task Queue",
+        "category": "Temporal"
       },
       {
         "command": "temporal-vscode.startDevelopmentServer",
-        "title": "Temporal: Start Development Server"
+        "title": "Start Development Server",
+        "category": "Temporal"
       },
       {
         "command": "temporal-vscode.setDefaultNamespace.workspace",
-        "title": "Temporal: Set Default Namespace (Workspace)"
+        "title": "Set Default Namespace (Workspace)",
+        "category": "Temporal"
       },
       {
         "command": "temporal-vscode.setDefaultNamespace.user",
-        "title": "Temporal: Set Default Namespace (User)"
+        "title": "Set Default Namespace (User)",
+        "category": "Temporal"
       },
       {
         "command": "temporal-vscode.openSettings",
-        "title": "Temporal: Open Settings"
+        "title": "Open Settings",
+        "category": "Temporal"
       }
     ],
     "configuration": {
@@ -57,38 +76,59 @@
           "title": "Temporal Address",
           "type": "string",
           "default": "localhost:7233",
-          "description": "The address where Temporal is running."
+          "description": "The address where Temporal is running.",
+          "order": 1
         },
         "temporal.address.webUI": {
           "title": "Temporal Web UI Address",
           "type": "string",
           "format": "uri",
           "default": "http://localhost:8233",
-          "markdownDescription": "The address where the Temporal Web UI is running. This should be a fully-qualified URL (e.g. `http://localhost:8233`)."
+          "markdownDescription": "The address where the Temporal Web UI is running. This should be a fully-qualified URL (e.g. `http://localhost:8233`).",
+          "order": 2
         },
-        "temporal.address.codecEndpoint": {
+        "temporal.codecEndpoint": {
           "title": "Temporal Codec Endpoint",
-          "type": "url",
+          "type": "string",
+          "pattern": "^(https?:\\/\\/[^\\s/$.?#].[^\\s]*(:\\d{1,5})?)?$|^$",
+          "patternErrorMessage": "The codec endpoint must be a valid URL or empty.",
           "default": "",
-          "markdownDescription": "**Optional**: The address where the Temporal codec server is running."
+          "markdownDescription": "**Optional**: The address where a data encoder codec server is running.",
+          "order": 3
         },
         "temporal.namespace": {
           "title": "Default Namespace",
           "type": "string",
           "default": "default",
-          "description": "The namespace to use for workflow queries."
-        },
-        "temporal.client.identity": {
-          "title": "Client Identity",
-          "type": "string",
-          "default": "",
-          "description": "The identity to use when making requests to Temporal."
+          "description": "The namespace to use for workflow queries.",
+          "order": 4
         },
         "temporal.connection.apiKey": {
           "title": "API Key",
           "type": "string",
           "default": "",
-          "description": "The API key to use when making requests to Temporal."
+          "description": "The API key to use when making requests to Temporal.",
+          "order": 3
+        },
+        "temporal.client.identity": {
+          "title": "Client Identity",
+          "type": "string",
+          "default": "",
+          "description": "The identity to use when making requests to Temporal.",
+          "order": 99
+        },
+        "temporal.commandLine.logLevel": {
+          "title": "CLI Log Level",
+          "type": "string",
+          "enum": [
+            "debug",
+            "info",
+            "warn",
+            "error"
+          ],
+          "default": "error",
+          "description": "The log level to use for the Temporal CLI.",
+          "order": 100
         }
       }
     }
@@ -108,6 +148,7 @@
     "test": "vscode-test"
   },
   "devDependencies": {
+    "@temporalio/common": "^1.11.1",
     "@types/mocha": "^10.0.7",
     "@types/node": "20.x",
     "@types/vscode": "^1.92.0",

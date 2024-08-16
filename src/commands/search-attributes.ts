@@ -1,0 +1,64 @@
+import * as vscode from 'vscode';
+import { registerCommand } from '../utilities/register-command';
+import { html, render, each } from '../utilities/html';
+
+let currentPanel: vscode.WebviewPanel | undefined = undefined;
+
+const searchAttributeTypes = [
+  'Unspecified',
+  'Text',
+  'Keyword',
+  'Integer',
+  'Double',
+  'Boolean',
+  'DateTime',
+  'KeywordList',
+];
+
+export const getSearchAttributes = registerCommand(
+  'getSearchAttributes',
+  async ({ client, namespace, context }) => {
+    const result = await client.workflowService.getSearchAttributes({
+      namespace,
+    });
+
+    client.workflowService.scanWorkflowExecutions;
+
+    const content = html`
+      <table>
+        ${each(
+          result.keys as Record<string, number>,
+          (key, value) =>
+            html`<tr>
+              <td>${key}</td>
+              <td>${value && searchAttributeTypes[value]}</td>
+            </tr>`,
+        )}
+      </table>
+    `;
+
+    const columnToShowIn = vscode.window.activeTextEditor
+      ? vscode.window.activeTextEditor.viewColumn
+      : undefined;
+
+    if (currentPanel) {
+      currentPanel.reveal(columnToShowIn);
+      return;
+    } else {
+      currentPanel = vscode.window.createWebviewPanel(
+        'searchAttributes',
+        'Temporal: Search Attributes',
+        columnToShowIn || vscode.ViewColumn.One,
+        {},
+      );
+
+      currentPanel.webview.html = render(content);
+
+      currentPanel.onDidDispose(
+        () => (currentPanel = undefined),
+        null,
+        context.subscriptions,
+      );
+    }
+  },
+);

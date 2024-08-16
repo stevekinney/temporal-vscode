@@ -2,8 +2,19 @@ import * as vscode from 'vscode';
 import { registerCommand } from '../utilities/register-command';
 
 export const listWorkflows = registerCommand('listWorkflows', ({ openUI }) => {
-  openUI('workflows');
+  return openUI('workflows');
 });
+
+export const countWorkflows = registerCommand(
+  'countWorkflows',
+  async ({ client, namespace }) => {
+    const result = await client.workflowService.countWorkflowExecutions({
+      namespace,
+    });
+
+    vscode.window.showInformationMessage(`Total workflows: ${result.count}`);
+  },
+);
 
 export const openWorkflow = registerCommand(
   'openWorkflow',

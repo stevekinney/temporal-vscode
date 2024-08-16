@@ -39,6 +39,21 @@ export const configuration = {
       .getConfiguration('temporal')
       .get('address.codecEndpoint') as string;
 
+    if (!address) {
+      return;
+    }
+
     return new URL(address);
+  },
+  get logLevel() {
+    const logLevel = vscode.workspace
+      .getConfiguration('temporal')
+      .get('logLevel') as string;
+
+    if (!logLevel) {
+      return 'error';
+    }
+
+    return logLevel;
   },
 };

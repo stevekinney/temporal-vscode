@@ -2,6 +2,7 @@ import { window, type Terminal, type ExtensionContext } from 'vscode';
 import { registerCommandWithoutClient } from '../utilities/register-command';
 import { isPortInUse } from './is-port-in-use';
 import { configuration } from '../utilities/configuration';
+import { getServerCommand } from './server-options';
 
 let terminal: Terminal | undefined;
 
@@ -62,11 +63,9 @@ export const temporalServer = {
       return;
     }
 
-    let command = `temporal server start-dev --ip ${configuration.host} --port ${configuration.port} --ui-ip ${configuration.ui.hostname} --ui-port ${configuration.ui.port}`;
+    console.log({ terminal: this });
 
-    if (configuration.codecEndpoint) {
-      command += ` --ui-codec-endpoint ${configuration.codecEndpoint.href}`;
-    }
+    const command = getServerCommand();
 
     this.terminal.sendText(command);
     this.terminal.show();
@@ -101,10 +100,10 @@ export const temporalServer = {
 
 export const startDevelopmentServer = registerCommandWithoutClient(
   'startDevelopmentServer',
-  temporalServer.start,
+  () => temporalServer.start(),
 );
 
 export const stopDevelopmentServer = registerCommandWithoutClient(
   'stopDevelopmentServer',
-  temporalServer.stop,
+  () => temporalServer.start(),
 );

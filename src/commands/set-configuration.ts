@@ -1,5 +1,5 @@
 import { window, workspace, commands } from 'vscode';
-import { registerCommandWithoutClient } from '../utilities/register-command';
+import { registerCommand } from '../utilities/register-command';
 
 type Property = {
   title: string;
@@ -44,19 +44,16 @@ const updateDefaultNamespace = (global: boolean) =>
     global,
   );
 
-export const updateDefaultNamespaceForWorkspace = registerCommandWithoutClient(
+export const updateDefaultNamespaceForWorkspace = registerCommand(
   'setDefaultNamespace.workspace',
   () => updateDefaultNamespace(false),
 );
 
-export const updateDefaultNamespaceForUser = registerCommandWithoutClient(
+export const updateDefaultNamespaceForUser = registerCommand(
   'setDefaultNamespace.user',
   () => updateDefaultNamespace(true),
 );
 
-export const openSettings = registerCommandWithoutClient(
-  'openSettings',
-  async () => {
-    await commands.executeCommand('workbench.action.openSettings', settingsKey);
-  },
-);
+export const openSettings = registerCommand('openSettings', async () => {
+  await commands.executeCommand('workbench.action.openSettings', settingsKey);
+});
