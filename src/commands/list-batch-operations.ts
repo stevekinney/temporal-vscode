@@ -20,6 +20,7 @@ export const listBatchOperations = registerCommand(
         .filter(Boolean);
 
       const selectedId = await vscode.window.showQuickPick(listItems, {
+        title: 'Batch Operations',
         placeHolder: 'Select a batch operation to view',
       });
 
@@ -33,7 +34,7 @@ export const listBatchOperations = registerCommand(
 
       if (!selected || !selected.jobId) {
         vscode.window.showInformationMessage(
-          'Could not access selected schedule.',
+          'Could not access selected batch operation.',
         );
         return;
       }

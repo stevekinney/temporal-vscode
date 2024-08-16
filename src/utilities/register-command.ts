@@ -10,6 +10,7 @@ type Configuration = {
   client: Client;
   namespace: string;
   openUI: typeof openUI;
+  context: vscode.ExtensionContext;
 };
 
 type ConfigurationWithoutClient = Omit<Configuration, 'client'>;
@@ -19,7 +20,7 @@ type Command<
 > = (
   command: string,
   callback: (configuration: T) => any,
-) => () => vscode.Disposable;
+) => ({ context }: { context: vscode.ExtensionContext }) => vscode.Disposable;
 
 /**
  *
@@ -27,39 +28,54 @@ type Command<
  * @param callback The function that will be called when the command is executed.
  * @returns
  */
-export const registerCommand: Command = (command, callback) => () =>
-  vscode.commands.registerCommand(`${extensionId}.${command}`, async () => {
-    try {
-      const configuration = vscode.workspace.getConfiguration('temporal');
-      const namespace = configuration.get('namespace') as string;
+export const registerCommand: Command<Configuration> =
+  (command, callback) =>
+  ({ context }) => {
+    const fn = vscode.commands.registerCommand(
+      `${extensionId}.${command}`,
+      async () => {
+        try {
+          const configuration = vscode.workspace.getConfiguration('temporal');
+          const namespace = configuration.get('namespace') as string;
 
-      const client = await createClient();
+          const client = await createClient();
 
-      if (!client) {
-        return;
-      }
+          if (!client) {
+            return;
+          }
 
-      callback({ client, namespace, openUI });
-    } catch (error) {
-      vscode.window.showErrorMessage((error as Error).message);
-    }
-  });
+          callback({ client, namespace, openUI, context });
+        } catch (error) {
+          vscode.window.showErrorMessage((error as Error).message);
+        }
+      },
+    );
+
+    context.subscriptions.push(fn);
+
+    return fn;
+  };
 
 export const registerCommandWithoutClient: Command<
   ConfigurationWithoutClient
-> = (command, callback) => () => {
-  console.log(`${extensionId}.${command}`);
-  return vscode.commands.registerCommand(
-    `${extensionId}.${command}`,
-    async () => {
-      try {
-        const configuration = vscode.workspace.getConfiguration('temporal');
-        const namespace = configuration.get('namespace') as string;
+> =
+  (command, callback) =>
+  ({ context }) => {
+    const fn = vscode.commands.registerCommand(
+      `${extensionId}.${command}`,
+      async () => {
+        try {
+          const configuration = vscode.workspace.getConfiguration('temporal');
+          const namespace = configuration.get('namespace') as string;
 
-        callback({ namespace, openUI });
-      } catch (error) {
-        vscode.window.showErrorMessage((error as Error).message);
-      }
-    },
-  );
-};
+          callback({ namespace, openUI, context });
+        } catch (error) {
+          vscode.window.showErrorMessage((error as Error).message);
+        }
+      },
+    );
+
+    context.subscriptions.push(fn);
+
+    return fn;
+  };

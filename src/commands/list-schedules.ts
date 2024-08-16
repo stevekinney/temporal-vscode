@@ -1,8 +1,8 @@
 import * as vscode from 'vscode';
 import { registerCommand } from '../utilities/register-command';
 
-export const listSchedules = registerCommand(
-  'listSchedules',
+export const openSchedules = registerCommand(
+  'openSchedule',
   async ({ client, namespace, openUI }) => {
     try {
       const schedules = await client.workflowService

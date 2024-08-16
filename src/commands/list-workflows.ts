@@ -1,8 +1,12 @@
 import * as vscode from 'vscode';
 import { registerCommand } from '../utilities/register-command';
 
-export const listWorkflows = registerCommand(
-  'listWorkflows',
+export const listWorkflows = registerCommand('listWorkflows', ({ openUI }) => {
+  openUI('workflows');
+});
+
+export const openWorkflow = registerCommand(
+  'openWorkflow',
   async ({ client, namespace, openUI }) => {
     try {
       const workflows = await client.workflowService

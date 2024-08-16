@@ -1,14 +1,30 @@
 import * as vscode from 'vscode';
+import { configuration } from './configuration';
 import { Connection, Client } from '@temporalio/client';
-
-const configuration = vscode.workspace.getConfiguration('temporal');
+import { temporalServer } from '../server';
 
 export const createClient = async (): Promise<Client> => {
   try {
-    const address = configuration.get('address') as string;
-    const namespace = configuration.get('namespace') as string;
-    const identity = configuration.get('identity') as string | undefined;
-    const apiKey = configuration.get('APIKey') as string | undefined;
+    const serverRunning = await temporalServer.isRunning();
+
+    if (!serverRunning) {
+      const result = await vscode.window.showErrorMessage(
+        'The Temporal server is not running. Please start the server and try again.',
+        'Start Development Server',
+      );
+
+      if (result === 'Start Development Server') {
+        await temporalServer.start();
+      } else {
+        throw new Error('The Temporal server is not running.');
+      }
+    }
+
+    const address = configuration.address;
+
+    const namespace = configuration.namespace;
+    const identity = configuration.identity;
+    const apiKey = configuration.apiKey;
 
     const connection = await Connection.connect({ address, apiKey });
     const client = new Client({ connection, namespace, identity });
