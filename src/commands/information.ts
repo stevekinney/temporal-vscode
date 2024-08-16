@@ -1,22 +1,15 @@
 import * as vscode from 'vscode';
-import { registerCommand } from '$register';
 
-export const getSystemInfo = registerCommand(
-  'getSystemInfo',
-  async ({ getClient }) => {
-    const client = await getClient();
-    const result = await client.workflowService.getSystemInfo({});
+export const getSystemInfo: Command = async ({ getClient }) => {
+  const client = await getClient();
+  const result = await client.workflowService.getSystemInfo({});
 
-    vscode.window.showInformationMessage(`${result}`);
-  },
-);
+  vscode.window.showInformationMessage(`${result}`);
+};
 
-export const getClusterInfo = registerCommand(
-  'getSystemInfo',
-  async ({ getClient }) => {
-    const client = await getClient();
-    const result = await client.workflowService.getClusterInfo({});
+export const getClusterInfo: Command = async ({ getClient }) => {
+  const client = await getClient();
+  const result = await client.workflowService.getClusterInfo({});
 
-    vscode.window.showInformationMessage(`${result}`);
-  },
-);
+  vscode.window.showInformationMessage(`${result}`);
+};

@@ -1,51 +1,27 @@
 import * as vscode from 'vscode';
-import { createClient } from '$utilities/create-client';
-import { openUI } from '$utilities/open-ui';
-
-import type { Client } from '@temporalio/client';
+import { CommandParameters } from './command-parameters';
 
 const extensionId = 'temporal-vscode';
 
-type Command = (
-  command: string,
-  callback: (configuration: CommandParameters) => any,
-) => ({ context }: { context: vscode.ExtensionContext }) => vscode.Disposable;
+type RegisterCommandParameters = {
+  context: vscode.ExtensionContext;
+};
 
-class CommandParameters {
-  public openUI = openUI;
-  public context: vscode.ExtensionContext;
+export const registerCommand = (
+  command: Command,
+  { context }: RegisterCommandParameters,
+) => {
+  const fn = vscode.commands.registerCommand(
+    `${extensionId}.${command.name}`,
+    async () => {
+      try {
+        const parameters = new CommandParameters(context);
+        await command(parameters);
+      } catch (error) {
+        vscode.window.showErrorMessage((error as Error).message);
+      }
+    },
+  );
 
-  constructor(context: vscode.ExtensionContext) {
-    this.context = context;
-  }
-
-  getClient(): Promise<Client> {
-    return createClient();
-  }
-}
-
-/**
- *
- * @param command The name of the command you want to register. This will automatically be prefixed with the extension ID (e.g. `temporal-vscode`).
- * @param callback The function that will be called when the command is executed.
- * @returns
- */
-export const registerCommand: Command =
-  (command, callback) =>
-  ({ context }) => {
-    const fn = vscode.commands.registerCommand(
-      `${extensionId}.${command}`,
-      async () => {
-        try {
-          const parameters = new CommandParameters(context);
-          callback(parameters);
-        } catch (error) {
-          vscode.window.showErrorMessage((error as Error).message);
-        }
-      },
-    );
-
-    context.subscriptions.push(fn);
-
-    return fn;
-  };
+  context.subscriptions.push(fn);
+};

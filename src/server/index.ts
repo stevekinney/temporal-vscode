@@ -90,12 +90,5 @@ export const temporalServer = {
   },
 };
 
-export const startDevelopmentServer = registerCommand(
-  'startDevelopmentServer',
-  () => temporalServer.start(),
-);
-
-export const stopDevelopmentServer = registerCommand(
-  'stopDevelopmentServer',
-  () => temporalServer.start(),
-);
+export const startDevelopmentServer = () => temporalServer.start();
+export const stopDevelopmentServer = () => temporalServer.start();

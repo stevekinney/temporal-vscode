@@ -63,16 +63,6 @@
         "category": "Temporal"
       },
       {
-        "command": "temporal-vscode.setDefaultNamespace.workspace",
-        "title": "Set Default Namespace (Workspace)",
-        "category": "Temporal"
-      },
-      {
-        "command": "temporal-vscode.setDefaultNamespace.user",
-        "title": "Set Default Namespace (User)",
-        "category": "Temporal"
-      },
-      {
         "command": "temporal-vscode.openSettings",
         "title": "Open Settings",
         "category": "Temporal"
