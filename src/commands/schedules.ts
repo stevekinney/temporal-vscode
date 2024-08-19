@@ -3,10 +3,16 @@ import { Command } from '$components/command';
 import { TemporalClient } from '$utilities/create-client';
 import { select } from '$utilities/select';
 
+/**
+ * @summary View schedules
+ */
 Command.register('viewSchedules', ({ openUI }) => {
   return openUI('schedules');
 });
 
+/**
+ * @summary Create schedule
+ */
 Command.register('openSchedule', async ({ getClient, openUI }) => {
   try {
     const client = await getClient();
@@ -35,6 +41,9 @@ Command.register('openSchedule', async ({ getClient, openUI }) => {
   }
 });
 
+/**
+ * @summary Delete schedule
+ */
 Command.register('deleteSchedule', async ({ getClient }) => {
   try {
     const client = await getClient();

@@ -2,10 +2,16 @@ import * as vscode from 'vscode';
 import { Command } from '$components/command';
 import { select } from '$utilities/select';
 
+/**
+ * @summary View workflows
+ */
 Command.register('viewWorkflows', ({ openUI }) => {
   return openUI('workflows');
 });
 
+/**
+ * @summary Count workflows
+ */
 Command.register('countWorkflows', async ({ getClient }) => {
   const client = await getClient();
   const result = await client.workflowService.countWorkflowExecutions({
@@ -15,6 +21,9 @@ Command.register('countWorkflows', async ({ getClient }) => {
   vscode.window.showInformationMessage(`Total workflows: ${result.count}`);
 });
 
+/**
+ * @summary Open workflow
+ */
 Command.register('openWorkflow', async ({ getClient, openUI }) => {
   try {
     const client = await getClient();

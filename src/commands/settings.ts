@@ -3,6 +3,9 @@ import { Command } from '$components/command';
 
 const settingsKey = 'temporal';
 
+/**
+ * @summary Open settings
+ */
 Command.register('openSettings', async () => {
   await vscode.commands.executeCommand(
     'workbench.action.openSettings',
@@ -23,11 +26,17 @@ const changeNamespace = (target: vscode.ConfigurationTarget) => async () => {
   }
 };
 
+/**
+ * @summary Change default namespace (User)
+ */
 Command.register(
   'changeDefaultNamespace.user',
   changeNamespace(vscode.ConfigurationTarget.Global),
 );
 
+/**
+ * @summary Change default namespace (Workspace)
+ */
 Command.register(
   'changeDefaultNamespace.workspace',
   changeNamespace(vscode.ConfigurationTarget.Workspace),

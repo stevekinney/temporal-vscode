@@ -1,6 +1,9 @@
 import * as vscode from 'vscode';
 import { Command } from '$components/command';
 
+/**
+ * @summary Show task queue
+ */
 Command.register('showTaskQueue', async ({ openUI }) => {
   try {
     const taskQueue = await vscode.window.showInputBox({
