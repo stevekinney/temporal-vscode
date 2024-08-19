@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import { Command } from '$components/command';
+import { select } from '$utilities/select';
 
 Command.register('viewWorkflows', ({ openUI }) => {
   return openUI('workflows');
@@ -19,31 +20,17 @@ Command.register('openWorkflow', async ({ getClient, openUI }) => {
     const client = await getClient();
     const namespace = client.options.namespace;
 
-    const workflows = await client.workflowService
-      .listWorkflowExecutions({ namespace })
-      .then((workflows) => workflows.executions);
-
-    if (!Array.isArray(workflows) || workflows.length === 0) {
-      vscode.window.showInformationMessage('No workflows found.');
-      return;
-    }
-
-    // Create a list of workflows to show in a dropdown
-    const listItems = workflows
-      .map((workflow) => String(workflow.execution?.workflowId))
-      .filter(Boolean);
-
-    const selectedWorkflowId = await vscode.window.showQuickPick(listItems, {
+    const selectedWorkflow = await select({
+      client,
+      name: 'workflow',
+      data: async (client) =>
+        client.workflowService
+          .listWorkflowExecutions({ namespace })
+          .then((response) => response.executions),
+      format: ({ execution }) =>
+        `${execution?.workflowId} / ${execution?.runId}`,
       placeHolder: 'Select a workflow to view',
     });
-
-    if (!selectedWorkflowId) {
-      return;
-    }
-
-    const selectedWorkflow = workflows.find(
-      (workflow: any) => workflow.execution.workflowId === selectedWorkflowId,
-    );
 
     if (!selectedWorkflow || !selectedWorkflow.execution) {
       vscode.window.showInformationMessage(

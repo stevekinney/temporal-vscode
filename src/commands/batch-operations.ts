@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import { Command } from '$components/command';
+import { select } from '$utilities/select';
 
 Command.register('viewBatchOperations', async ({ openUI }) => {
   return openUI('batch-operations');
@@ -9,37 +10,41 @@ Command.register('openBatchOperation', async ({ getClient, openUI }) => {
   const client = await getClient();
   const { namespace } = client.options;
 
-  const batchOperations = await client.workflowService
-    .listBatchOperations({ namespace })
-    .then((batchOperations) => batchOperations.operationInfo);
-
-  if (!Array.isArray(batchOperations) || batchOperations.length === 0) {
-    vscode.window.showInformationMessage('No batch operations found.');
-    return;
-  }
-
-  // Create a list of workflows to show in a dropdown
-  const listItems = batchOperations
-    .map((batchOperation) => String(batchOperation.jobId))
-    .filter(Boolean);
-
-  const selectedId = await vscode.window.showQuickPick(listItems, {
-    title: 'Batch Operations',
-    placeHolder: 'Select a batch operation to view',
+  const selected = await select({
+    client,
+    name: 'batch operation',
+    data: async (client) =>
+      client.workflowService
+        .listBatchOperations({ namespace })
+        .then((response) => response.operationInfo),
+    format: (operation) => String(operation.jobId),
+    placeHolder: 'Select a batch operation',
   });
 
-  if (!selectedId) {
-    return;
-  }
-
-  const selected = batchOperations.find(({ jobId }) => jobId === selectedId);
-
-  if (!selected || !selected.jobId) {
-    vscode.window.showInformationMessage(
-      'Could not access selected batch operation.',
-    );
-    return;
-  }
-
   openUI(`batch-operations/${selected.jobId}`);
+});
+
+Command.register('stopBatchOperation', async ({ getClient }) => {
+  const client = await getClient();
+  const { namespace } = client.options;
+
+  const selected = await select({
+    client,
+    name: 'batch operation',
+    data: async (client) =>
+      client.workflowService
+        .listBatchOperations({ namespace })
+        .then((response) => response.operationInfo),
+    format: (operation) => String(operation.jobId),
+    placeHolder: 'Select a batch operation to stop',
+  });
+
+  await client.workflowService.stopBatchOperation({
+    namespace,
+    jobId: selected.jobId,
+  });
+
+  vscode.window.showInformationMessage(
+    `Batch operation ${selected.jobId} has been stopped.`,
+  );
 });

@@ -1,5 +1,7 @@
 import * as vscode from 'vscode';
 import { Command } from '$components/command';
+import { TemporalClient } from '$utilities/create-client';
+import { select } from '$utilities/select';
 
 Command.register('viewSchedules', ({ openUI }) => {
   return openUI('schedules');
@@ -10,40 +12,24 @@ Command.register('openSchedule', async ({ getClient, openUI }) => {
     const client = await getClient();
     const { namespace } = client.options;
 
-    const schedules = await client.workflowService
-      .listSchedules({ namespace })
-      .then(({ schedules }) => schedules);
-
-    if (!Array.isArray(schedules) || schedules.length === 0) {
-      vscode.window.showInformationMessage('No schedules found.');
-      return;
-    }
-
-    // Create a list of workflows to show in a dropdown
-    const listItems = schedules
-      .map((schedule) => String(schedule.scheduleId))
-      .filter(Boolean);
-
-    const selectedId = await vscode.window.showQuickPick(listItems, {
+    const selectedItem = await select({
+      client,
+      name: 'schedule',
+      data: async (client) =>
+        client.workflowService
+          .listSchedules({ namespace })
+          .then((response) => response.schedules),
+      format: (schedule) => String(schedule.scheduleId),
       placeHolder: 'Select a schedule to view',
     });
 
-    if (!selectedId) {
-      return;
-    }
-
-    const selectedItem = schedules.find(
-      ({ scheduleId }) => scheduleId === selectedId,
-    );
-
-    if (!selectedItem || !selectedItem.scheduleId) {
+    if (selectedItem) {
+      openUI(`schedules/${selectedItem.scheduleId}`);
+    } else {
       vscode.window.showInformationMessage(
         'Could not access selected schedule.',
       );
-      return;
     }
-
-    openUI(`schedules/${selectedItem.scheduleId}`);
   } catch (error) {
     vscode.window.showErrorMessage((error as Error).message);
   }
@@ -54,47 +40,31 @@ Command.register('deleteSchedule', async ({ getClient }) => {
     const client = await getClient();
     const { namespace } = client.options;
 
-    const schedules = await client.workflowService
-      .listSchedules({ namespace })
-      .then(({ schedules }) => schedules);
-
-    if (!Array.isArray(schedules) || schedules.length === 0) {
-      vscode.window.showInformationMessage('No schedules found.');
-      return;
-    }
-
-    // Create a list of workflows to show in a dropdown
-    const listItems = schedules
-      .map((schedule) => String(schedule.scheduleId))
-      .filter(Boolean);
-
-    const selectedId = await vscode.window.showQuickPick(listItems, {
+    const selectedItem = await select({
+      client,
+      name: 'schedule',
+      data: async (client) =>
+        client.workflowService
+          .listSchedules({ namespace })
+          .then((response) => response.schedules),
+      format: (schedule) => String(schedule.scheduleId),
       placeHolder: 'Select a schedule to delete',
     });
 
-    if (!selectedId) {
-      return;
-    }
+    if (selectedItem) {
+      await client.workflowService.deleteSchedule({
+        namespace,
+        scheduleId: selectedItem.scheduleId,
+      });
 
-    const selectedItem = schedules.find(
-      ({ scheduleId }) => scheduleId === selectedId,
-    );
-
-    if (!selectedItem || !selectedItem.scheduleId) {
+      vscode.window.showInformationMessage(
+        `Schedule ${selectedItem.scheduleId} deleted.`,
+      );
+    } else {
       vscode.window.showInformationMessage(
         'Could not access selected schedule.',
       );
-      return;
     }
-
-    await client.workflowService.deleteSchedule({
-      namespace,
-      scheduleId: selectedItem.scheduleId,
-    });
-
-    vscode.window.showInformationMessage(
-      `Schedule ${selectedItem.scheduleId} deleted.`,
-    );
   } catch (error) {
     vscode.window.showErrorMessage((error as Error).message);
   }
