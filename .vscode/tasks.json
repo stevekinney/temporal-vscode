@@ -8,7 +8,6 @@
             "dependsOn": [
                 "npm: watch:tsc",
                 "npm: watch:esbuild",
-                "npm: watch:vite"
             ],
             "presentation": {
                 "reveal": "never"
@@ -25,17 +24,6 @@
             "problemMatcher": "$esbuild-watch",
             "isBackground": true,
             "label": "npm: watch:esbuild",
-            "presentation": {
-                "group": "watch",
-                "reveal": "never"
-            }
-        },
-        {
-            "type": "npm",
-            "script": "watch:vite",
-            "group": "build",
-            "isBackground": true,
-            "label": "npm: watch:vite",
             "presentation": {
                 "group": "watch",
                 "reveal": "never"
