@@ -7,100 +7,103 @@
   "engines": {
     "vscode": "^1.92.0"
   },
-  "categories": [
-    "Other"
-  ],
+  "categories": ["Other"],
   "main": "./dist/extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "temporal-vscode.viewWorkflows",
-        "title": "View Workflows",
-        "category": "Temporal"
-      },
-      {
-        "command": "temporal-vscode.openWorkflow",
-        "title": "Open Workflow",
-        "category": "Temporal"
-      },
-      {
-        "command": "temporal-vscode.countWorkflows",
-        "title": "Count Workflows",
-        "category": "Temporal"
-      },
-      {
-        "command": "temporal-vscode.startWorkflow",
-        "title": "Start Workflow",
-        "category": "Temporal"
-      },
-      {
-        "command": "temporal-vscode.viewSchedules",
-        "title": "View Schedules",
-        "category": "Temporal"
-      },
-      {
-        "command": "temporal-vscode.openSchedule",
-        "title": "Open Schedule",
-        "category": "Temporal"
-      },
-      {
-        "command": "temporal-vscode.deleteSchedule",
-        "title": "Delete Schedule",
-        "category": "Temporal"
-      },
-      {
-        "command": "temporal-vscode.viewBatchOperations",
-        "title": "View Batch Operations",
-        "category": "Temporal"
-      },
-      {
-        "command": "temporal-vscode.openBatchOperation",
-        "title": "Open Batch Operation",
-        "category": "Temporal"
-      },
-      {
-        "command": "temporal-vscode.showTaskQueue",
-        "title": "Show Task Queue",
-        "category": "Temporal"
-      },
-      {
-        "command": "temporal-vscode.startDevelopmentServer",
-        "title": "Start Development Server",
-        "category": "Temporal"
-      },
-      {
-        "command": "temporal-vscode.stopDevelopmentServer",
-        "title": "Stop Development Server",
-        "category": "Temporal"
-      },
-      {
-        "command": "temporal-vscode.openSettings",
-        "title": "Open Settings",
-        "category": "Temporal"
-      },
-      {
-        "command": "temporal-vscode.getSearchAttributes",
-        "title": "Get Search Attributes",
-        "category": "Temporal"
-      },
-      {
-        "command": "temporal-vscode.getSystemInfo",
-        "title": "Get System Information",
-        "category": "Temporal"
-      },
-      {
-        "command": "temporal-vscode.getClusterInfo",
-        "title": "Get Cluster Information",
-        "category": "Temporal"
-      },
-      {
         "command": "temporal-vscode.changeDefaultNamespace.user",
-        "title": "Change Default Namespace (User)",
+        "title": "Change default namespace (User)",
         "category": "Temporal"
       },
       {
         "command": "temporal-vscode.changeDefaultNamespace.workspace",
-        "title": "Change Default Namespace (Workspace)",
+        "title": "Change default namespace (Workspace)",
+        "category": "Temporal"
+      },
+      {
+        "command": "temporal-vscode.countWorkflows",
+        "title": "Count workflows",
+        "category": "Temporal"
+      },
+      {
+        "command": "temporal-vscode.deleteSchedule",
+        "title": "Delete schedule",
+        "category": "Temporal"
+      },
+      {
+        "command": "temporal-vscode.getClusterInfo",
+        "title": "Get cluster information",
+        "category": "Temporal"
+      },
+      {
+        "command": "temporal-vscode.getSearchAttributes",
+        "title": "List search attributes",
+        "category": "Temporal"
+      },
+      {
+        "command": "temporal-vscode.getSystemInfo",
+        "title": "Get system information",
+        "category": "Temporal"
+      },
+      {
+        "command": "temporal-vscode.openBatchOperation",
+        "title": "Open batch operation",
+        "category": "Temporal"
+      },
+      {
+        "command": "temporal-vscode.openSchedule",
+        "title": "Create schedule",
+        "category": "Temporal"
+      },
+      {
+        "command": "temporal-vscode.openSettings",
+        "title": "Open settings",
+        "category": "Temporal"
+      },
+      {
+        "command": "temporal-vscode.openWorkflow",
+        "title": "Open workflow",
+        "category": "Temporal"
+      },
+      {
+        "command": "temporal-vscode.showTaskQueue",
+        "title": "Show task queue",
+        "category": "Temporal"
+      },
+      {
+        "command": "temporal-vscode.startDevelopmentServer",
+        "title": "startDevelopmentServer",
+        "category": "Temporal"
+      },
+      {
+        "command": "temporal-vscode.startWorkflow",
+        "title": "Start workflow",
+        "category": "Temporal"
+      },
+      {
+        "command": "temporal-vscode.stopBatchOperation",
+        "title": "Stop batch operation",
+        "category": "Temporal"
+      },
+      {
+        "command": "temporal-vscode.stopDevelopmentServer",
+        "title": "stopDevelopmentServer",
+        "category": "Temporal"
+      },
+      {
+        "command": "temporal-vscode.viewBatchOperations",
+        "title": "View batch operations",
+        "category": "Temporal"
+      },
+      {
+        "command": "temporal-vscode.viewSchedules",
+        "title": "View schedules",
+        "category": "Temporal"
+      },
+      {
+        "command": "temporal-vscode.viewWorkflows",
+        "title": "View workflows",
         "category": "Temporal"
       }
     ],
@@ -156,12 +159,7 @@
         "temporal.commandLine.logLevel": {
           "title": "CLI Log Level",
           "type": "string",
-          "enum": [
-            "debug",
-            "info",
-            "warn",
-            "error"
-          ],
+          "enum": ["debug", "info", "warn", "error"],
           "default": "error",
           "description": "The log level to use for the Temporal CLI.",
           "order": 100

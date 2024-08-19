@@ -12,7 +12,11 @@ import { sentenceCase } from 'change-case';
 
 const extensionId = 'temporal-vscode';
 
-const pkg = JSON.parse(await readFile('package.json', 'utf-8'));
+const pkg = await readFile('package.json', 'utf-8').then(JSON.parse);
+const commands = await findCommands();
+
+await updatePackageJson(commands);
+await writeCommandTypes(commands);
 
 /**
  * @typedef {Object} Command
@@ -27,17 +31,17 @@ const pkg = JSON.parse(await readFile('package.json', 'utf-8'));
  * @param { import('prettier').BuiltInParserName } parser Which of Prettier's parsers to use.
  * @returns {Promise<string>}
  */
-const format = async (content, parser = 'typescript') => {
+async function format(content, parser = 'typescript') {
   const prettierOptions = (await prettier.resolveConfig('.prettierrc')) || {};
   return prettier.format(content, { ...prettierOptions, parser });
-};
+}
 
 /**
  * Extracts command and summary information from a TypeScript file.
  * @param {string} fileName - The path to the TypeScript file.
  * @returns {Promise<Command[]>} - An array of objects containing command and title.
  */
-const extractCommandAndSummary = async (fileName) => {
+async function extractCommandAndSummary(fileName) {
   const content = await readFile(fileName, 'utf-8');
 
   const sourceFile = createSourceFile(
@@ -91,21 +95,44 @@ const extractCommandAndSummary = async (fileName) => {
   visit(sourceFile);
 
   return result;
-};
+}
 
-const findCommands = async () => {
+async function findCommands() {
   const files = await fg('src/**/*.ts');
 
   const commands = await Promise.all(
     files.map(async (file) => extractCommandAndSummary(file)),
   );
 
-  return commands.flat();
-};
+  return commands.flat().sort((a, b) => a.command.localeCompare(b.command));
+}
 
-const commands = await findCommands();
+/**
+ * Updates the package.json file with the commands.
+ * @param {Command[]} commands - The commands to add to the package.json file.
+ */
+async function updatePackageJson(commands) {
+  pkg.contributes.commands = commands;
 
-pkg.contributes.commands = commands;
+  await writeFile(
+    'package.json',
+    await format(JSON.stringify(pkg, null, 2), 'json'),
+  );
+}
 
-console.log('Writing package.json…');
-writeFile('package.json', await format(JSON.stringify(pkg, null, 2)));
+/**
+ * Writes a TypeScript file with the command types.
+ * @param {Command[]} commands
+ */
+async function writeCommandTypes(commands) {
+  const content = `
+  // This file is generated. Do not edit.
+  // Run \`pnpm generate\` to update this file.
+
+  type CommandName = ${commands
+    .map((command) => `'${command.command.replace(`${extensionId}.`, '')}'`)
+    .join(' | ')};
+  `;
+
+  await writeFile('src/commands/commands.d.ts', await format(content));
+}

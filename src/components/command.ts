@@ -18,7 +18,7 @@ export class Command {
     return new Command(name, command);
   }
 
-  static execute(command: string) {
+  static execute(command: CommandName) {
     return vscode.commands.executeCommand(`${extensionId}.${command}`);
   }
 
