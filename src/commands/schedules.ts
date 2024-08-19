@@ -42,9 +42,7 @@ export const openSchedule: Command = async ({ getClient, openUI }) => {
       return;
     }
 
-    const { scheduleId } = selectedItem;
-
-    openUI(`schedules/${scheduleId}`);
+    openUI(`schedules/${selectedItem.scheduleId}`);
   } catch (error) {
     vscode.window.showErrorMessage((error as Error).message);
   }
