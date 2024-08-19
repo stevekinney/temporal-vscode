@@ -44,6 +44,11 @@
         "category": "Temporal"
       },
       {
+        "command": "temporal-vscode.deleteSchedule",
+        "title": "Delete Schedule",
+        "category": "Temporal"
+      },
+      {
         "command": "temporal-vscode.viewBatchOperations",
         "title": "View Batch Operations",
         "category": "Temporal"

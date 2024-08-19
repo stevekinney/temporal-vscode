@@ -9,8 +9,6 @@ export async function activate(context: vscode.ExtensionContext) {
   Terminal.context = context;
   Command.context = context;
 
-  console.log('Extension "temporal-vscode" is now active!');
-
   try {
     await Promise.all([
       import('./commands/workflows'),

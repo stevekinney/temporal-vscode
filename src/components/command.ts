@@ -34,6 +34,7 @@ export class Command {
       `${extensionId}.${name}`,
       async () => {
         const { createClient } = await import('$utilities/create-client');
+
         let client: TemporalClient | undefined = undefined;
 
         try {
