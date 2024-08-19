@@ -1,4 +1,5 @@
 import * as vscode from 'vscode';
+import { Command } from '$components/command';
 import { html, render, each } from '$utilities/html';
 
 let currentPanel: vscode.WebviewPanel | undefined = undefined;
@@ -14,7 +15,7 @@ const searchAttributeTypes = [
   'KeywordList',
 ];
 
-export const getSearchAttributes: Command = async ({ getClient, context }) => {
+Command.register('getSearchAttributes', async ({ getClient, context }) => {
   const client = await getClient();
   const { namespace } = client.options;
 
@@ -58,4 +59,4 @@ export const getSearchAttributes: Command = async ({ getClient, context }) => {
       context.subscriptions,
     );
   }
-};
+});

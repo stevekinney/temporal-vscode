@@ -1,19 +1,20 @@
 import * as vscode from 'vscode';
+import { Command } from '$components/command';
 
-export const viewWorkflows: Command = ({ openUI }) => {
+Command.register('viewWorkflows', ({ openUI }) => {
   return openUI('workflows');
-};
+});
 
-export const countWorkflows: Command = async ({ getClient }) => {
+Command.register('countWorkflows', async ({ getClient }) => {
   const client = await getClient();
   const result = await client.workflowService.countWorkflowExecutions({
     namespace: client.options.namespace,
   });
 
   vscode.window.showInformationMessage(`Total workflows: ${result.count}`);
-};
+});
 
-export const openWorkflow: Command = async ({ getClient, openUI }) => {
+Command.register('openWorkflow', async ({ getClient, openUI }) => {
   try {
     const client = await getClient();
     const namespace = client.options.namespace;
@@ -56,4 +57,4 @@ export const openWorkflow: Command = async ({ getClient, openUI }) => {
   } catch (error) {
     vscode.window.showErrorMessage((error as Error).message);
   }
-};
+});

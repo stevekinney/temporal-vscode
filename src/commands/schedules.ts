@@ -1,10 +1,11 @@
 import * as vscode from 'vscode';
+import { Command } from '$components/command';
 
-export const viewSchedules: Command = ({ openUI }) => {
+Command.register('viewSchedules', ({ openUI }) => {
   return openUI('schedules');
-};
+});
 
-export const openSchedule: Command = async ({ getClient, openUI }) => {
+Command.register('openSchedule', async ({ getClient, openUI }) => {
   try {
     const client = await getClient();
     const { namespace } = client.options;
@@ -46,4 +47,4 @@ export const openSchedule: Command = async ({ getClient, openUI }) => {
   } catch (error) {
     vscode.window.showErrorMessage((error as Error).message);
   }
-};
+});

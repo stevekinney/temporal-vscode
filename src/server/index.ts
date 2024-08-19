@@ -1,52 +1,20 @@
-import { window, type Terminal } from 'vscode';
-import { registerCommand } from '$register';
+import { window } from 'vscode';
 import { configuration } from '$utilities/configuration';
 import { isPortInUse } from './is-port-in-use';
 import { getServerCommand } from './server-options';
+import { Terminal } from '$components/terminal';
+import { Command } from '$components/command';
 
 let terminal: Terminal | undefined;
-
-const terminalName = 'Temporal Development Server';
-
-const createTerminal = () => {
-  return window.createTerminal(terminalName);
-};
-
-const findTerminal = () => {
-  return window.terminals.find((terminal) => terminal.name === terminalName);
-};
-
-export const onTerminalChanges = ({ context }: WithContext) => {
-  context.subscriptions.push(
-    window.onDidCloseTerminal((closedTerminal) => {
-      if (closedTerminal.name === terminalName) {
-        terminal = undefined;
-      }
-    }),
-  );
-
-  context.subscriptions.push(
-    window.onDidOpenTerminal((openedTerminal) => {
-      if (openedTerminal.name === terminalName) {
-        terminal = openedTerminal;
-      }
-    }),
-  );
-};
 
 export const temporalServer = {
   isRunning: isPortInUse,
 
   get terminal(): Terminal {
     if (!terminal) {
-      terminal = findTerminal() || createTerminal();
+      terminal = new Terminal('Temporal Server');
     }
-
     return terminal;
-  },
-
-  set terminal(value: Terminal | undefined) {
-    terminal = value;
   },
 
   async start(): Promise<void> {
@@ -61,8 +29,7 @@ export const temporalServer = {
 
     const command = getServerCommand();
 
-    this.terminal.sendText(command);
-    this.terminal.show();
+    this.terminal.sendText(command).show();
 
     window.showInformationMessage('Temporal server started.');
   },
@@ -77,20 +44,12 @@ export const temporalServer = {
       return;
     }
 
-    if (!this.terminal) {
-      window.showErrorMessage(
-        'No terminal found. Your Temporal server may be running outside of Visual Studio Code.',
-      );
-      return;
-    }
-
-    this.terminal.sendText('\x03');
+    this.terminal.sendCancellation();
     this.terminal.dispose();
-    this.terminal = undefined;
 
     window.showInformationMessage('Temporal server stopped.');
   },
 };
 
-export const startDevelopmentServer = () => temporalServer.start();
-export const stopDevelopmentServer = () => temporalServer.start();
+Command.register('startDevelopmentServer', () => temporalServer.start());
+Command.register('stopDevelopmentServer', () => temporalServer.stop());

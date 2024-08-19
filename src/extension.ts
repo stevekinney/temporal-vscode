@@ -1,42 +1,31 @@
 import * as vscode from 'vscode';
 
-import {
-  onTerminalChanges,
-  startDevelopmentServer,
-  stopDevelopmentServer,
-} from './server';
-
-import {
-  countWorkflows,
-  viewWorkflows,
-  openWorkflow,
-} from './commands/workflows';
-import { startWorkflow } from './commands/start-workflow';
-import { showTaskQueue } from './commands/task-queue';
-import { openSchedule, viewSchedules } from './commands/schedules';
-import { openBatchOperation } from './commands/batch-operations';
-import { getSearchAttributes } from './commands/search-attributes';
-import { getClusterInfo, getSystemInfo } from './commands/information';
-import { openSettings } from './commands/settings';
-import { registerCommand } from '$register';
+import { Webview } from '$components/webview';
+import { Terminal } from '$components/terminal';
+import { Command } from '$components/command';
 
 export async function activate(context: vscode.ExtensionContext) {
-  registerCommand(getSearchAttributes, { context });
-  registerCommand(startWorkflow, { context });
-  registerCommand(viewWorkflows, { context });
-  registerCommand(countWorkflows, { context });
-  registerCommand(openWorkflow, { context });
-  registerCommand(openBatchOperation, { context });
-  registerCommand(viewSchedules, { context });
-  registerCommand(openSchedule, { context });
-  registerCommand(showTaskQueue, { context });
-  registerCommand(startDevelopmentServer, { context });
-  registerCommand(stopDevelopmentServer, { context });
-  registerCommand(openSettings, { context });
-  registerCommand(getSystemInfo, { context });
-  registerCommand(getClusterInfo, { context });
+  Webview.context = context;
+  Terminal.context = context;
+  Command.context = context;
 
-  onTerminalChanges({ context });
+  console.log('Extension "temporal-vscode" is now active!');
+
+  try {
+    await Promise.all([
+      import('./commands/workflows'),
+      import('./commands/start-workflow'),
+      import('./commands/task-queue'),
+      import('./commands/schedules'),
+      import('./commands/batch-operations'),
+      import('./commands/search-attributes'),
+      import('./commands/information'),
+      import('./commands/settings'),
+      import('./server'),
+    ]);
+  } catch (error) {
+    vscode.window.showErrorMessage((error as Error).message);
+  }
 }
 
 export function deactivate() {}

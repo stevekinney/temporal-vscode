@@ -1,32 +1,10 @@
-import * as vscode from 'vscode';
 import { html, render } from '$utilities/html';
+import { Command } from '$components/command';
+import { Webview } from '$components/webview';
 
-let currentPanel: vscode.WebviewPanel | undefined = undefined;
+const webview = new Webview('startWorkflow', 'Start Workflow');
 
-const content = html`<h1>Start Workflow</h1>`;
-
-export const startWorkflow: Command = async ({ context }) => {
-  const columnToShowIn = vscode.window.activeTextEditor
-    ? vscode.window.activeTextEditor.viewColumn
-    : undefined;
-
-  if (currentPanel) {
-    currentPanel.reveal(columnToShowIn);
-    return;
-  } else {
-    currentPanel = vscode.window.createWebviewPanel(
-      'startWorkflow',
-      'Temporal: Start Workflow',
-      columnToShowIn || vscode.ViewColumn.One,
-      {},
-    );
-
-    currentPanel.webview.html = render(content);
-
-    currentPanel.onDidDispose(
-      () => (currentPanel = undefined),
-      null,
-      context.subscriptions,
-    );
-  }
-};
+Command.register('startWorkflow', async () => {
+  webview.content = html`<h2>Start Workflow</h2>`;
+  webview.show();
+});

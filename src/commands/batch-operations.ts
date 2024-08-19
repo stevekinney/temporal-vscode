@@ -1,10 +1,11 @@
 import * as vscode from 'vscode';
+import { Command } from '$components/command';
 
-export const viewBatchOperations: Command = async ({ openUI }) => {
+Command.register('viewBatchOperations', async ({ openUI }) => {
   return openUI('batch-operations');
-};
+});
 
-export const openBatchOperation: Command = async ({ getClient, openUI }) => {
+Command.register('openBatchOperation', async ({ getClient, openUI }) => {
   const client = await getClient();
   const { namespace } = client.options;
 
@@ -41,4 +42,4 @@ export const openBatchOperation: Command = async ({ getClient, openUI }) => {
   }
 
   openUI(`batch-operations/${selected.jobId}`);
-};
+});

@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
+import { Command } from '$components/command';
 
-export const showTaskQueue: Command = async ({ openUI }) => {
+Command.register('showTaskQueue', async ({ openUI }) => {
   try {
     const taskQueue = await vscode.window.showInputBox({
       placeHolder: 'Enter task queue name',
@@ -14,4 +15,4 @@ export const showTaskQueue: Command = async ({ openUI }) => {
   } catch (error) {
     vscode.window.showErrorMessage((error as Error).message);
   }
-};
+});
