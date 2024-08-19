@@ -16,20 +16,22 @@ const findTerminal = () => {
   return window.terminals.find((terminal) => terminal.name === terminalName);
 };
 
-export const onTerminalChanges = () => {
-  return [
+export const onTerminalChanges = ({ context }: WithContext) => {
+  context.subscriptions.push(
     window.onDidCloseTerminal((closedTerminal) => {
       if (closedTerminal.name === terminalName) {
         terminal = undefined;
       }
     }),
+  );
 
+  context.subscriptions.push(
     window.onDidOpenTerminal((openedTerminal) => {
       if (openedTerminal.name === terminalName) {
         terminal = openedTerminal;
       }
     }),
-  ];
+  );
 };
 
 export const temporalServer = {

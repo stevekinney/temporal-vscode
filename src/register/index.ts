@@ -3,14 +3,7 @@ import { CommandParameters } from './command-parameters';
 
 const extensionId = 'temporal-vscode';
 
-type RegisterCommandParameters = {
-  context: vscode.ExtensionContext;
-};
-
-export const registerCommand = (
-  command: Command,
-  { context }: RegisterCommandParameters,
-) => {
+export const registerCommand = (command: Command, { context }: WithContext) => {
   const fn = vscode.commands.registerCommand(
     `${extensionId}.${command.name}`,
     async () => {

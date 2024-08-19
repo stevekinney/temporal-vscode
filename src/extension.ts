@@ -36,7 +36,7 @@ export async function activate(context: vscode.ExtensionContext) {
   registerCommand(getSystemInfo, { context });
   registerCommand(getClusterInfo, { context });
 
-  context.subscriptions.push(...onTerminalChanges());
+  onTerminalChanges({ context });
 }
 
 export function deactivate() {}
