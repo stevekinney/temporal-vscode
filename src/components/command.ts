@@ -34,13 +34,23 @@ export class Command {
       `${extensionId}.${name}`,
       async () => {
         const { createClient } = await import('$utilities/create-client');
+        let client: TemporalClient | undefined = undefined;
 
         try {
           await command({
             context: this.context,
-            getClient: () => createClient(),
+            getClient: async () => {
+              client = client || (await createClient());
+              return client;
+            },
             openUI,
           });
+
+          // Close the connection when the command is done.
+          if (client !== undefined) {
+            (client as TemporalClient).connection.close();
+            client = undefined;
+          }
         } catch (error) {
           vscode.window.showErrorMessage((error as Error).message);
         }
