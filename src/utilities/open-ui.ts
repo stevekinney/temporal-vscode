@@ -6,22 +6,8 @@ type Options = {
   namespace?: string;
 };
 
-type Route = {
-  namespaces: `namespaces`;
-  namespace: `${Route['namespaces']}/${string}`;
-  taskQueue: `task-queues/${string}`;
-  workflows: `workflows`;
-  workflow:
-    | `${Route['workflows']}/${string}`
-    | `${Route['workflows']}/${string}/${string}`;
-  'batch-operations': `batch-operations`;
-  'batch-operation': `${Route['batch-operations']}/${string}`;
-  schedules: `schedules`;
-  schedule: `${Route['schedules']}/${string}`;
-};
-
-export async function openUI<R extends keyof Route>(
-  path: Route[R] | undefined = undefined,
+export async function openUI<R extends keyof UIRoute>(
+  path: UIRoute[R] | undefined = undefined,
   {
     base = Uri.parse(configuration.ui.href),
     namespace = configuration.namespace,
