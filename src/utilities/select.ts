@@ -22,6 +22,11 @@ export const select = async <T, F extends string>({
 
   const listItems = items.map(format);
   const selectedId = await vscode.window.showQuickPick(listItems, options);
+
+  if (!selectedId) {
+    new Error(`User Aborted: No ${name} selected.`);
+  }
+
   const selectedItem = items.find((item) => format(item) === selectedId);
 
   if (!selectedItem) {

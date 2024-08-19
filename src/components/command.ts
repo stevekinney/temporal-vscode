@@ -14,7 +14,6 @@ export class Command {
   static context: vscode.ExtensionContext;
 
   static register(name: string, command: ExtensionCommand) {
-    console.log('Command.register', name);
     return new Command(name, command);
   }
 
@@ -53,7 +52,18 @@ export class Command {
             client = undefined;
           }
         } catch (error) {
-          vscode.window.showErrorMessage((error as Error).message);
+          // Close the connection when the command fails.
+          if (client !== undefined) {
+            (client as TemporalClient).connection.close();
+            client = undefined;
+          }
+
+          if (error instanceof Error) {
+            // Ignore user errors.
+            if (!error.message.startsWith('User')) {
+              vscode.window.showErrorMessage(error.message);
+            }
+          }
         }
       },
     );

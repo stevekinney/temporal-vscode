@@ -37,7 +37,7 @@ Command.register('openWorkflow', async ({ getClient, openUI }) => {
           .listWorkflowExecutions({ namespace })
           .then((response) => response.executions),
       format: ({ execution }) =>
-        `${execution?.workflowId} / ${execution?.runId}`,
+        `${execution?.workflowId} (Run ID: ${execution?.runId})`,
       placeHolder: 'Select a workflow to view',
     });
 
