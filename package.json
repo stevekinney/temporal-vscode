@@ -7,9 +7,7 @@
   "engines": {
     "vscode": "^1.92.0"
   },
-  "categories": [
-    "Other"
-  ],
+  "categories": ["Other"],
   "main": "./dist/extension.js",
   "contributes": {
     "commands": [
@@ -99,8 +97,43 @@
         "category": "Temporal"
       },
       {
+        "command": "temporal-vscode.viewCanceledWorkflows",
+        "title": "View canceled workflows",
+        "category": "Temporal"
+      },
+      {
+        "command": "temporal-vscode.viewCompletedWorkflows",
+        "title": "View completed workflows",
+        "category": "Temporal"
+      },
+      {
+        "command": "temporal-vscode.viewContinuedAsNewWorkflows",
+        "title": "View continued as new workflows",
+        "category": "Temporal"
+      },
+      {
+        "command": "temporal-vscode.viewFailedWorkflows",
+        "title": "View failed workflows",
+        "category": "Temporal"
+      },
+      {
+        "command": "temporal-vscode.viewRunningWorkflows",
+        "title": "View running workflows",
+        "category": "Temporal"
+      },
+      {
         "command": "temporal-vscode.viewSchedules",
         "title": "View schedules",
+        "category": "Temporal"
+      },
+      {
+        "command": "temporal-vscode.viewTerminatedWorkflows",
+        "title": "View terminated workflows",
+        "category": "Temporal"
+      },
+      {
+        "command": "temporal-vscode.viewTimedOutWorkflows",
+        "title": "View timed out workflows",
         "category": "Temporal"
       },
       {
@@ -161,12 +194,7 @@
         "temporal.commandLine.logLevel": {
           "title": "CLI Log Level",
           "type": "string",
-          "enum": [
-            "debug",
-            "info",
-            "warn",
-            "error"
-          ],
+          "enum": ["debug", "info", "warn", "error"],
           "default": "error",
           "description": "The log level to use for the Temporal CLI.",
           "order": 100

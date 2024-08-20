@@ -4,6 +4,7 @@ import { configuration } from './configuration';
 type Options = {
   base?: Uri;
   namespace?: string;
+  query?: Record<string, string>;
 };
 
 export async function openUI<R extends keyof UIRoute>(
@@ -11,8 +12,16 @@ export async function openUI<R extends keyof UIRoute>(
   {
     base = Uri.parse(configuration.ui.href),
     namespace = configuration.namespace,
+    query = {},
   }: Options = {},
 ) {
-  const uri = Uri.joinPath(base, 'namespaces', namespace, path ?? '');
+  const queryString = new URLSearchParams(query).toString();
+
+  let uri = Uri.joinPath(base, 'namespaces', namespace, path ?? '');
+
+  if (Object.keys(query).length && queryString) {
+    uri = uri.with({ query: queryString });
+  }
+
   env.openExternal(uri);
 }

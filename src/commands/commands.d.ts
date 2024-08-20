@@ -19,5 +19,12 @@ type CommandName =
   | 'stopBatchOperation'
   | 'stopDevelopmentServer'
   | 'viewBatchOperations'
+  | 'viewCanceledWorkflows'
+  | 'viewCompletedWorkflows'
+  | 'viewContinuedAsNewWorkflows'
+  | 'viewFailedWorkflows'
+  | 'viewRunningWorkflows'
   | 'viewSchedules'
+  | 'viewTerminatedWorkflows'
+  | 'viewTimedOutWorkflows'
   | 'viewWorkflows';

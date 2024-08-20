@@ -16,6 +16,7 @@
       "$utilities/*": ["./src/utilities/*"],
       "$commands/*": ["./src/commands/*"],
       "$components/*": ["./src/components/*"],
+      "$data/*": ["./src/data/*"],
     }
   },
   "include": ["src/**/*.d.ts", "src/**/*.ts"],
