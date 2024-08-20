@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import pluralize from 'pluralize';
-import type { TemporalClient } from './create-client';
+import type { TemporalClient } from './client';
 
 export const select = async <T, F extends string>({
   client,

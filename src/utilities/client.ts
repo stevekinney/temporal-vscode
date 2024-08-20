@@ -4,8 +4,12 @@ import { configuration } from './configuration';
 import { temporalServer } from '../server';
 
 export type TemporalClient = Client;
+export type CreateClient = () => Promise<TemporalClient>;
+export type WithClient = (
+  fn: (client: TemporalClient) => Promise<void> | void,
+) => void;
 
-export const createClient = async (): Promise<Client> => {
+export const createClient: CreateClient = async () => {
   try {
     const serverRunning = await temporalServer.isRunning();
 
@@ -33,5 +37,15 @@ export const createClient = async (): Promise<Client> => {
     return client;
   } catch (error) {
     throw new Error('Could not connect to Temporal server.');
+  }
+};
+
+export const withClient: WithClient = async (fn) => {
+  const client = await createClient();
+
+  try {
+    await fn(client);
+  } finally {
+    client.connection.close();
   }
 };
