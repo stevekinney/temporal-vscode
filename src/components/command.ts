@@ -1,5 +1,9 @@
 import * as vscode from 'vscode';
-import { type TemporalClient } from '$utilities/create-client';
+import type {
+  TemporalClient,
+  CreateClient,
+  WithClient,
+} from '$utilities/client';
 import { openUI } from '$utilities/open-ui';
 
 const extensionId = 'temporal-vscode';
@@ -7,7 +11,8 @@ const extensionId = 'temporal-vscode';
 type ExtensionCommand = (parameters: {
   openUI: typeof openUI;
   context: vscode.ExtensionContext;
-  getClient: () => Promise<TemporalClient>;
+  getClient: CreateClient;
+  withClient: WithClient;
 }) => Promise<void> | void;
 
 export class Command {
@@ -21,6 +26,10 @@ export class Command {
     return vscode.commands.executeCommand(`${extensionId}.${command}`);
   }
 
+  static getCommand(name: CommandName): `${typeof extensionId}.${CommandName}` {
+    return `${extensionId}.${name}`;
+  }
+
   private constructor(
     public readonly name: string,
     public readonly command: ExtensionCommand,
@@ -32,7 +41,7 @@ export class Command {
     const fn = vscode.commands.registerCommand(
       `${extensionId}.${name}`,
       async () => {
-        const { createClient } = await import('$utilities/create-client');
+        const { createClient, withClient } = await import('$utilities/client');
 
         let client: TemporalClient | undefined = undefined;
 
@@ -43,6 +52,7 @@ export class Command {
               client = client || (await createClient());
               return client;
             },
+            withClient,
             openUI,
           });
 
