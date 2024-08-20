@@ -3,11 +3,13 @@ import * as vscode from 'vscode';
 import { Webview } from '$components/webview';
 import { Terminal } from '$components/terminal';
 import { Command } from '$components/command';
+import { StatusBarItem } from '$components/status-bar-item';
 
 export async function activate(context: vscode.ExtensionContext) {
   Webview.context = context;
   Terminal.context = context;
   Command.context = context;
+  StatusBarItem.context = context;
 
   try {
     await Promise.all([
