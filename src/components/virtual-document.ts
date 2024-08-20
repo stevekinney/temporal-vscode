@@ -6,7 +6,7 @@ class VirtualJsonDocumentProvider
 {
   private _onDidChange = new vscode.EventEmitter<vscode.Uri>();
 
-  constructor(scheme: string = VirtualJsonDocument.scheme) {
+  constructor(scheme: string = ApiResponse.scheme) {
     vscode.workspace.registerTextDocumentContentProvider(scheme, this);
   }
 
@@ -33,10 +33,10 @@ class VirtualJsonDocumentProvider
 /**
  * Creates a virtual document with the JSON content of the specified API route.
  */
-export class VirtualJsonDocument {
+export class ApiResponse {
   static scheme = 'temporal';
   static provider: VirtualJsonDocumentProvider =
-    new VirtualJsonDocumentProvider(VirtualJsonDocument.scheme);
+    new VirtualJsonDocumentProvider(ApiResponse.scheme);
 
   /**
    * Show a virtual JSON document.
@@ -48,7 +48,7 @@ export class VirtualJsonDocument {
    * ```
    */
   static show(uri: APIRoute[keyof APIRoute]) {
-    const document = new VirtualJsonDocument(uri);
+    const document = new ApiResponse(uri);
     document.show();
     return document;
   }
@@ -73,7 +73,7 @@ export class VirtualJsonDocument {
 
     if (existingDocument) {
       // Refresh the document content if it's already open
-      VirtualJsonDocument.provider.update(uri);
+      ApiResponse.provider.update(uri);
     } else {
       // Open the document if it's not already open
       const document = await vscode.workspace.openTextDocument(uri);
@@ -84,7 +84,7 @@ export class VirtualJsonDocument {
 
   get uri() {
     return vscode.Uri.parse(
-      `${VirtualJsonDocument.scheme}://${configuration.ui.host}/api/v1/${this._uri}`,
+      `${ApiResponse.scheme}://${configuration.ui.host}/api/v1/${this._uri}`,
     );
   }
 }
