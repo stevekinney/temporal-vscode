@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import { Command } from '$components/command';
-import { TemporalClient } from '$utilities/create-client';
+import { TemporalClient } from '$utilities/client';
 import { select } from '$utilities/select';
 
 /**
@@ -26,16 +26,11 @@ Command.register('openSchedule', async ({ getClient, openUI }) => {
           .listSchedules({ namespace })
           .then((response) => response.schedules),
       format: (schedule) => String(schedule.scheduleId),
+      title: 'Open Schedule',
       placeHolder: 'Select a schedule to view',
     });
 
-    if (selectedItem) {
-      openUI(`schedules/${selectedItem.scheduleId}`);
-    } else {
-      vscode.window.showInformationMessage(
-        'Could not access selected schedule.',
-      );
-    }
+    openUI(`schedules/${selectedItem.scheduleId}`);
   } catch (error) {
     vscode.window.showErrorMessage((error as Error).message);
   }
@@ -57,23 +52,18 @@ Command.register('deleteSchedule', async ({ getClient }) => {
           .listSchedules({ namespace })
           .then((response) => response.schedules),
       format: (schedule) => String(schedule.scheduleId),
+      title: 'Delete Schedule',
       placeHolder: 'Select a schedule to delete',
     });
 
-    if (selectedItem) {
-      await client.workflowService.deleteSchedule({
-        namespace,
-        scheduleId: selectedItem.scheduleId,
-      });
+    await client.workflowService.deleteSchedule({
+      namespace,
+      scheduleId: selectedItem.scheduleId,
+    });
 
-      vscode.window.showInformationMessage(
-        `Schedule ${selectedItem.scheduleId} deleted.`,
-      );
-    } else {
-      vscode.window.showInformationMessage(
-        'Could not access selected schedule.',
-      );
-    }
+    vscode.window.showInformationMessage(
+      `Schedule ${selectedItem.scheduleId} deleted.`,
+    );
   } catch (error) {
     vscode.window.showErrorMessage((error as Error).message);
   }

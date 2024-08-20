@@ -24,6 +24,7 @@ Command.register('openBatchOperation', async ({ getClient, openUI }) => {
         .listBatchOperations({ namespace })
         .then((response) => response.operationInfo),
     format: (operation) => String(operation.jobId),
+    title: 'Open Batch Operation',
     placeHolder: 'Select a batch operation',
   });
 
@@ -45,6 +46,7 @@ Command.register('stopBatchOperation', async ({ getClient }) => {
         .listBatchOperations({ namespace })
         .then((response) => response.operationInfo),
     format: (operation) => String(operation.jobId),
+    title: 'Stop Batch Operation',
     placeHolder: 'Select a batch operation to stop',
   });
 
