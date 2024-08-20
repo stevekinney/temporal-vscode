@@ -69,8 +69,6 @@ export class ApiResponse {
       (doc) => doc.uri.toString() === uri.toString(),
     );
 
-    console.log({ existingDocument });
-
     if (existingDocument) {
       // Refresh the document content if it's already open
       ApiResponse.provider.update(uri);

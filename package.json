@@ -7,10 +7,37 @@
   "engines": {
     "vscode": "^1.92.0"
   },
-  "categories": ["Other"],
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": ["*"],
   "main": "./dist/extension.js",
   "contributes": {
+    "chatParticipants": [
+			{
+				"id": "temporal-vscode.chat",
+				"fullName": "Cat",
+				"name": "cat",
+				"description": "Meow! What can I teach you?",
+				"isSticky": true,
+				"commands": [
+					{
+						"name": "randomTeach",
+						"description": "Pick at random a computer science concept then explain it in purfect way of a cat"
+					},
+					{
+						"name": "play",
+						"description": "Do whatever you want, you are a cat after all"
+					}
+				]
+			}
+		],
     "commands": [
+      {
+        "command": "temporal-vscode.changeDefaultNamespace",
+        "title": "Change default namespace",
+        "category": "Temporal"
+      },
       {
         "command": "temporal-vscode.changeDefaultNamespace.user",
         "title": "Change default namespace (User)",
@@ -194,7 +221,12 @@
         "temporal.commandLine.logLevel": {
           "title": "CLI Log Level",
           "type": "string",
-          "enum": ["debug", "info", "warn", "error"],
+          "enum": [
+            "debug",
+            "info",
+            "warn",
+            "error"
+          ],
           "default": "error",
           "description": "The log level to use for the Temporal CLI.",
           "order": 100
@@ -226,6 +258,7 @@
     "@types/vscode": "^1.92.0",
     "@typescript-eslint/eslint-plugin": "^7.14.1",
     "@typescript-eslint/parser": "^7.11.0",
+    "@vscode/prompt-tsx": "0.2.6-alpha",
     "@vscode/test-cli": "^0.0.9",
     "@vscode/test-electron": "^2.4.0",
     "change-case": "^5.4.4",
