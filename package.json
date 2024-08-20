@@ -73,7 +73,7 @@
       },
       {
         "command": "temporal-vscode.startDevelopmentServer",
-        "title": "startDevelopmentServer",
+        "title": "Start development server",
         "category": "Temporal"
       },
       {
@@ -88,7 +88,7 @@
       },
       {
         "command": "temporal-vscode.stopDevelopmentServer",
-        "title": "stopDevelopmentServer",
+        "title": "Stop development server",
         "category": "Temporal"
       },
       {

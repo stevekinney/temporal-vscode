@@ -51,8 +51,8 @@ export const temporalServer = {
   },
 };
 
-/** @summary startDevelopmentServer */
+/** @summary Start development server */
 Command.register('startDevelopmentServer', () => temporalServer.start());
 
-/** @summary stopDevelopmentServer */
+/** @summary Stop development server */
 Command.register('stopDevelopmentServer', () => temporalServer.stop());
