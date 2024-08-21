@@ -1,11 +1,22 @@
-import { renderPrompt } from '@vscode/prompt-tsx';
 import * as vscode from 'vscode';
-import { PlayPrompt } from './play';
 
-const CAT_NAMES_COMMAND_ID = 'cat.namesInEditor';
-const CAT_PARTICIPANT_ID = 'temporal-vscode.chat';
+import { toCommandName } from '$utilities/to-command-name';
+import searchAttributes from './search-attributes.json';
 
-interface ICatChatResult extends vscode.ChatResult {
+const executionStatuses = [
+  'Running',
+  'Completed',
+  'Failed',
+  'Canceled',
+  'Terminated',
+  'ContinuedAsNew',
+  'TimedOut',
+];
+
+const CAT_NAMES_COMMAND_ID = 'temporal-vscode.namesInEditor';
+const participantID = 'temporal-vscode.chat';
+
+interface ChatResult extends vscode.ChatResult {
   metadata: {
     command: string;
   };
@@ -18,31 +29,32 @@ const MODEL_SELECTOR: vscode.LanguageModelChatSelector = {
 };
 
 export function createChat(context: vscode.ExtensionContext) {
-  // Define a Cat chat handler.
   const handler: vscode.ChatRequestHandler = async (
     request: vscode.ChatRequest,
-    context: vscode.ChatContext,
+    _context: vscode.ChatContext,
     stream: vscode.ChatResponseStream,
     token: vscode.CancellationToken,
-  ): Promise<ICatChatResult> => {
-    // To talk to an LLM in your subcommand handler implementation, your
-    // extension can use VS Code's `requestChatAccess` API to access the Copilot API.
-    // The GitHub Copilot Chat extension implements this provider.
-    if (request.command === 'randomTeach') {
-      stream.progress('Picking the right topic to teach...');
-      const topic = getTopic(context.history);
+  ): Promise<ChatResult> => {
+    if (request.command === 'query') {
       try {
-        // To get a list of all available models, do not pass any selector to the selectChatModels.
         const [model] = await vscode.lm.selectChatModels(MODEL_SELECTOR);
+
         if (model) {
           const messages = [
             vscode.LanguageModelChatMessage.User(
-              'You are a cat! Your job is to explain computer science concepts in the funny manner of a cat. Always start your response by stating what concept you are explaining. Always include code samples.',
+              "You are tasked with generating SQL-like queries for Temporal's Visibility API, which is used to filter and retrieve Workflow Executions from the Visibility Store. Each query must be constructed using Search Attributes—both default and custom—and should incorporate the appropriate operators (e.g., =, !=, >, AND, OR) to meet specific filtering criteria. The queries must respect the case sensitivity of Search Attribute names and adhere to Temporal's required datetime formats (e.g., RFC3339Nano). Avoid using shorthand time calculations like 'now - 6d', and instead use explicit datetime strings. Additionally, consider the limitations and best practices for efficient API usage, such as handling large result sets with pagination and using the CountWorkflow API for counting executions.",
             ),
-            vscode.LanguageModelChatMessage.User(topic),
+            vscode.LanguageModelChatMessage.User(
+              `The following are valid Search Attributes that you can use in your query: ${JSON.stringify(searchAttributes)} and ExecutionStatus can be any of the following: ${executionStatuses.join(', ')}.`,
+            ),
+            vscode.LanguageModelChatMessage.User(
+              'Your response should just be the SQL-like syntax for the query. Do not include any code, but you may explain what the query is doing. Be sure to include the appropriate operators and Search Attributes to meet the filtering criteria.',
+            ),
+            vscode.LanguageModelChatMessage.User(request.prompt),
           ];
 
           const chatResponse = await model.sendRequest(messages, {}, token);
+
           for await (const fragment of chatResponse.text) {
             stream.markdown(fragment);
           }
@@ -52,86 +64,50 @@ export function createChat(context: vscode.ExtensionContext) {
       }
 
       stream.button({
-        command: CAT_NAMES_COMMAND_ID,
-        title: vscode.l10n.t('Use Cat Names in Editor'),
+        command: toCommandName('viewWorkflowsWithQuery'),
+        title: 'Query Workflows',
       });
 
-      logger.logUsage('request', { kind: 'randomTeach' });
-      return { metadata: { command: 'randomTeach' } };
-    } else if (request.command === 'play') {
-      stream.progress(
-        'Throwing away the computer science books and preparing to play with some Python code...',
+      stream.anchor(
+        vscode.Uri.parse('https://docs.temporal.io/docs/visibility'),
+        "Temporal's Visibility API documentation",
       );
-      try {
-        const [model] = await vscode.lm.selectChatModels(MODEL_SELECTOR);
-        if (model) {
-          // Here's an example of how to use the prompt-tsx library to build a prompt
-          const { messages } = await renderPrompt(
-            PlayPrompt,
-            { userQuery: request.prompt },
-            { modelMaxPromptTokens: model.maxInputTokens },
-            model,
-          );
 
-          const chatResponse = await model.sendRequest(messages, {}, token);
-          for await (const fragment of chatResponse.text) {
-            stream.markdown(fragment);
-          }
-        }
-      } catch (err) {
-        handleError(logger, err, stream);
-      }
-
-      logger.logUsage('request', { kind: 'play' });
-      return { metadata: { command: 'play' } };
-    } else {
-      try {
-        const [model] = await vscode.lm.selectChatModels(MODEL_SELECTOR);
-        if (model) {
-          const messages = [
-            vscode.LanguageModelChatMessage
-              .User(`You are a cat! Think carefully and step by step like a cat would.
-                            Your job is to explain computer science concepts in the funny manner of a cat, using cat metaphors. Always start your response by stating what concept you are explaining. Always include code samples.`),
-            vscode.LanguageModelChatMessage.User(request.prompt),
-          ];
-
-          const chatResponse = await model.sendRequest(messages, {}, token);
-          for await (const fragment of chatResponse.text) {
-            // Process the output from the language model
-            // Replace all python function definitions with cat sounds to make the user stop looking at the code and start playing with the cat
-            const catFragment = fragment.replaceAll('def', 'meow');
-            stream.markdown(catFragment);
-          }
-        }
-      } catch (err) {
-        handleError(logger, err, stream);
-      }
-
-      logger.logUsage('request', { kind: '' });
-      return { metadata: { command: '' } };
+      logger.logUsage('request', { kind: 'query' });
+      return { metadata: { command: 'query' } };
     }
+
+    try {
+      const [model] = await vscode.lm.selectChatModels(MODEL_SELECTOR);
+
+      if (model) {
+        const messages = [
+          vscode.LanguageModelChatMessage.User(
+            `You are an expert in Temporal, a powerful open-source workflow orchestration engine. Your role involves providing detailed, accurate, and context-specific guidance on all aspects of Temporal's architecture, APIs, and usage patterns. You are adept at explaining Temporal's core concepts, such as Workflows, Activities, and the Temporal Server, as well as more advanced features like Continue-As-New, Cron Workflows, and custom Search Attributes. You are familiar with the nuances of Temporal's SQL-like Visibility API, including the construction of List Filters, handling of Search Attributes, and best practices for efficient data retrieval. You understand Temporal's support for various databases (e.g., Elasticsearch, MySQL, PostgreSQL) and how this impacts workflow visibility and custom Search Attributes. You can guide users in configuring, deploying, and optimizing Temporal in production environments, ensuring high performance and reliability. Your expertise extends to security practices, data consistency, and troubleshooting common issues within Temporal's ecosystem. You are prepared to answer a wide range of queries, from basic 'how-tos' to complex use cases involving multi-service business processes, and you can provide examples of best practices, real-world applications, and advanced configuration scenarios. Additionally, you stay up-to-date with the latest developments in Temporal, including new features, updates, and community practices.When generating responses, you will focus on clarity, accuracy, and actionable advice, tailoring your answers to the specific needs and contexts provided by users. Whether guiding through the construction of advanced List Filters or advising on the architecture of a Temporal-based solution, your responses will be informed, precise, and aligned with Temporal’s best practices and current capabilities.`,
+          ),
+          vscode.LanguageModelChatMessage.User(request.prompt),
+        ];
+
+        const chatResponse = await model.sendRequest(messages, {}, token);
+
+        for await (const fragment of chatResponse.text) {
+          stream.markdown(fragment);
+        }
+      }
+    } catch (err) {
+      handleError(logger, err, stream);
+    }
+
+    logger.logUsage('request', { kind: '' });
+    return { metadata: { command: '' } };
   };
 
-  // Chat participants appear as top-level options in the chat input
-  // when you type `@`, and can contribute sub-commands in the chat input
-  // that appear when you type `/`.
-  const cat = vscode.chat.createChatParticipant(CAT_PARTICIPANT_ID, handler);
-  cat.iconPath = vscode.Uri.joinPath(context.extensionUri, 'cat.jpeg');
-  cat.followupProvider = {
-    provideFollowups(
-      result: ICatChatResult,
-      context: vscode.ChatContext,
-      token: vscode.CancellationToken,
-    ) {
-      return [
-        {
-          prompt: 'let us play',
-          label: vscode.l10n.t('Play with the cat'),
-          command: 'play',
-        } satisfies vscode.ChatFollowup,
-      ];
-    },
-  };
+  const trudi = vscode.chat.createChatParticipant(participantID, handler);
+
+  trudi.iconPath = vscode.Uri.joinPath(
+    context.extensionUri,
+    'assets/trudi.jpg',
+  );
 
   const logger = vscode.env.createTelemetryLogger({
     sendEventData(eventName, data) {
@@ -147,7 +123,7 @@ export function createChat(context: vscode.ExtensionContext) {
   });
 
   context.subscriptions.push(
-    cat.onDidReceiveFeedback((feedback: vscode.ChatResultFeedback) => {
+    trudi.onDidReceiveFeedback((feedback: vscode.ChatResultFeedback) => {
       // Log chat result feedback to be able to compute the success matric of the participant
       // unhelpful / totalRequests is a good success metric
       logger.logUsage('chatResultFeedback', {
@@ -156,87 +132,7 @@ export function createChat(context: vscode.ExtensionContext) {
     }),
   );
 
-  context.subscriptions.push(
-    cat,
-    // Register the command handler for the /meow followup
-    vscode.commands.registerTextEditorCommand(
-      CAT_NAMES_COMMAND_ID,
-      async (textEditor: vscode.TextEditor) => {
-        // Replace all variables in active editor with cat names and words
-        const text = textEditor.document.getText();
-
-        let chatResponse: vscode.LanguageModelChatResponse | undefined;
-        try {
-          const [model] = await vscode.lm.selectChatModels(MODEL_SELECTOR);
-          if (!model) {
-            console.log(
-              'Model not found. Please make sure the GitHub Copilot Chat extension is installed and enabled.',
-            );
-            return;
-          }
-
-          const messages = [
-            vscode.LanguageModelChatMessage
-              .User(`You are a cat! Think carefully and step by step like a cat would.
-                    Your job is to replace all variable names in the following code with funny cat variable names. Be creative. IMPORTANT respond just with code. Do not use markdown!`),
-            vscode.LanguageModelChatMessage.User(text),
-          ];
-          chatResponse = await model.sendRequest(
-            messages,
-            {},
-            new vscode.CancellationTokenSource().token,
-          );
-        } catch (err) {
-          if (err instanceof vscode.LanguageModelError) {
-            console.log(err.message, err.code, err.cause);
-          } else {
-            throw err;
-          }
-          return;
-        }
-
-        // Clear the editor content before inserting new content
-        await textEditor.edit((edit) => {
-          const start = new vscode.Position(0, 0);
-          const end = new vscode.Position(
-            textEditor.document.lineCount - 1,
-            textEditor.document.lineAt(
-              textEditor.document.lineCount - 1,
-            ).text.length,
-          );
-          edit.delete(new vscode.Range(start, end));
-        });
-
-        // Stream the code into the editor as it is coming in from the Language Model
-        try {
-          for await (const fragment of chatResponse.text) {
-            await textEditor.edit((edit) => {
-              const lastLine = textEditor.document.lineAt(
-                textEditor.document.lineCount - 1,
-              );
-              const position = new vscode.Position(
-                lastLine.lineNumber,
-                lastLine.text.length,
-              );
-              edit.insert(position, fragment);
-            });
-          }
-        } catch (err) {
-          // async response stream may fail, e.g network interruption or server side error
-          await textEditor.edit((edit) => {
-            const lastLine = textEditor.document.lineAt(
-              textEditor.document.lineCount - 1,
-            );
-            const position = new vscode.Position(
-              lastLine.lineNumber,
-              lastLine.text.length,
-            );
-            edit.insert(position, (<Error>err).message);
-          });
-        }
-      },
-    ),
-  );
+  context.subscriptions.push(trudi);
 }
 
 function handleError(
@@ -264,35 +160,3 @@ function handleError(
     throw err;
   }
 }
-
-// Get a random topic that the cat has not taught in the chat history yet
-function getTopic(
-  history: ReadonlyArray<vscode.ChatRequestTurn | vscode.ChatResponseTurn>,
-): string {
-  const topics = ['linked list', 'recursion', 'stack', 'queue', 'pointers'];
-  // Filter the chat history to get only the responses from the cat
-  const previousCatResponses = history.filter((h) => {
-    return (
-      h instanceof vscode.ChatResponseTurn &&
-      h.participant === CAT_PARTICIPANT_ID
-    );
-  }) as vscode.ChatResponseTurn[];
-  // Filter the topics to get only the topics that have not been taught by the cat yet
-  const topicsNoRepetition = topics.filter((topic) => {
-    return !previousCatResponses.some((catResponse) => {
-      return catResponse.response.some((r) => {
-        return (
-          r instanceof vscode.ChatResponseMarkdownPart &&
-          r.value.value.includes(topic)
-        );
-      });
-    });
-  });
-
-  return (
-    topicsNoRepetition[Math.floor(Math.random() * topicsNoRepetition.length)] ||
-    'I have taught you everything I know. Meow!'
-  );
-}
-
-export function deactivate() {}

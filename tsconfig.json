@@ -13,8 +13,8 @@
     "noUnusedParameters": true,
     "skipLibCheck": true,
     "jsx": "react",
-		"jsxFactory": "vscpp",
-		"jsxFragmentFactory": "vscppf",
+    "jsxFactory": "vscpp",
+    "jsxFragmentFactory": "vscppf",
     "paths": {
       "$utilities/*": ["./src/utilities/*"],
       "$commands/*": ["./src/commands/*"],

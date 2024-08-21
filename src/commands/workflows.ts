@@ -88,3 +88,24 @@ Command.register('viewContinuedAsNewWorkflows', async ({ openUI }) => {
 Command.register('viewTimedOutWorkflows', async ({ openUI }) => {
   openUI('workflows', { query: { query: 'ExecutionStatus="TimedOut"' } });
 });
+
+/**
+ * @summary View workflows with custom query
+ */
+Command.register(
+  'viewWorkflowsWithQuery',
+  async ({ openUI }, query: string | undefined) => {
+    query =
+      query ||
+      (await vscode.window.showInputBox({
+        prompt: 'Enter a custom query to view workflows',
+        placeHolder: 'ExecutionStatus="Running"',
+      }));
+
+    if (!query) {
+      return;
+    }
+
+    openUI('workflows', { query: { query } });
+  },
+);

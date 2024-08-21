@@ -8,12 +8,15 @@ import { openUI } from '$utilities/open-ui';
 
 const extensionId = 'temporal-vscode';
 
-type ExtensionCommand = (parameters: {
-  openUI: typeof openUI;
-  context: vscode.ExtensionContext;
-  getClient: CreateClient;
-  withClient: WithClient;
-}) => Promise<void> | void;
+type ExtensionCommand<Params extends any[] = any[]> = (
+  parameters: {
+    openUI: typeof openUI;
+    context: vscode.ExtensionContext;
+    getClient: CreateClient;
+    withClient: WithClient;
+  },
+  ...params: Params
+) => Promise<void> | void;
 
 export class Command {
   static context: vscode.ExtensionContext;
@@ -22,8 +25,11 @@ export class Command {
     return new Command(name, command);
   }
 
-  static execute(command: CommandName) {
-    return vscode.commands.executeCommand(`${extensionId}.${command}`);
+  static execute(command: CommandName, params: any[] = []): Thenable<unknown> {
+    return vscode.commands.executeCommand(
+      `${extensionId}.${command}`,
+      ...params,
+    );
   }
 
   static getCommand(name: CommandName): `${typeof extensionId}.${CommandName}` {
@@ -40,7 +46,7 @@ export class Command {
 
     const fn = vscode.commands.registerCommand(
       `${extensionId}.${name}`,
-      async () => {
+      async (...params: any[]) => {
         const { createClient, withClient } = await import('$utilities/client');
 
         let client: TemporalClient | undefined = undefined;
@@ -54,6 +60,7 @@ export class Command {
             },
             withClient,
             openUI,
+            ...params,
           });
 
           // Close the connection when the command is done.

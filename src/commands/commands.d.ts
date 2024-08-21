@@ -27,4 +27,5 @@ type CommandName =
   | 'viewSchedules'
   | 'viewTerminatedWorkflows'
   | 'viewTimedOutWorkflows'
-  | 'viewWorkflows';
+  | 'viewWorkflows'
+  | 'viewWorkflowsWithQuery';
