@@ -22,6 +22,7 @@ export async function activate(context: vscode.ExtensionContext) {
       import('./commands/task-queue'),
       import('./commands/schedules'),
       import('./commands/batch-operations'),
+      import('./commands/start-workflow'),
       import('./commands/search-attributes'),
       import('./commands/information'),
       import('./commands/settings'),

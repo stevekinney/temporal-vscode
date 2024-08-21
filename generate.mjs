@@ -1,3 +1,4 @@
+import path from 'path';
 import { readFile, writeFile } from 'fs/promises';
 import {
   createSourceFile,
@@ -17,6 +18,7 @@ const commands = await findCommands();
 
 await updatePackageJson(commands);
 await writeCommandTypes(commands);
+await writeViewTypes();
 
 /**
  * @typedef {Object} Command
@@ -135,4 +137,22 @@ async function writeCommandTypes(commands) {
   `;
 
   await writeFile('src/commands/commands.d.ts', await format(content));
+}
+
+/**
+ * Writes a TypeScript file with the view types.
+ */
+async function writeViewTypes() {
+  const views = await fg('src/views/**/*.html');
+
+  const content = `
+  // This file is generated. Do not edit.
+  // Run \`pnpm generate\` to update this file.
+
+  type ViewName = ${views
+    .map((view) => `'${path.basename(path.dirname(view))}'`)
+    .join(' | ')};
+  `;
+
+  await writeFile('src/views/views.d.ts', await format(content));
 }

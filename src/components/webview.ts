@@ -1,13 +1,13 @@
 import * as vscode from 'vscode';
+import { readFile } from 'fs/promises';
 
 export class Webview {
   static context: vscode.ExtensionContext;
 
   private panel: vscode.WebviewPanel | undefined = undefined;
-  public content: string = '';
 
   constructor(
-    private readonly viewType: string,
+    private readonly viewType: ViewName,
     private readonly title: string,
   ) {}
 
@@ -28,7 +28,15 @@ export class Webview {
    * @param column The column to show the webview in. Defaults to the active text editor's column.
    * @returns
    */
-  show(column: vscode.ViewColumn = this.column) {
+  async show(column: vscode.ViewColumn = this.column) {
+    console.log(
+      this.context.asAbsolutePath(`dist/views/${this.viewType}/assets`),
+      vscode.Uri.joinPath(
+        this.context.extensionUri,
+        `dist/views/${this.viewType}/assets`,
+      ).toString(),
+    );
+
     if (this.panel) {
       this.panel.reveal(column);
       return;
@@ -37,10 +45,21 @@ export class Webview {
         this.viewType,
         this.title,
         column,
-        {},
+        {
+          enableScripts: true,
+          localResourceRoots: [
+            vscode.Uri.joinPath(
+              this.context.extensionUri,
+              'dist',
+              'views',
+              this.viewType,
+              'assets',
+            ),
+          ],
+        },
       );
 
-      this.panel.webview.html = this.content;
+      this.panel.webview.html = await this.html;
 
       this.panel.onDidDispose(
         () => (this.panel = undefined),
@@ -48,5 +67,12 @@ export class Webview {
         this.context.subscriptions,
       );
     }
+  }
+
+  private get html(): Promise<string> {
+    const path = this.context.asAbsolutePath(
+      `dist/views/${this.viewType}/index.html`,
+    );
+    return readFile(path, 'utf-8');
   }
 }
