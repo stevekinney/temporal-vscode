@@ -37,7 +37,7 @@ async function main() {
     outfile: 'dist/extension.js',
     external: ['vscode'],
     logLevel: 'silent',
-    plugins: [copyAssetsPlugin, esbuildProblemMatcherPlugin],
+    plugins: [esbuildProblemMatcherPlugin],
   });
   if (watch) {
     await ctx.watch();
