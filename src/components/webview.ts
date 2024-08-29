@@ -29,14 +29,6 @@ export class Webview {
    * @returns
    */
   async show(column: vscode.ViewColumn = this.column) {
-    console.log(
-      this.context.asAbsolutePath(`dist/views/${this.viewType}/assets`),
-      vscode.Uri.joinPath(
-        this.context.extensionUri,
-        `dist/views/${this.viewType}/assets`,
-      ).toString(),
-    );
-
     if (this.panel) {
       this.panel.reveal(column);
       return;
@@ -53,7 +45,6 @@ export class Webview {
               'dist',
               'views',
               this.viewType,
-              'assets',
             ),
           ],
         },
