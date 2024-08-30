@@ -9,32 +9,7 @@ import htmlModules from 'esbuild-plugin-html-modules';
 const production = process.argv.includes('--production');
 const watch = process.argv.includes('--watch');
 
-/** @type {AbortController} */
-let abortController;
-
 const __dirname = path.dirname(new URL(import.meta.url).pathname);
-
-const toCamelCase = (str) => {
-  return str
-    .toLowerCase()
-    .split('-')
-    .map((word, index) =>
-      index === 0 ? word : word.charAt(0).toUpperCase() + word.slice(1),
-    )
-    .join('');
-};
-
-const getViews = () => {
-  const views = fg.globSync('./src/views/**/index.html');
-
-  const input = views.reduce((acc, view) => {
-    const name = toCamelCase(view.split('/').slice(-2)[0]);
-    acc[name] = resolve(view);
-    return acc;
-  }, {});
-
-  return input;
-};
 
 let watcher;
 
@@ -44,8 +19,8 @@ let watcher;
 const buildViews = {
   name: 'build-views',
   async setup(build) {
-    abortController = new AbortController();
-    const { signal } = abortController;
+    const ac = new AbortController();
+    const { signal } = ac;
 
     build.onStart(async () => {
       console.log('[watch] watching views…');
@@ -54,27 +29,32 @@ const buildViews = {
         { signal, recursive: true },
         async () => {
           console.log('[watch] views changed');
+          const pages = await glob('./src/views/**/*.html');
 
-          const options = {
-            plugins: [viteSingleFile()],
-            root: path.dirname(page),
-            logLevel: 'error',
-            build: {
-              input: getViews(),
-              minify: production ? true : false,
-              sourcemap: production ? false : 'inline',
-              cssCodeSplit: false,
-              assetsInlineLimit: Infinity,
-              outDir: path.join(
-                __dirname,
-                'dist',
-                'views',
-                path.basename(path.dirname(page)),
-              ),
-            },
-          };
+          for (const page of pages) {
+            /**
+             * @type import('vite').BuildOptions
+             */
+            const options = {
+              plugins: [viteSingleFile()],
+              root: path.dirname(page),
+              logLevel: 'error',
+              build: {
+                minify: production,
+                sourcemap: !production,
+                cssCodeSplit: false,
+                assetsInlineLimit: 100000000,
+                outDir: path.join(
+                  __dirname,
+                  'dist',
+                  'views',
+                  path.basename(path.dirname(page)),
+                ),
+              },
+            };
 
-          await vite(options);
+            await vite(options);
+          }
         },
       );
     });
@@ -126,10 +106,6 @@ async function main() {
 }
 
 main().catch((e) => {
-  if (abortController) {
-    abortController.abort();
-  }
-
   watcher?.close();
   console.error(e);
   process.exit(1);
