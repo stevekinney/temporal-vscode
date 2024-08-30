@@ -1,11 +1,30 @@
 import { context } from 'esbuild';
 import chalk from 'chalk';
+import postcss from 'postcss';
 
 const production = process.argv.includes('--production');
 const watch = process.argv.includes('--watch');
 
-const log = (...args) => console.log(chalk.cyan('[esbuild]'), ...args);
+const log = (...args) => console.log(chalk.cyan('[watch]'), ...args);
 const error = (...args) => console.error(chalk.red('[error]'), ...args);
+
+/**
+ * @type {import('esbuild').Plugin}
+ */
+const postcssPlugin = {
+  name: 'postcss',
+
+  setup(build) {
+    build.onLoad({ filter: /\.css$/ }, async (args) => {
+      const { css } = await postcss().process(args.contents, {
+        from: args.path,
+        to: args.path,
+      });
+
+      return { contents: css, loader: 'css' };
+    });
+  },
+};
 
 /**
  * @type {import('esbuild').Plugin}
@@ -15,7 +34,7 @@ const esbuildProblemMatcherPlugin = {
 
   setup(build) {
     build.onStart(() => {
-      log('Build started');
+      log('build started');
     });
 
     build.onEnd((result) => {
@@ -25,7 +44,7 @@ const esbuildProblemMatcherPlugin = {
         );
       });
 
-      log('Build finished');
+      log('build finished');
     });
   },
 };

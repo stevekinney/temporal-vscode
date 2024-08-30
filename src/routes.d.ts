@@ -19,3 +19,8 @@ type APIRoute = {
   namespaces: `namespaces`;
   namespace: `namespaces/${string}`;
 };
+
+declare module '*.css' {
+  const content: string;
+  export default content;
+}

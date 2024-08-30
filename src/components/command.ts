@@ -1,12 +1,16 @@
 import * as vscode from 'vscode';
+
+import { Component } from './component';
+
 import type {
   TemporalClient,
   CreateClient,
   WithClient,
 } from '$utilities/client';
+
 import { openUI } from '$utilities/open-ui';
 
-const extensionId = 'temporal-vscode';
+const extensionId = Component.extensionId;
 
 type ExtensionCommand<Params extends any[] = any[]> = (
   parameters: {
@@ -18,9 +22,7 @@ type ExtensionCommand<Params extends any[] = any[]> = (
   ...params: Params
 ) => Promise<void> | void;
 
-export class Command {
-  static context: vscode.ExtensionContext;
-
+export class Command extends Component {
   static register(name: string, command: ExtensionCommand) {
     return new Command(name, command);
   }
@@ -40,9 +42,7 @@ export class Command {
     public readonly name: string,
     public readonly command: ExtensionCommand,
   ) {
-    if (!Command.context) {
-      throw new Error('ExtensionCommand.context is not set');
-    }
+    super();
 
     const fn = vscode.commands.registerCommand(
       `${extensionId}.${name}`,
@@ -86,13 +86,5 @@ export class Command {
     );
 
     this.context.subscriptions.push(fn);
-  }
-
-  private get context(): vscode.ExtensionContext {
-    if (!Command.context) {
-      throw new Error('ExtensionCommand.context is not set');
-    }
-
-    return Command.context;
   }
 }

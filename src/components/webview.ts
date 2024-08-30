@@ -1,23 +1,17 @@
 import * as vscode from 'vscode';
 import { readFile } from 'fs/promises';
 
-export class Webview {
-  static context: vscode.ExtensionContext;
+import { Component } from './component';
 
+export class Webview extends Component {
   private panel: vscode.WebviewPanel | undefined = undefined;
   private currentColumn: vscode.ViewColumn | undefined = undefined;
 
   constructor(
     private readonly viewType: ViewName,
     private readonly title: string,
-  ) {}
-
-  private get context(): vscode.ExtensionContext {
-    if (!Webview.context) {
-      throw new Error('Webview.context is not set');
-    }
-
-    return Webview.context;
+  ) {
+    super();
   }
 
   private get column(): vscode.ViewColumn {
@@ -51,13 +45,7 @@ export class Webview {
         {
           enableScripts: true,
           localResourceRoots: [
-            vscode.Uri.joinPath(
-              this.context.extensionUri,
-              'dist',
-              'views',
-              this.viewType,
-              'assets',
-            ),
+            vscode.Uri.joinPath(this.context.extensionUri, 'dist'),
           ],
         },
       );

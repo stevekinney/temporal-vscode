@@ -1,19 +1,16 @@
 import * as vscode from 'vscode';
 
+import { Component } from './component';
+
 const findTerminal = (name: string): vscode.Terminal | undefined => {
   return vscode.window.terminals.find((terminal) => terminal.name === name);
 };
 
-export class Terminal {
-  static context: vscode.ExtensionContext;
-
+export class Terminal extends Component {
   private terminal: vscode.Terminal | undefined = undefined;
 
   constructor(private readonly name: string) {
-    if (!Terminal.context) {
-      throw new Error('Terminal.context is not set');
-    }
-
+    super();
     this.bindEvents();
   }
 
@@ -24,10 +21,6 @@ export class Terminal {
     }
 
     return this.terminal;
-  }
-
-  get context(): vscode.ExtensionContext {
-    return Terminal.context;
   }
 
   show() {
