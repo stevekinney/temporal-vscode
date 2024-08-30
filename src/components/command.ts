@@ -11,6 +11,11 @@ import type {
 import { openUI } from '$utilities/open-ui';
 
 const extensionId = Component.extensionId;
+type FullCommandName = `${typeof extensionId}.${CommandName}`;
+
+export const toCommandName = (commandName: CommandName): FullCommandName => {
+  return `${extensionId}.${commandName}`;
+};
 
 type ExtensionCommand<Params extends any[] = any[]> = (
   parameters: {

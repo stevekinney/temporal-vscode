@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { toCommandName } from '$utilities/to-command-name';
+import { toCommandName } from '$components/command';
 
 export type StatusBarItemParameters = {
   id: string;
