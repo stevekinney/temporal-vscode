@@ -3,11 +3,24 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>My Web Page</title>
-    <script type="module" src="hello.js"></script>
+    <title>Start Workflow</title>
   </head>
   <body>
-    <h1>Hello, World!</h1>
-    <p>This is a basic HTML document.</p>
+    <h1>Start Workflow</h1>
+    <form method="post">
+      <label for="workflowId">Workflow ID</label>
+      <input type="text" id="workflowId" name="workflowId" />
+
+      <label for="workflowType">Task Queue</label>
+      <input type="text" id="workflowType" name="workflowType" />
+
+      <label for="taskQueue">Task Queue</label>
+      <input type="text" id="taskQueue" name="taskQueue" />
+
+      <label for="input">Task Queue</label>
+      <textarea id="input" name="input" />
+
+      <button type="submit">Submit</button>
+    </form>
   </body>
 </html>

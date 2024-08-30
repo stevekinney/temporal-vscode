@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "module": "ES2022",
+    "module": "esnext",
     "moduleResolution": "bundler",
     "target": "ES2022",
     "lib": ["ES2022"],
@@ -19,7 +19,7 @@
       "$utilities/*": ["./src/utilities/*"],
       "$commands/*": ["./src/commands/*"],
       "$components/*": ["./src/components/*"],
-      "$data/*": ["./src/data/*"],
+      "$data/*": ["./src/data/*"]
     }
   },
   "include": ["src/**/*.d.ts", "src/**/*.ts"],

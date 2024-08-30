@@ -1,9 +1,10 @@
 import { context } from 'esbuild';
 import { build as vite } from 'vite';
-import glob from 'fast-glob';
 import path from 'path';
 import * as fs from 'fs';
 import { viteSingleFile } from 'vite-plugin-singlefile';
+
+import htmlModules from 'esbuild-plugin-html-modules';
 
 const production = process.argv.includes('--production');
 const watch = process.argv.includes('--watch');
