@@ -21,6 +21,12 @@ interface ChatResult extends vscode.ChatResult {
   };
 }
 
+function getDateWithOffset(offsetMinutes: number): string {
+  const date = new Date();
+  date.setMinutes(date.getMinutes() + offsetMinutes);
+  return date.toISOString();
+}
+
 // Use gpt-4o since it is fast and high quality. gpt-3.5-turbo and gpt-4 are also available.
 const MODEL_SELECTOR: vscode.LanguageModelChatSelector = {
   vendor: 'copilot',
@@ -45,6 +51,11 @@ export const createChat = (context: vscode.ExtensionContext) => {
             ),
             vscode.LanguageModelChatMessage.User(
               "Ensure that the queries respect the case sensitivity of Search Attribute names and adhere strictly to Temporal's required datetime formats, such as RFC3339Nano. Avoid using shorthand time calculations like 'now - 6d'. Instead, use explicit datetime strings. For example, use ISO 8601 format like '2024-08-30T14:51:33.932Z' for time-based filters.",
+            ),
+            vscode.LanguageModelChatMessage.User(
+              'If I asked you to give me query for all terminated workflows of that closed in the last hour with a workflow ID that starts with "Term". You should return a query like this: `ExecutionStatus`="Terminated" AND `WorkflowId` STARTS_WITH "Term" AND `CloseTime`>="' +
+                getDateWithOffset(-60) +
+                '"`.',
             ),
             vscode.LanguageModelChatMessage.User(
               `The available Search Attributes you can use include: ${JSON.stringify(searchAttributes)}. ExecutionStatus can be any of the following: ${executionStatuses.join(', ')}.`,

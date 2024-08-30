@@ -5,6 +5,7 @@ export class Webview {
   static context: vscode.ExtensionContext;
 
   private panel: vscode.WebviewPanel | undefined = undefined;
+  private currentColumn: vscode.ViewColumn | undefined = undefined;
 
   constructor(
     private readonly viewType: ViewName,
@@ -20,7 +21,18 @@ export class Webview {
   }
 
   private get column(): vscode.ViewColumn {
-    return vscode.window.activeTextEditor?.viewColumn || vscode.ViewColumn.One;
+    if (!this.currentColumn) {
+      this.currentColumn = vscode.ViewColumn.Beside;
+    }
+
+    return this.currentColumn;
+  }
+
+  private get html(): Promise<string> {
+    const path = this.context.asAbsolutePath(
+      `dist/views/${this.viewType}/index.html`,
+    );
+    return readFile(path, 'utf-8');
   }
 
   /**
@@ -29,17 +41,8 @@ export class Webview {
    * @returns
    */
   async show(column: vscode.ViewColumn = this.column) {
-    console.log(
-      this.context.asAbsolutePath(`dist/views/${this.viewType}/assets`),
-      vscode.Uri.joinPath(
-        this.context.extensionUri,
-        `dist/views/${this.viewType}/assets`,
-      ).toString(),
-    );
-
     if (this.panel) {
-      this.panel.reveal(column);
-      return;
+      this.panel.reveal(column, true);
     } else {
       this.panel = vscode.window.createWebviewPanel(
         this.viewType,
@@ -67,12 +70,5 @@ export class Webview {
         this.context.subscriptions,
       );
     }
-  }
-
-  private get html(): Promise<string> {
-    const path = this.context.asAbsolutePath(
-      `dist/views/${this.viewType}/index.html`,
-    );
-    return readFile(path, 'utf-8');
   }
 }

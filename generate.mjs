@@ -7,7 +7,7 @@ import {
   isStringLiteral,
   forEachChild,
 } from 'typescript';
-import fg from 'fast-glob';
+import glob from 'fast-glob';
 import prettier from 'prettier';
 import { sentenceCase } from 'change-case';
 
@@ -100,7 +100,7 @@ async function extractCommandAndSummary(fileName) {
 }
 
 async function findCommands() {
-  const files = await fg('src/**/*.ts');
+  const files = await glob('src/**/*.ts');
 
   const commands = await Promise.all(
     files.map(async (file) => extractCommandAndSummary(file)),
@@ -143,7 +143,7 @@ async function writeCommandTypes(commands) {
  * Writes a TypeScript file with the view types.
  */
 async function writeViewTypes() {
-  const views = await fg('src/views/**/*.html');
+  const views = await glob('src/views/**/*.html');
 
   const content = `
   // This file is generated. Do not edit.
