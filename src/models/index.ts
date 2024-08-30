@@ -13,7 +13,6 @@ const executionStatuses = [
   'TimedOut',
 ];
 
-const CAT_NAMES_COMMAND_ID = 'temporal-vscode.namesInEditor';
 const participantID = 'temporal-vscode.chat';
 
 interface ChatResult extends vscode.ChatResult {
@@ -28,7 +27,7 @@ const MODEL_SELECTOR: vscode.LanguageModelChatSelector = {
   family: 'gpt-4o',
 };
 
-export function createChat(context: vscode.ExtensionContext) {
+export const createChat = (context: vscode.ExtensionContext) => {
   const handler: vscode.ChatRequestHandler = async (
     request: vscode.ChatRequest,
     _context: vscode.ChatContext,
@@ -42,13 +41,19 @@ export function createChat(context: vscode.ExtensionContext) {
         if (model) {
           const messages = [
             vscode.LanguageModelChatMessage.User(
-              "You are tasked with generating SQL-like queries for Temporal's Visibility API, which is used to filter and retrieve Workflow Executions from the Visibility Store. Each query must be constructed using Search Attributes—both default and custom—and should incorporate the appropriate operators (e.g., =, !=, >, AND, OR) to meet specific filtering criteria. The queries must respect the case sensitivity of Search Attribute names and adhere to Temporal's required datetime formats (e.g., RFC3339Nano). Avoid using shorthand time calculations like 'now - 6d', and instead use explicit datetime strings. Additionally, consider the limitations and best practices for efficient API usage, such as handling large result sets with pagination and using the CountWorkflow API for counting executions.",
+              "You are an expert in constructing SQL-like queries for Temporal's Visibility API. Your task is to generate queries that filter and retrieve Workflow Executions from the Visibility Store. Each query must be constructed using the correct Search Attributes—both default and custom—and should incorporate the appropriate operators (e.g., =, !=, >, AND, OR) to meet specific filtering criteria.",
             ),
             vscode.LanguageModelChatMessage.User(
-              `The following are valid Search Attributes that you can use in your query: ${JSON.stringify(searchAttributes)} and ExecutionStatus can be any of the following: ${executionStatuses.join(', ')}.`,
+              "Ensure that the queries respect the case sensitivity of Search Attribute names and adhere strictly to Temporal's required datetime formats, such as RFC3339Nano. Avoid using shorthand time calculations like 'now - 6d'. Instead, use explicit datetime strings. For example, use ISO 8601 format like '2024-08-30T14:51:33.932Z' for time-based filters.",
             ),
             vscode.LanguageModelChatMessage.User(
-              'Your response should just be the SQL-like syntax for the query. Do not include any code, but you may explain what the query is doing. Be sure to include the appropriate operators and Search Attributes to meet the filtering criteria.',
+              `The available Search Attributes you can use include: ${JSON.stringify(searchAttributes)}. ExecutionStatus can be any of the following: ${executionStatuses.join(', ')}.`,
+            ),
+            vscode.LanguageModelChatMessage.User(
+              'Your response should only contain the SQL-like query syntax along with a brief explanation of the query logic. Exclude any additional code or formatting outside the query. Remember to include the correct operators and Search Attributes to match the filtering criteria precisely.',
+            ),
+            vscode.LanguageModelChatMessage.User(
+              'Consider best practices for efficient API usage, such as handling large result sets with pagination and utilizing the CountWorkflow API for counting executions. In case of any ambiguity or missing data, default to standard practices or provide a note on assumptions made.',
             ),
             vscode.LanguageModelChatMessage.User(request.prompt),
           ];
@@ -133,7 +138,7 @@ export function createChat(context: vscode.ExtensionContext) {
   );
 
   context.subscriptions.push(trudi);
-}
+};
 
 function handleError(
   logger: vscode.TelemetryLogger,
