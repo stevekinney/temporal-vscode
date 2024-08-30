@@ -2,11 +2,11 @@ import * as vscode from 'vscode';
 
 import { Component } from './component';
 
-const findTerminal = (name: string): vscode.Terminal | undefined => {
-  return vscode.window.terminals.find((terminal) => terminal.name === name);
-};
-
 export class Terminal extends Component {
+  static find(name: string): vscode.Terminal | undefined {
+    return vscode.window.terminals.find((terminal) => terminal.name === name);
+  }
+
   private terminal: vscode.Terminal | undefined = undefined;
 
   constructor(private readonly name: string) {
@@ -17,7 +17,7 @@ export class Terminal extends Component {
   get instance(): vscode.Terminal {
     if (!this.terminal) {
       this.terminal =
-        findTerminal(this.name) || vscode.window.createTerminal(this.name);
+        Terminal.find(this.name) || vscode.window.createTerminal(this.name);
     }
 
     return this.terminal;

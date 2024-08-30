@@ -1,7 +1,5 @@
 import * as vscode from 'vscode';
 
-import { Component } from './component';
-
 import type {
   TemporalClient,
   CreateClient,
@@ -9,6 +7,8 @@ import type {
 } from '$utilities/client';
 
 import { openUI } from '$utilities/open-ui';
+
+import { Component } from './component';
 
 const extensionId = Component.extensionId;
 type FullCommandName = `${typeof extensionId}.${CommandName}`;
