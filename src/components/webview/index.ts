@@ -12,7 +12,7 @@ const options = {
 export class Webview extends Component {
   static webview: Webview | undefined;
 
-  static async show(title: string): Promise<Webview> {
+  static async show(title: ViewName): Promise<Webview> {
     if (!Webview.webview) {
       Webview.webview = new Webview(title);
     }
@@ -25,8 +25,10 @@ export class Webview extends Component {
   private readonly viewType = 'temporal.webview';
   private currentColumn: ViewColumn | undefined;
 
-  private constructor(private readonly title: string) {
+  private constructor(title: ViewName) {
     super();
+
+    this.title = title;
 
     this.panel = window.createWebviewPanel(
       this.viewType,
@@ -34,6 +36,11 @@ export class Webview extends Component {
       this.column,
       options,
     );
+  }
+
+  set title(value: ViewName) {
+    this.panel.title = value;
+    this.postMessage({ command: 'setTitle', value });
   }
 
   private get postMessage() {

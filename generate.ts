@@ -12,23 +12,44 @@ import {
   forEachChild,
   type Node,
   type JSDoc,
+  isPropertyAccessExpression,
+  isIdentifier,
+  SourceFile,
 } from 'typescript';
 
-let files: string[] | null = null;
+let sourceFiles: SourceFile[] | null = null;
 
 const extensionId = 'temporal-vscode';
 
 const pkg = await readFile('package.json', 'utf-8').then(JSON.parse);
 const commands = await findCommands();
+const views = await findWebviewShowArguments();
+
+await generateViews(views);
 
 async function getFiles() {
-  if (!files) {
-    files = await glob('src/**/*.ts', {
+  if (!sourceFiles) {
+    const fileNames = await glob('src/**/*.ts', {
       ignore: ['**/*.d.ts'],
     });
+
+    sourceFiles = [];
+
+    for (const fileName of fileNames) {
+      const content = await readFile(fileName, 'utf-8');
+
+      const sourceFile = createSourceFile(
+        fileName,
+        content,
+        ScriptTarget.Latest,
+        true,
+      );
+
+      sourceFiles.push(sourceFile);
+    }
   }
 
-  return files;
+  return sourceFiles;
 }
 
 await updatePackageJson(commands);
@@ -51,16 +72,9 @@ async function format(content: string, parser = 'typescript'): Promise<string> {
 /**
  * Extracts command and summary information from a TypeScript file.
  */
-async function extractCommandAndSummary(fileName: string): Promise<Command[]> {
-  const content = await readFile(fileName, 'utf-8');
-
-  const sourceFile = createSourceFile(
-    fileName,
-    content,
-    ScriptTarget.Latest,
-    true,
-  );
-
+async function extractCommandAndSummary(
+  sourceFile: SourceFile,
+): Promise<Command[]> {
   const result: Command[] = [];
 
   /**
@@ -106,6 +120,36 @@ async function extractCommandAndSummary(fileName: string): Promise<Command[]> {
   return result;
 }
 
+async function findWebviewShowArguments() {
+  const sourceFiles = await getFiles();
+  const results: Set<string> = new Set();
+
+  function visit(node: Node) {
+    if (isCallExpression(node)) {
+      const expression = node.expression;
+      if (
+        isPropertyAccessExpression(expression) &&
+        expression.name.text === 'show' &&
+        isIdentifier(expression.expression) &&
+        expression.expression.text === 'Webview'
+      ) {
+        const firstArg = node.arguments[0];
+        if (firstArg && isStringLiteral(firstArg)) {
+          results.add(firstArg.text);
+        }
+      }
+    }
+
+    forEachChild(node, visit);
+  }
+
+  for (const sourceFile of sourceFiles) {
+    visit(sourceFile);
+  }
+
+  return results;
+}
+
 async function findCommands() {
   const files = await getFiles();
 
@@ -144,4 +188,17 @@ async function writeCommandTypes(commands: Command[]) {
   `;
 
   await writeFile('src/commands/commands.d.ts', await format(content));
+}
+
+async function generateViews(views: Set<string>) {
+  const content = `
+  // This file is generated. Do not edit.
+  // Run \`pnpm generate\` to update this file.
+
+  type ViewName = ${Array.from(views)
+    .map((view) => `'${view}'`)
+    .join(' | ')};
+  `;
+
+  await writeFile('src/views.d.ts', await format(content));
 }
