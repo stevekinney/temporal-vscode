@@ -37,7 +37,7 @@ export class StatusBarItem implements vscode.Disposable {
   }
 
   private readonly item;
-  private interval: NodeJS.Timeout | undefined = undefined;
+  private interval: NodeJS.Timer | undefined = undefined;
 
   constructor({
     id,

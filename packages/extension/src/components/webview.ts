@@ -1,7 +1,4 @@
 import { window, Uri, ViewColumn, type WebviewPanel } from 'vscode';
-import { getNonce } from '$utilities/get-nonce';
-
-import './style.css';
 
 import { Component } from './component';
 
