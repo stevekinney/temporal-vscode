@@ -58,7 +58,7 @@ async function extractCommandAndSummary(fileName: string): Promise<Command[]> {
   function visit(node: Node) {
     if (isCallExpression(node)) {
       const commandName = node.arguments[0];
-      const jsDocTags = (node.parent as Node & {jsDoc: JSDoc[]}).jsDoc
+      const jsDocTags = (node.parent as Node & {jsDoc: JSDoc[]}).jsDoc;
 
       if (
         commandName &&
