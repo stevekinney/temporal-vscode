@@ -14,7 +14,7 @@
         "isDefault": true
       },
       "options": {
-        "cwd": "${workspaceFolder}/packages/extension"
+        "cwd": "${workspaceFolder}"
       }
     },
     {
@@ -29,7 +29,7 @@
         "reveal": "never"
       },
       "options": {
-        "cwd": "${workspaceFolder}/packages/extension"
+        "cwd": "${workspaceFolder}"
       }
     },
     {
@@ -44,7 +44,7 @@
         "reveal": "never"
       },
       "options": {
-        "cwd": "${workspaceFolder}/packages/extension"
+        "cwd": "${workspaceFolder}"
       }
     },
     {
@@ -58,7 +58,7 @@
       },
       "group": "build",
       "options": {
-        "cwd": "${workspaceFolder}/packages/extension"
+        "cwd": "${workspaceFolder}"
       }
     },
     {
@@ -66,7 +66,7 @@
       "dependsOn": ["npm: watch", "npm: watch-tests"],
       "problemMatcher": [],
       "options": {
-        "cwd": "${workspaceFolder}/packages/extension"
+        "cwd": "${workspaceFolder}"
       }
     }
   ]

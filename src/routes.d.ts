@@ -25,6 +25,6 @@ declare module '*.css' {
   export default content;
 }
 
-declare module '*.svelte' {
-  export { SvelteComponent as default } from 'svelte';
+declare module '*.html' {
+  export default string;
 }

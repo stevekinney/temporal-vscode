@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <iframe
+      src="http://localhost:5555"
+      style="width: 100vw; height: 100vh; border: none"
+    ></iframe>
+  </body>
+  <script>
+    const iframe = document.querySelector('iframe');
+    const style = document.documentElement.getAttribute('style');
+
+    iframe.addEventListener('load', () => {
+      iframe.contentWindow.postMessage(style, '*');
+    });
+  </script>
+</html>

@@ -14,11 +14,22 @@ import {
   type JSDoc,
 } from 'typescript';
 
+let files: string[] | null = null;
 
 const extensionId = 'temporal-vscode';
 
 const pkg = await readFile('package.json', 'utf-8').then(JSON.parse);
 const commands = await findCommands();
+
+async function getFiles() {
+  if (!files) {
+    files = await glob('src/**/*.ts', {
+      ignore: ['**/*.d.ts'],
+    });
+  }
+
+  return files;
+}
 
 await updatePackageJson(commands);
 await writeCommandTypes(commands);
@@ -58,7 +69,7 @@ async function extractCommandAndSummary(fileName: string): Promise<Command[]> {
   function visit(node: Node) {
     if (isCallExpression(node)) {
       const commandName = node.arguments[0];
-      const jsDocTags = (node.parent as Node & {jsDoc: JSDoc[]}).jsDoc;
+      const jsDocTags = (node.parent as Node & { jsDoc: JSDoc[] }).jsDoc;
 
       if (
         commandName &&
@@ -96,7 +107,7 @@ async function extractCommandAndSummary(fileName: string): Promise<Command[]> {
 }
 
 async function findCommands() {
-  const files = await glob('src/**/*.ts');
+  const files = await getFiles();
 
   const commands = await Promise.all(
     files.map(async (file) => extractCommandAndSummary(file)),
@@ -134,4 +145,3 @@ async function writeCommandTypes(commands: Command[]) {
 
   await writeFile('src/commands/commands.d.ts', await format(content));
 }
-
