@@ -18,6 +18,10 @@ export class Component {
     return Component.context;
   }
 
+  get extensionUri() {
+    return this.context.extensionUri;
+  }
+
   constructor() {
     if (!Component.context) {
       throw new Error('Component.context is not set');

@@ -12,6 +12,9 @@
       "group": {
         "kind": "build",
         "isDefault": true
+      },
+      "options": {
+        "cwd": "${workspaceFolder}/packages/extension"
       }
     },
     {
@@ -24,6 +27,9 @@
       "presentation": {
         "group": "watch",
         "reveal": "never"
+      },
+      "options": {
+        "cwd": "${workspaceFolder}/packages/extension"
       }
     },
     {
@@ -36,6 +42,9 @@
       "presentation": {
         "group": "watch",
         "reveal": "never"
+      },
+      "options": {
+        "cwd": "${workspaceFolder}/packages/extension"
       }
     },
     {
@@ -47,12 +56,18 @@
         "reveal": "never",
         "group": "watchers"
       },
-      "group": "build"
+      "group": "build",
+      "options": {
+        "cwd": "${workspaceFolder}/packages/extension"
+      }
     },
     {
       "label": "tasks: watch-tests",
       "dependsOn": ["npm: watch", "npm: watch-tests"],
-      "problemMatcher": []
+      "problemMatcher": [],
+      "options": {
+        "cwd": "${workspaceFolder}/packages/extension"
+      }
     }
   ]
 }

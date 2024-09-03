@@ -1,35 +1,13 @@
-import { context } from 'esbuild';
 import chalk from 'chalk';
-import postcss from 'postcss';
+import { context, type Plugin } from 'esbuild';
 
 const production = process.argv.includes('--production');
 const watch = process.argv.includes('--watch');
 
-const log = (...args) => console.log(chalk.cyan('[watch]'), ...args);
-const error = (...args) => console.error(chalk.red('[error]'), ...args);
+const log = (...args: unknown[]) => console.log(chalk.cyan('[watch]'), ...args);
+const error = (...args: unknown[]) => console.error(chalk.red('[error]'), ...args);
 
-/**
- * @type {import('esbuild').Plugin}
- */
-const postcssPlugin = {
-  name: 'postcss',
-
-  setup(build) {
-    build.onLoad({ filter: /\.css$/ }, async (args) => {
-      const { css } = await postcss().process(args.contents, {
-        from: args.path,
-        to: args.path,
-      });
-
-      return { contents: css, loader: 'css' };
-    });
-  },
-};
-
-/**
- * @type {import('esbuild').Plugin}
- */
-const esbuildProblemMatcherPlugin = {
+const esbuildProblemMatcherPlugin: Plugin = {
   name: 'esbuild-problem-matcher',
 
   setup(build) {
@@ -39,9 +17,13 @@ const esbuildProblemMatcherPlugin = {
 
     build.onEnd((result) => {
       result.errors.forEach(({ text, location }) => {
-        error(
-          `${text}\n\t\tat ${location.file}:${location.line}:${location.column}`,
-        );
+        if (location) {
+          error(
+            `${text}\n\t\tat ${location.file}:${location.line}:${location.column}`,
+          );
+        } else {
+          error(text);
+        }
       });
 
       log('build finished');
@@ -58,7 +40,8 @@ async function main() {
     sourcemap: production ? false : 'inline',
     sourcesContent: false,
     platform: 'node',
-    outfile: 'dist/extension.js',
+    outdir: 'dist',
+    outExtension: { '.js': '.cjs' },
     external: ['vscode'],
     logLevel: 'silent',
     plugins: [esbuildProblemMatcherPlugin],

@@ -1,15 +1,19 @@
-import path from 'path';
 import { readFile, writeFile } from 'fs/promises';
+
+import glob from 'fast-glob';
+import prettier from 'prettier';
+import { sentenceCase } from 'change-case';
+
 import {
   createSourceFile,
   ScriptTarget,
   isCallExpression,
   isStringLiteral,
   forEachChild,
+  type Node,
+  type JSDoc,
 } from 'typescript';
-import glob from 'fast-glob';
-import prettier from 'prettier';
-import { sentenceCase } from 'change-case';
+
 
 const extensionId = 'temporal-vscode';
 
@@ -18,32 +22,25 @@ const commands = await findCommands();
 
 await updatePackageJson(commands);
 await writeCommandTypes(commands);
-await writeViewTypes();
 
-/**
- * @typedef {Object} Command
- * @property {string} command - The command identifier.
- * @property {string} title - The title of the command.
- * @property {'Temporal'} category - The category of the command.
- */
+type Command = {
+  command: string;
+  title: string;
+  category: 'Temporal';
+};
 
 /**
  * Format content using Prettier.
- * @param {string} content The content you want to format.
- * @param { import('prettier').BuiltInParserName } parser Which of Prettier's parsers to use.
- * @returns {Promise<string>}
  */
-async function format(content, parser = 'typescript') {
+async function format(content: string, parser = 'typescript'): Promise<string> {
   const prettierOptions = (await prettier.resolveConfig('.prettierrc')) || {};
   return prettier.format(content, { ...prettierOptions, parser });
 }
 
 /**
  * Extracts command and summary information from a TypeScript file.
- * @param {string} fileName - The path to the TypeScript file.
- * @returns {Promise<Command[]>} - An array of objects containing command and title.
  */
-async function extractCommandAndSummary(fileName) {
+async function extractCommandAndSummary(fileName: string): Promise<Command[]> {
   const content = await readFile(fileName, 'utf-8');
 
   const sourceFile = createSourceFile(
@@ -53,16 +50,15 @@ async function extractCommandAndSummary(fileName) {
     true,
   );
 
-  const result = [];
+  const result: Command[] = [];
 
   /**
    * Visits each node in the AST.
-   * @param {ts.Node} node - The current AST node.
    */
-  function visit(node) {
+  function visit(node: Node) {
     if (isCallExpression(node)) {
       const commandName = node.arguments[0];
-      const jsDocTags = node.parent.jsDoc;
+      const jsDocTags = (node.parent as Node & {jsDoc: JSDoc[]}).jsDoc
 
       if (
         commandName &&
@@ -79,8 +75,8 @@ async function extractCommandAndSummary(fileName) {
         );
 
         // Use the summary tag if available.
-        if (summaryTag) {
-          title = summaryTag.comment;
+        if (summaryTag && summaryTag.comment) {
+          title = String(summaryTag.comment);
         }
 
         // Add the command to the result.
@@ -113,7 +109,7 @@ async function findCommands() {
  * Updates the package.json file with the commands.
  * @param {Command[]} commands - The commands to add to the package.json file.
  */
-async function updatePackageJson(commands) {
+async function updatePackageJson(commands: Command[]) {
   pkg.contributes.commands = commands;
 
   await writeFile(
@@ -126,7 +122,7 @@ async function updatePackageJson(commands) {
  * Writes a TypeScript file with the command types.
  * @param {Command[]} commands
  */
-async function writeCommandTypes(commands) {
+async function writeCommandTypes(commands: Command[]) {
   const content = `
   // This file is generated. Do not edit.
   // Run \`pnpm generate\` to update this file.
@@ -139,20 +135,3 @@ async function writeCommandTypes(commands) {
   await writeFile('src/commands/commands.d.ts', await format(content));
 }
 
-/**
- * Writes a TypeScript file with the view types.
- */
-async function writeViewTypes() {
-  const views = await glob('src/views/**/*.html');
-
-  const content = `
-  // This file is generated. Do not edit.
-  // Run \`pnpm generate\` to update this file.
-
-  type ViewName = ${views
-    .map((view) => `'${path.basename(path.dirname(view))}'`)
-    .join(' | ')};
-  `;
-
-  await writeFile('src/views/views.d.ts', await format(content));
-}

@@ -12,16 +12,15 @@
     "noFallthroughCasesInSwitch": true,
     "noUnusedParameters": true,
     "skipLibCheck": true,
-    "jsx": "react",
-    "jsxFactory": "vscpp",
-    "jsxFragmentFactory": "vscppf",
     "paths": {
       "$utilities/*": ["./src/utilities/*"],
       "$commands/*": ["./src/commands/*"],
       "$components/*": ["./src/components/*"],
       "$data/*": ["./src/data/*"]
-    }
+    },
+    "typeRoots": ["../../node_modules/@types"],
   },
+
   "include": ["src/**/*.d.ts", "src/**/*.ts"],
   "exclude": ["node_modules/**"]
 }
