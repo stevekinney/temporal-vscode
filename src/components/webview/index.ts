@@ -4,6 +4,9 @@ import { Component } from '../component';
 
 import { getWebviewHtml } from './get-webview-html';
 import developmentView from './development-view.html';
+import type { WebviewMessage } from './webview-message';
+
+const viewType = 'temporal.webview';
 
 const options = {
   enableScripts: true,
@@ -23,22 +26,32 @@ export class Webview extends Component {
   }
 
   private readonly panel: WebviewPanel;
-  private readonly viewType = 'temporal.webview';
   private currentColumn: ViewColumn | undefined;
 
-  private constructor(protected title: ViewName) {
+  private constructor(title: ViewName) {
     super();
 
     this.panel = window.createWebviewPanel(
-      this.viewType,
-      this.title,
+      viewType,
+      title,
       this.column,
       options,
     );
+
+    this.title = title;
   }
 
-  private get postMessage() {
-    return this.panel.webview.postMessage.bind(this.panel.webview);
+  get title(): ViewName {
+    return this.panel.title as ViewName;
+  }
+
+  set title(title: ViewName) {
+    this.postMessage({ command: 'title-change', title });
+    this.panel.title = title;
+  }
+
+  private postMessage(message: WebviewMessage) {
+    return this.panel.webview.postMessage(message);
   }
 
   get column(): ViewColumn {
@@ -74,3 +87,5 @@ export class Webview extends Component {
     return this;
   }
 }
+
+export { WebviewMessage };
