@@ -15,9 +15,10 @@ export class Webview extends Component {
   static async show(title: ViewName): Promise<Webview> {
     if (!Webview.webview) {
       Webview.webview = new Webview(title);
+    } else {
+      Webview.webview.title = title;
     }
 
-    Webview.webview.panel.title = title;
     return Webview.webview.show();
   }
 
@@ -25,10 +26,8 @@ export class Webview extends Component {
   private readonly viewType = 'temporal.webview';
   private currentColumn: ViewColumn | undefined;
 
-  private constructor(title: ViewName) {
+  private constructor(protected title: ViewName) {
     super();
-
-    this.title = title;
 
     this.panel = window.createWebviewPanel(
       this.viewType,
@@ -36,11 +35,6 @@ export class Webview extends Component {
       this.column,
       options,
     );
-  }
-
-  set title(value: ViewName) {
-    this.panel.title = value;
-    this.postMessage({ command: 'setTitle', value });
   }
 
   private get postMessage() {
@@ -69,7 +63,12 @@ export class Webview extends Component {
    * @param column The column to show the webview in. Defaults to the active text editor's column.
    */
   show() {
-    this.panel.webview.html = this.html;
+    const html = this.html;
+
+    if (this.panel.webview.html !== html) {
+      this.panel.webview.html = html;
+    }
+
     this.panel.reveal(this.column);
 
     return this;
