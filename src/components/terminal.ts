@@ -1,12 +1,23 @@
 import * as vscode from 'vscode';
 
 import { Component } from './component';
+import { which } from 'bun';
 
 export interface TerminalOptions extends vscode.TerminalOptions {
   name: string;
 }
 
 export class Terminal extends Component {
+  static async getTemporalCli(): Promise<string> {
+    const cli = which('temporal');
+    if (!cli) {
+      throw new Error(
+        'Temporal CLI not found. Please install it or add it to your PATH.',
+      );
+    }
+    return cli;
+  }
+
   /**
    * Finds an existing terminal by name
    * @param name The name of the terminal to find

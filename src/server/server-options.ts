@@ -31,6 +31,7 @@ const serverOptions = {
     return options.trim();
   },
 };
+
 export const getServerCommand = async () => {
   const cmd = await which('temporal', { nothrow: true });
 
