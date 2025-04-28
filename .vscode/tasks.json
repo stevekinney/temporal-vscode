@@ -2,6 +2,29 @@
 // for the documentation about the tasks.json format
 {
   "version": "2.0.0",
+  "problemMatchers": {
+    "$bun-build": {
+      "owner": "bun-build",
+      "fileLocation": ["relative", "${workspaceFolder}"],
+      "pattern": [
+        {
+          "regexp": "\\[error\\]\\s+(.*):(\\d+)\\s\\|\\s(.*)",
+          "file": 1,
+          "line": 2,
+          "message": 3
+        },
+        {
+          "regexp": "^\\s+(.*)",
+          "message": 1
+        },
+        {
+          "regexp": "TypeError:\\s+(.*)",
+          "message": 1,
+          "loop": true
+        }
+      ]
+    }
+  },
   "tasks": [
     {
       "label": "bun: watch",
@@ -31,7 +54,32 @@
       "options": {
         "cwd": "${workspaceFolder}"
       },
-      "problemMatcher": []
+      "problemMatcher": [{
+        "owner": "bun-build-watch",
+        "fileLocation": ["relative", "${workspaceFolder}"],
+        "pattern": [
+          {
+            "regexp": "\\[error\\]\\s+(.*):(\\d+)\\s\\|\\s(.*)",
+            "file": 1,
+            "line": 2,
+            "message": 3
+          },
+          {
+            "regexp": "^\\s+(.*)",
+            "message": 1
+          },
+          {
+            "regexp": "TypeError:\\s+(.*)",
+            "message": 1,
+            "loop": true
+          }
+        ],
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "\\[info\\] Building extension",
+          "endsPattern": "\\[success\\] Build completed"
+        }
+      }]
     },
     {
       "type": "shell",
@@ -145,7 +193,7 @@
       "type": "shell",
       "command": "bun",
       "args": ["run", "build"],
-      "problemMatcher": [],
+      "problemMatcher": ["$bun-build"],
       "group": "build",
       "options": {
         "cwd": "${workspaceFolder}"
@@ -156,7 +204,7 @@
       "type": "shell",
       "command": "bun",
       "args": ["run", "package"],
-      "problemMatcher": [],
+      "problemMatcher": ["$bun-build"],
       "group": "build",
       "options": {
         "cwd": "${workspaceFolder}"
