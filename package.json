@@ -246,12 +246,7 @@
         "temporal.commandLine.logLevel": {
           "title": "CLI Log Level",
           "type": "string",
-          "enum": [
-            "debug",
-            "info",
-            "warn",
-            "error"
-          ],
+          "enum": ["debug", "info", "warn", "error"],
           "default": "error",
           "description": "The log level to use for the Temporal CLI.",
           "order": 100
@@ -288,8 +283,6 @@
   "engines": {
     "vscode": "^1.92.0"
   },
-  "categories": [
-    "Other"
-  ],
+  "categories": ["Other"],
   "activationEvents": []
 }
