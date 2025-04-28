@@ -17,8 +17,8 @@
     "watch:build": "bun run --watch build",
     "watch:tsc": "tsc --noEmit --watch --project tsconfig.json",
     "package": "bun run check-types && bun run lint && bun run build --production",
-    "compile-tests": "tsc -p . --outDir out",
-    "watch-tests": "tsc -p . -w --outDir out",
+    "compile:tests": "tsc -p . --outDir out",
+    "watch:tests": "tsc -p . -w --outDir out",
     "pretest": "bun run compile-tests && bun run compile && bun run lint",
     "check-types": "tsc --noEmit",
     "lint": "eslint src --ext ts",
@@ -246,7 +246,12 @@
         "temporal.commandLine.logLevel": {
           "title": "CLI Log Level",
           "type": "string",
-          "enum": ["debug", "info", "warn", "error"],
+          "enum": [
+            "debug",
+            "info",
+            "warn",
+            "error"
+          ],
           "default": "error",
           "description": "The log level to use for the Temporal CLI.",
           "order": 100
@@ -283,6 +288,8 @@
   "engines": {
     "vscode": "^1.92.0"
   },
-  "categories": ["Other"],
+  "categories": [
+    "Other"
+  ],
   "activationEvents": []
 }

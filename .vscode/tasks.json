@@ -4,8 +4,8 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "watch",
-      "dependsOn": ["npm: watch:tsc", "npm: watch:build"],
+      "label": "bun: watch",
+      "dependsOn": ["bun: watch:tsc", "bun: watch:build"],
       "presentation": {
         "reveal": "never"
       },
@@ -18,12 +18,11 @@
       }
     },
     {
-      "type": "npm",
+      "type": "bun",
       "script": "watch:build",
       "group": "build",
-      "problemMatcher": "$build-watch",
       "isBackground": true,
-      "label": "npm: watch:build",
+      "label": "bun: watch:build",
       "presentation": {
         "group": "watch",
         "reveal": "never"
@@ -33,12 +32,12 @@
       }
     },
     {
-      "type": "npm",
+      "type": "bun",
       "script": "watch:tsc",
       "group": "build",
       "problemMatcher": "$tsc-watch",
       "isBackground": true,
-      "label": "npm: watch:tsc",
+      "label": "bun: watch:tsc",
       "presentation": {
         "group": "watch",
         "reveal": "never"
@@ -48,8 +47,9 @@
       }
     },
     {
-      "type": "npm",
-      "script": "watch-tests",
+      "type": "bun",
+      "script": "watch:tests",
+      "label": "bun: watch:tests",
       "problemMatcher": "$tsc-watch",
       "isBackground": true,
       "presentation": {
@@ -62,8 +62,8 @@
       }
     },
     {
-      "label": "tasks: watch-tests",
-      "dependsOn": ["npm: watch", "npm: watch-tests"],
+      "label": "tasks: watch:tests",
+      "dependsOn": ["bun: watch", "bun: watch:tests"],
       "problemMatcher": [],
       "options": {
         "cwd": "${workspaceFolder}"
