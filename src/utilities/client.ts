@@ -1,16 +1,20 @@
 import * as vscode from 'vscode';
-import { Connection, Client } from '@temporalio/client';
+import { Connection, Client, ConnectionOptions, ClientOptions } from '@temporalio/client';
 import { configuration } from './configuration';
 import { temporalServer } from '../server';
 
 export type TemporalClient = Client;
-export type CreateClient = () => Promise<TemporalClient>;
-export type WithClient = (
-  fn: (client: TemporalClient) => Promise<void> | void,
-) => void;
+export type CreateClient = (options?: Partial<ClientOptions>) => Promise<TemporalClient>;
+export type WithClient = <T>(
+  fn: (client: TemporalClient) => Promise<T> | T,
+) => Promise<T>;
 
-export const createClient: CreateClient = async () => {
+/**
+ * Creates a new Temporal client with the configured settings
+ */
+export const createClient: CreateClient = async (customOptions = {}) => {
   try {
+    // Check if server is running and prompt to start if not
     const serverRunning = await temporalServer.isRunning();
 
     if (!serverRunning) {
@@ -26,26 +30,48 @@ export const createClient: CreateClient = async () => {
       }
     }
 
-    const address = configuration.address;
-    const apiKey = configuration.apiKey;
-    const namespace = configuration.namespace;
-    const identity = configuration.identity;
+    // Prepare connection options from configuration
+    const connectionOptions: ConnectionOptions = {
+      address: configuration.address,
+    };
+    
+    if (configuration.apiKey) {
+      connectionOptions.apiKey = configuration.apiKey;
+    }
 
-    const connection = await Connection.connect({ address, apiKey });
-    const client = new Client({ connection, namespace, identity });
+    // Create connection
+    const connection = await Connection.connect(connectionOptions);
+    
+    // Prepare client options
+    const clientOptions: ClientOptions = {
+      connection,
+      namespace: configuration.namespace,
+      ...customOptions
+    };
+    
+    if (configuration.identity) {
+      clientOptions.identity = configuration.identity;
+    }
 
-    return client;
+    // Create and return client
+    return new Client(clientOptions);
   } catch (error) {
+    if (error instanceof Error) {
+      throw error;
+    }
     throw new Error('Could not connect to Temporal server.');
   }
 };
 
-export const withClient: WithClient = async (fn) => {
+/**
+ * Executes a function with a client and automatically closes the connection
+ */
+export const withClient: WithClient = async <T>(fn: (client: TemporalClient) => Promise<T> | T): Promise<T> => {
   const client = await createClient();
 
   try {
-    await fn(client);
+    return await fn(client);
   } finally {
-    client.connection.close();
+    await client.connection.close();
   }
 };
