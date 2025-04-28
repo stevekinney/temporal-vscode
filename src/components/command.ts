@@ -14,6 +14,7 @@ type ExtensionCommand<Params extends any[] = any[]> = (
   parameters: {
     /** Opens the Temporal UI in the default browser. */
     openUI: typeof openUI;
+    /** An extension context is a collection of utilities private to an extension. */
     context: vscode.ExtensionContext;
     /** Returns a Temporal client. */
     getClient: CreateClient;
