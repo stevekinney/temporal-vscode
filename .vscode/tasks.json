@@ -5,7 +5,7 @@
   "tasks": [
     {
       "label": "bun: watch",
-      "dependsOn": ["bun: watch:tsc", "bun: watch:build"],
+      "dependsOn": ["bun: watch:build", "bun: watch:tsc"],
       "presentation": {
         "reveal": "never"
       },
@@ -18,8 +18,9 @@
       }
     },
     {
-      "type": "bun",
-      "script": "watch:build",
+      "type": "shell",
+      "command": "bun",
+      "args": ["run", "watch:build"],
       "group": "build",
       "isBackground": true,
       "label": "bun: watch:build",
@@ -29,11 +30,13 @@
       },
       "options": {
         "cwd": "${workspaceFolder}"
-      }
+      },
+      "problemMatcher": []
     },
     {
-      "type": "bun",
-      "script": "watch:tsc",
+      "type": "shell",
+      "command": "bun",
+      "args": ["run", "watch:tsc"],
       "group": "build",
       "problemMatcher": "$tsc-watch",
       "isBackground": true,
@@ -47,8 +50,9 @@
       }
     },
     {
-      "type": "bun",
-      "script": "watch:tests",
+      "type": "shell",
+      "command": "bun",
+      "args": ["run", "watch:tests"],
       "label": "bun: watch:tests",
       "problemMatcher": "$tsc-watch",
       "isBackground": true,
@@ -62,9 +66,98 @@
       }
     },
     {
-      "label": "tasks: watch:tests",
+      "label": "watch all",
       "dependsOn": ["bun: watch", "bun: watch:tests"],
       "problemMatcher": [],
+      "group": "build",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      }
+    },
+    {
+      "label": "Generate Commands",
+      "type": "shell",
+      "command": "bun",
+      "args": ["run", "generate:commands"],
+      "problemMatcher": [],
+      "group": "build",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      }
+    },
+    {
+      "label": "Generate Types",
+      "type": "shell",
+      "command": "bun",
+      "args": ["run", "generate:types"],
+      "problemMatcher": [],
+      "group": "build",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      }
+    },
+    {
+      "label": "Generate Configuration",
+      "type": "shell",
+      "command": "bun",
+      "args": ["run", "generate:configuration"],
+      "problemMatcher": [],
+      "group": "build",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      }
+    },
+    {
+      "label": "Generate All",
+      "type": "shell",
+      "command": "bun",
+      "args": ["run", "generate"],
+      "problemMatcher": [],
+      "group": "build",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      }
+    },
+    {
+      "label": "Check Types",
+      "type": "shell",
+      "command": "bun",
+      "args": ["run", "check-types"],
+      "problemMatcher": ["$tsc"],
+      "group": "test",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      }
+    },
+    {
+      "label": "Lint",
+      "type": "shell",
+      "command": "bun",
+      "args": ["run", "lint"],
+      "problemMatcher": ["$eslint-stylish"],
+      "group": "test",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      }
+    },
+    {
+      "label": "Build",
+      "type": "shell",
+      "command": "bun",
+      "args": ["run", "build"],
+      "problemMatcher": [],
+      "group": "build",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      }
+    },
+    {
+      "label": "Package",
+      "type": "shell",
+      "command": "bun",
+      "args": ["run", "package"],
+      "problemMatcher": [],
+      "group": "build",
       "options": {
         "cwd": "${workspaceFolder}"
       }
