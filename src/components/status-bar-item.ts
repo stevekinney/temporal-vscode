@@ -70,12 +70,17 @@ export class StatusBarItem implements vscode.Disposable {
   private _interval: NodeJS.Timer | undefined = undefined;
   private _disposed: boolean = false;
   private _commandHandler: vscode.Disposable | undefined = undefined;
-  private _commandCallback: (() => void | Promise<void>) | undefined = undefined;
+  private _commandCallback: (() => void | Promise<void>) | undefined =
+    undefined;
 
   constructor(parameters: StatusBarItemParameters) {
-    const { id, alignment = vscode.StatusBarAlignment.Left, priority = 0, name } = parameters;
-    
-    this._item = vscode.window.createStatusBarItem(id, alignment, priority, name);
+    const {
+      id,
+      alignment = vscode.StatusBarAlignment.Left,
+      priority = 0,
+    } = parameters;
+
+    this._item = vscode.window.createStatusBarItem(id, alignment, priority);
     this.update(parameters);
 
     StatusBarItem.items.push(this);
@@ -123,7 +128,9 @@ export class StatusBarItem implements vscode.Disposable {
    * @param command The command to execute when the status bar item is clicked
    * @returns This status bar item for chaining
    */
-  private setCommand(command: CommandName | (() => void | Promise<void>)): StatusBarItem {
+  private setCommand(
+    command: CommandName | (() => void | Promise<void>),
+  ): StatusBarItem {
     // Clean up any existing command handler
     if (this._commandHandler) {
       this._commandHandler.dispose();
@@ -138,21 +145,27 @@ export class StatusBarItem implements vscode.Disposable {
       // Create a unique command ID for this callback
       const commandId = `statusBarItem.${this.id}.command`;
       this._commandCallback = command;
-      
+
       // Register the command
-      this._commandHandler = vscode.commands.registerCommand(commandId, async () => {
-        try {
-          if (this._commandCallback) {
-            await this._commandCallback();
+      this._commandHandler = vscode.commands.registerCommand(
+        commandId,
+        async () => {
+          try {
+            if (this._commandCallback) {
+              await this._commandCallback();
+            }
+          } catch (error) {
+            console.error(
+              `Error executing status bar command for ${this.id}:`,
+              error,
+            );
           }
-        } catch (error) {
-          console.error(`Error executing status bar command for ${this.id}:`, error);
-        }
-      });
-      
+        },
+      );
+
       // Add to extension subscriptions
       StatusBarItem.context.subscriptions.push(this._commandHandler);
-      
+
       // Set the command
       this._item.command = commandId;
     }
@@ -259,15 +272,15 @@ export class StatusBarItem implements vscode.Disposable {
   dispose(): void {
     if (!this._disposed) {
       this.clearInterval();
-      
+
       if (this._commandHandler) {
         this._commandHandler.dispose();
         this._commandHandler = undefined;
       }
-      
+
       this._item.dispose();
       this._disposed = true;
-      
+
       // Remove from items array
       const index = StatusBarItem.items.indexOf(this);
       if (index !== -1) {
@@ -341,12 +354,11 @@ export class StatusBarItemGroup implements vscode.Disposable {
    */
   add(item: StatusBarItem | StatusBarItemParameters): StatusBarItemGroup {
     if (!this._disposed) {
-      const statusBarItem = item instanceof StatusBarItem 
-        ? item 
-        : StatusBarItem.create(item);
-        
+      const statusBarItem =
+        item instanceof StatusBarItem ? item : StatusBarItem.create(item);
+
       // Avoid duplicates
-      if (!this._items.some(i => i.id === statusBarItem.id)) {
+      if (!this._items.some((i) => i.id === statusBarItem.id)) {
         this._items.push(statusBarItem);
       }
     }
@@ -360,7 +372,7 @@ export class StatusBarItemGroup implements vscode.Disposable {
    */
   remove(id: string): StatusBarItemGroup {
     if (!this._disposed) {
-      const index = this._items.findIndex(item => item.id === id);
+      const index = this._items.findIndex((item) => item.id === id);
       if (index !== -1) {
         this._items.splice(index, 1);
       }
@@ -379,7 +391,7 @@ export class StatusBarItemGroup implements vscode.Disposable {
         if (!parameter.id) {
           return;
         }
-        
+
         const item = this._items.find((item) => item.id === parameter.id);
         if (item) {
           item.update(parameter);
