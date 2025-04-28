@@ -1,6 +1,5 @@
 import * as vscode from 'vscode';
 import { Command } from '$components/command';
-import { TemporalClient } from '$utilities/client';
 import { select } from '$utilities/select';
 
 /**

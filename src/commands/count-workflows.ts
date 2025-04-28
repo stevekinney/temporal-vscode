@@ -1,4 +1,3 @@
-import * as vscode from 'vscode';
 import { kebabCase, sentenceCase } from 'change-case';
 
 import type { TemporalClient } from '$utilities/client';
