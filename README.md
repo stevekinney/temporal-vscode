@@ -27,6 +27,8 @@ This script searches the code base for all invocations of `Command.register` and
 
 The manifest of commands in `package.json` and the `CommandNames` type in `src/commands.d.ts` should be generated using `bun run generate:commands`. Do _not_ edit either of these files directly.
 
+You can see a list of all supported commands [here](./src/commands/README.md).
+
 ### Generating Configuration
 
 You can generate types and schemas for the configuration defined in `package.json` by running `bun run generate:configuration`. This script looks at the configuration supported in `contributes.configuration.properties` in `package.json` and creates types and schemas in `src/utilities/configuration-schema.ts`.
