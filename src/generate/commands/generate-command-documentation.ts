@@ -7,6 +7,7 @@ export async function generateCommandDocumentation(
   commands: CommandRegistration[],
   filePath = 'src/commands/README.md',
 ) {
+  await Bun.write(filePath, '');
   const file = Bun.file(filePath);
   const writer = file.writer();
 
