@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 
 import { Component } from './component';
-import { which } from 'bun';
+import which from 'which';
 
 export interface TerminalOptions extends vscode.TerminalOptions {
   name: string;
