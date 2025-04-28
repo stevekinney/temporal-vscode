@@ -21,7 +21,7 @@ type ExtensionCommand<Params extends any[] = any[]> = (
     withClient: WithClient;
   },
   ...params: Params
-) => Promise<void> | void;
+) => Promise<void | boolean> | void;
 
 export const toCommandName = (commandName: CommandName): FullCommandName => {
   return `${extensionId}.${commandName}`;
