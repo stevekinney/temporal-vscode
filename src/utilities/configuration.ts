@@ -16,6 +16,9 @@ export const configuration = {
   get port() {
     return getConfiguration('developmentServer.port') || 7233;
   },
+  get address() {
+    return `${this.host}:${this.port}`;
+  },
   get ui() {
     const address =
       getConfiguration('developmentServer.webInterface') ||

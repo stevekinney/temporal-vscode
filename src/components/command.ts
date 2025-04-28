@@ -12,9 +12,12 @@ import { extensionId } from '$utilities/extension-id';
 
 type ExtensionCommand<Params extends any[] = any[]> = (
   parameters: {
+    /** Opens the Temporal UI in the default browser. */
     openUI: typeof openUI;
     context: vscode.ExtensionContext;
+    /** Returns a Temporal client. */
     getClient: CreateClient;
+    /** A function that provides access to the Temporal client and closes the connection when completed. */
     withClient: WithClient;
   },
   ...params: Params

@@ -7,8 +7,12 @@ type Options = {
   query?: Record<string, string>;
 };
 
-export async function openUI<R extends keyof UIRoute>(
-  path: UIRoute[R] | undefined = undefined,
+/**
+ * Opens the Temporal UI in the default browser.
+ * @param path The path to open in the UI. If not provided, the base URL will be used.
+ */
+export async function openUI(
+  path: UIRoute[UIRouteKey] | undefined = undefined,
   {
     base = Uri.parse(configuration.ui.href),
     namespace = configuration.namespace,

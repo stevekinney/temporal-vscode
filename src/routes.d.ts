@@ -13,6 +13,8 @@ type UIRoute = {
   schedule: `${UIRoute['schedules']}/${string}`;
 };
 
+type UIRouteKey = keyof UIRoute;
+
 type APIRoute = {
   systemInfo: `system-info`;
   clusterInfo: `cluster-info`;
