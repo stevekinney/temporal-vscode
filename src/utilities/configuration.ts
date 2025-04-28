@@ -11,7 +11,7 @@ const getConfiguration = <
 
 export const configuration = {
   get host() {
-    return getConfiguration('developmentServer.host');
+    return getConfiguration('developmentServer.host') || 'localhost';
   },
   get port() {
     return getConfiguration('developmentServer.port') || 7233;
