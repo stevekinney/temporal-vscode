@@ -19,11 +19,10 @@ export async function generateCommandDocumentation(
   writer.write(`\n\n`);
 
   for (const command of commands) {
-    writer.write(`## ${command.name}`);
-    writer.write(`\n\n`);
-    writer.write(`${command.title}.`);
-    writer.write(`\n\n`);
+    writer.write(`- **${command.name}** ${command.title}\n`);
   }
+
+  writer.write(`\n`);
 
   await writer.end();
 }
