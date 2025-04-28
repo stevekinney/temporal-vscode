@@ -40,14 +40,21 @@ function isLongLike(value: unknown): value is LongLike {
  */
 function longToNumber(long: LongLike): number {
   const { low, high, unsigned } = long;
-  if (unsigned) {
-    return high * 0x100000000 + (low >>> 0);
+  const lowUnsigned = low >>> 0;
+  
+  if (!unsigned && high === -1) {
+    return -(~low + 1 >>> 0);
+  } else if (!unsigned && high < 0) {
+    return -((~high + (lowUnsigned === 0 ? 1 : 0)) * 0x100000000 + (~lowUnsigned + 1));
   }
-  return high * 0x100000000 + (low >>> 0);
+  
+  return high * 0x100000000 + lowUnsigned;
 }
 
 /**
  * Decode a value. This function is used to convert values from the Temporal API to a more usable format.
+ * The function handles Uint8Array, string, null, undefined, Long-like objects, arrays, and objects.
+ * It's primarily used for `CountWorkflow`.
  * @param value The value to decode
  * @returns The decoded value
  */
@@ -57,7 +64,9 @@ export function decode<T>(value: T): Decoded<T> {
   } else if (
     typeof value === 'string' ||
     value === null ||
-    value === undefined
+    value === undefined ||
+    typeof value === 'boolean' ||
+    typeof value === 'number'
   ) {
     return value as Decoded<T>;
   } else if (isLongLike(value)) {
@@ -65,9 +74,9 @@ export function decode<T>(value: T): Decoded<T> {
   } else if (Array.isArray(value)) {
     return value.map((v) => decode(v)) as Decoded<T>;
   } else if (typeof value === 'object' && value !== null) {
-    const decodedObject: any = {};
+    const decodedObject: Record<string, unknown> = {};
     for (const key in value) {
-      if (value.hasOwnProperty(key)) {
+      if (Object.prototype.hasOwnProperty.call(value, key)) {
         decodedObject[key] = decode(value[key]);
       }
     }
