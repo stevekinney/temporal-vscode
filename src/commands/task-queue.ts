@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import { Command } from '$components/command';
 
 /**
- * @summary Show task queue
+ * @summary Show task queue in the UI
  */
 Command.register('showTaskQueue', async ({ openUI }) => {
   try {

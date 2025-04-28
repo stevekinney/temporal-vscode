@@ -3,14 +3,14 @@ import { Command } from '$components/command';
 import { select } from '$utilities/select';
 
 /**
- * @summary View batch operations
+ * @summary View batch operations in the UI
  */
 Command.register('viewBatchOperations', async ({ openUI }) => {
   return openUI('batch-operations');
 });
 
 /**
- * @summary Open batch operation
+ * @summary Open batch operation in the UI
  */
 Command.register('openBatchOperation', async ({ getClient, openUI }) => {
   const client = await getClient();

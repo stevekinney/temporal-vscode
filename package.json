@@ -29,12 +29,12 @@
     "commands": [
       {
         "command": "temporal-vscode.viewBatchOperations",
-        "title": "View batch operations",
+        "title": "View batch operations in the UI",
         "category": "Temporal"
       },
       {
         "command": "temporal-vscode.openBatchOperation",
-        "title": "Open batch operation",
+        "title": "Open batch operation in the UI",
         "category": "Temporal"
       },
       {
@@ -59,12 +59,12 @@
       },
       {
         "command": "temporal-vscode.viewSchedules",
-        "title": "View schedules",
+        "title": "View schedules in the Ui",
         "category": "Temporal"
       },
       {
         "command": "temporal-vscode.openSchedule",
-        "title": "Create schedule",
+        "title": "Open schedule in the UI",
         "category": "Temporal"
       },
       {
@@ -94,57 +94,57 @@
       },
       {
         "command": "temporal-vscode.showTaskQueue",
-        "title": "Show task queue",
+        "title": "Show task queue in the UI",
         "category": "Temporal"
       },
       {
         "command": "temporal-vscode.viewWorkflows",
-        "title": "View workflows",
+        "title": "View workflows in the UI",
         "category": "Temporal"
       },
       {
         "command": "temporal-vscode.openWorkflow",
-        "title": "Open workflow",
+        "title": "Open workflow in the UI",
         "category": "Temporal"
       },
       {
         "command": "temporal-vscode.viewRunningWorkflows",
-        "title": "View running workflows",
+        "title": "View running workflows in the UI",
         "category": "Temporal"
       },
       {
         "command": "temporal-vscode.viewCompletedWorkflows",
-        "title": "View completed workflows",
+        "title": "View completed workflows in the UI",
         "category": "Temporal"
       },
       {
         "command": "temporal-vscode.viewFailedWorkflows",
-        "title": "View failed workflows",
+        "title": "View failed workflows in the UI",
         "category": "Temporal"
       },
       {
         "command": "temporal-vscode.viewCanceledWorkflows",
-        "title": "View canceled workflows",
+        "title": "View canceled workflows in the UI",
         "category": "Temporal"
       },
       {
         "command": "temporal-vscode.viewTerminatedWorkflows",
-        "title": "View terminated workflows",
+        "title": "View terminated workflows in the UI",
         "category": "Temporal"
       },
       {
         "command": "temporal-vscode.viewContinuedAsNewWorkflows",
-        "title": "View continued as new workflows",
+        "title": "View continued as new workflows in the UI",
         "category": "Temporal"
       },
       {
         "command": "temporal-vscode.viewTimedOutWorkflows",
-        "title": "View timed out workflows",
+        "title": "View timed out workflows in the UI",
         "category": "Temporal"
       },
       {
         "command": "temporal-vscode.viewWorkflowsWithQuery",
-        "title": "View workflows with custom query",
+        "title": "View workflows with custom query in the UI",
         "category": "Temporal"
       },
       {

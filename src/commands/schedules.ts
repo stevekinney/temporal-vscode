@@ -3,14 +3,14 @@ import { Command } from '$components/command';
 import { select } from '$utilities/select';
 
 /**
- * @summary View schedules
+ * @summary View schedules in the Ui
  */
 Command.register('viewSchedules', ({ openUI }) => {
   return openUI('schedules');
 });
 
 /**
- * @summary Create schedule
+ * @summary Open schedule in the UI
  */
 Command.register('openSchedule', async ({ getClient, openUI }) => {
   try {

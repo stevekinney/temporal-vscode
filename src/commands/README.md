@@ -3,105 +3,105 @@
 
 ## viewBatchOperations
 
-View batch operations
+View batch operations in the UI.
 
 ## openBatchOperation
 
-Open batch operation
+Open batch operation in the UI.
 
 ## stopBatchOperation
 
-Stop batch operation
+Stop batch operation.
 
 ## countWorkflows
 
-Show count of workflows
+Show count of workflows.
 
 ## getSystemInfo
 
-Get system information
+Get system information.
 
 ## getClusterInfo
 
-Get cluster information
+Get cluster information.
 
 ## viewSchedules
 
-View schedules
+View schedules in the Ui.
 
 ## openSchedule
 
-Create schedule
+Open schedule in the UI.
 
 ## deleteSchedule
 
-Delete schedule
+Delete schedule.
 
 ## getSearchAttributes
 
-List search attributes
+List search attributes.
 
 ## openSettings
 
-Open settings
+Open settings.
 
 ## changeDefaultNamespace.user
 
-Change default namespace (User)
+Change default namespace (User).
 
 ## changeDefaultNamespace.workspace
 
-Change default namespace (Workspace)
+Change default namespace (Workspace).
 
 ## showTaskQueue
 
-Show task queue
+Show task queue in the UI.
 
 ## viewWorkflows
 
-View workflows
+View workflows in the UI.
 
 ## openWorkflow
 
-Open workflow
+Open workflow in the UI.
 
 ## viewRunningWorkflows
 
-View running workflows
+View running workflows in the UI.
 
 ## viewCompletedWorkflows
 
-View completed workflows
+View completed workflows in the UI.
 
 ## viewFailedWorkflows
 
-View failed workflows
+View failed workflows in the UI.
 
 ## viewCanceledWorkflows
 
-View canceled workflows
+View canceled workflows in the UI.
 
 ## viewTerminatedWorkflows
 
-View terminated workflows
+View terminated workflows in the UI.
 
 ## viewContinuedAsNewWorkflows
 
-View continued as new workflows
+View continued as new workflows in the UI.
 
 ## viewTimedOutWorkflows
 
-View timed out workflows
+View timed out workflows in the UI.
 
 ## viewWorkflowsWithQuery
 
-View workflows with custom query
+View workflows with custom query in the UI.
 
 ## startDevelopmentServer
 
-Start development server
+Start development server.
 
 ## stopDevelopmentServer
 
-Stop development server
+Stop development server.
 

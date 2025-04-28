@@ -21,7 +21,7 @@ export async function generateCommandDocumentation(
   for (const command of commands) {
     writer.write(`## ${command.name}`);
     writer.write(`\n\n`);
-    writer.write(command.title);
+    writer.write(`${command.title}.`);
     writer.write(`\n\n`);
   }
 

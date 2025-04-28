@@ -3,14 +3,14 @@ import { Command } from '$components/command';
 import { select } from '$utilities/select';
 
 /**
- * @summary View workflows
+ * @summary View workflows in the UI
  */
 Command.register('viewWorkflows', ({ openUI }) => {
   return openUI('workflows');
 });
 
 /**
- * @summary Open workflow
+ * @summary Open workflow in the UI
  */
 Command.register('openWorkflow', async ({ getClient, openUI }) => {
   const client = await getClient();
@@ -39,42 +39,42 @@ Command.register('openWorkflow', async ({ getClient, openUI }) => {
 });
 
 /**
- * @summary View running workflows
+ * @summary View running workflows in the UI
  */
 Command.register('viewRunningWorkflows', async ({ openUI }) => {
   openUI('workflows', { query: { query: 'ExecutionStatus="Running"' } });
 });
 
 /**
- * @summary View completed workflows
+ * @summary View completed workflows in the UI
  */
 Command.register('viewCompletedWorkflows', async ({ openUI }) => {
   openUI('workflows', { query: { query: 'ExecutionStatus="Completed"' } });
 });
 
 /**
- * @summary View failed workflows
+ * @summary View failed workflows in the UI
  */
 Command.register('viewFailedWorkflows', async ({ openUI }) => {
   openUI('workflows', { query: { query: 'ExecutionStatus="Failed"' } });
 });
 
 /**
- * @summary View canceled workflows
+ * @summary View canceled workflows in the UI
  */
 Command.register('viewCanceledWorkflows', async ({ openUI }) => {
   openUI('workflows', { query: { query: 'ExecutionStatus="Canceled"' } });
 });
 
 /**
- * @summary View terminated workflows
+ * @summary View terminated workflows in the UI
  */
 Command.register('viewTerminatedWorkflows', async ({ openUI }) => {
   openUI('workflows', { query: { query: 'ExecutionStatus="Terminated"' } });
 });
 
 /**
- * @summary View continued as new workflows
+ * @summary View continued as new workflows in the UI
  */
 Command.register('viewContinuedAsNewWorkflows', async ({ openUI }) => {
   openUI('workflows', {
@@ -83,14 +83,14 @@ Command.register('viewContinuedAsNewWorkflows', async ({ openUI }) => {
 });
 
 /**
- * @summary View timed out workflows
+ * @summary View timed out workflows in the UI
  */
 Command.register('viewTimedOutWorkflows', async ({ openUI }) => {
   openUI('workflows', { query: { query: 'ExecutionStatus="TimedOut"' } });
 });
 
 /**
- * @summary View workflows with custom query
+ * @summary View workflows with custom query in the UI
  */
 Command.register(
   'viewWorkflowsWithQuery',
