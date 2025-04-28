@@ -2,29 +2,6 @@
 // for the documentation about the tasks.json format
 {
   "version": "2.0.0",
-  "problemMatchers": {
-    "$bun-build": {
-      "owner": "bun-build",
-      "fileLocation": ["relative", "${workspaceFolder}"],
-      "pattern": [
-        {
-          "regexp": "\\[error\\]\\s+(.*):(\\d+)\\s\\|\\s(.*)",
-          "file": 1,
-          "line": 2,
-          "message": 3
-        },
-        {
-          "regexp": "^\\s+(.*)",
-          "message": 1
-        },
-        {
-          "regexp": "TypeError:\\s+(.*)",
-          "message": 1,
-          "loop": true
-        }
-      ]
-    }
-  },
   "tasks": [
     {
       "label": "bun: watch",
@@ -54,32 +31,34 @@
       "options": {
         "cwd": "${workspaceFolder}"
       },
-      "problemMatcher": [{
-        "owner": "bun-build-watch",
-        "fileLocation": ["relative", "${workspaceFolder}"],
-        "pattern": [
-          {
-            "regexp": "\\[error\\]\\s+(.*):(\\d+)\\s\\|\\s(.*)",
-            "file": 1,
-            "line": 2,
-            "message": 3
-          },
-          {
-            "regexp": "^\\s+(.*)",
-            "message": 1
-          },
-          {
-            "regexp": "TypeError:\\s+(.*)",
-            "message": 1,
-            "loop": true
+      "problemMatcher": [
+        {
+          "owner": "bun-build-watch",
+          "fileLocation": ["relative", "${workspaceFolder}"],
+          "pattern": [
+            {
+              "regexp": "\\[error\\]\\s+(.*):(\\d+)\\s\\|\\s(.*)",
+              "file": 1,
+              "line": 2,
+              "message": 3
+            },
+            {
+              "regexp": "^\\s+(.*)",
+              "message": 1
+            },
+            {
+              "regexp": "TypeError:\\s+(.*)",
+              "message": 1,
+              "loop": true
+            }
+          ],
+          "background": {
+            "activeOnStart": true,
+            "beginsPattern": "\\[info\\] Building extension",
+            "endsPattern": "\\[success\\] Build completed"
           }
-        ],
-        "background": {
-          "activeOnStart": true,
-          "beginsPattern": "\\[info\\] Building extension",
-          "endsPattern": "\\[success\\] Build completed"
         }
-      }]
+      ]
     },
     {
       "type": "shell",
@@ -108,15 +87,6 @@
         "reveal": "never",
         "group": "watchers"
       },
-      "group": "build",
-      "options": {
-        "cwd": "${workspaceFolder}"
-      }
-    },
-    {
-      "label": "watch all",
-      "dependsOn": ["bun: watch", "bun: watch:tests"],
-      "problemMatcher": [],
       "group": "build",
       "options": {
         "cwd": "${workspaceFolder}"
@@ -184,28 +154,6 @@
       "args": ["run", "lint"],
       "problemMatcher": ["$eslint-stylish"],
       "group": "test",
-      "options": {
-        "cwd": "${workspaceFolder}"
-      }
-    },
-    {
-      "label": "Build",
-      "type": "shell",
-      "command": "bun",
-      "args": ["run", "build"],
-      "problemMatcher": ["$bun-build"],
-      "group": "build",
-      "options": {
-        "cwd": "${workspaceFolder}"
-      }
-    },
-    {
-      "label": "Package",
-      "type": "shell",
-      "command": "bun",
-      "args": ["run", "package"],
-      "problemMatcher": ["$bun-build"],
-      "group": "build",
       "options": {
         "cwd": "${workspaceFolder}"
       }
