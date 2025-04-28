@@ -1,4 +1,5 @@
 import { configuration } from '../utilities/configuration';
+import which from 'which';
 
 const serverOptions = {
   get '--ip'() {
@@ -30,7 +31,11 @@ const serverOptions = {
     return options.trim();
   },
 };
+export const getServerCommand = async () => {
+  const cmd = await which('temporal', { nothrow: true });
 
-export const getServerCommand = () => {
-  return `temporal server start-dev ${serverOptions}`;
+  if (!cmd) {
+    return '';
+  }
+  return `${cmd} server start-dev ${serverOptions}`;
 };

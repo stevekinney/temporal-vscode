@@ -262,6 +262,7 @@
     "@types/pluralize": "^0.0.33",
     "@types/vscode": "^1.99.1",
     "@types/vscode-webview": "^1.57.5",
+    "@types/which": "^3.0.4",
     "@typescript-eslint/eslint-plugin": "^8.31.1",
     "@typescript-eslint/parser": "^8.31.1",
     "@vscode/test-cli": "^0.0.10",
@@ -283,5 +284,8 @@
     "vscode": "^1.92.0"
   },
   "categories": ["Other"],
-  "activationEvents": []
+  "activationEvents": [],
+  "dependencies": {
+    "which": "^5.0.0"
+  }
 }

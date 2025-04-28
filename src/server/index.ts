@@ -27,7 +27,14 @@ export const temporalServer = {
       return;
     }
 
-    const command = getServerCommand();
+    const command = await getServerCommand();
+
+    if (!command) {
+      window.showErrorMessage(
+        'Temporal CLI not found. Please install it or add it to your PATH.',
+      );
+      return;
+    }
 
     this.terminal.sendText(command).show();
 
