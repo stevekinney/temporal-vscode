@@ -5,17 +5,10 @@ import type {
   CreateClient,
   WithClient,
 } from '$utilities/client';
-
 import { openUI } from '$utilities/open-ui';
 
 import { Component } from './component';
-
-const extensionId = Component.extensionId;
-type FullCommandName = `${typeof extensionId}.${CommandName}`;
-
-export const toCommandName = (commandName: CommandName): FullCommandName => {
-  return `${extensionId}.${commandName}`;
-};
+import { extensionId } from '$utilities/extension-id';
 
 type ExtensionCommand<Params extends any[] = any[]> = (
   parameters: {
@@ -26,6 +19,10 @@ type ExtensionCommand<Params extends any[] = any[]> = (
   },
   ...params: Params
 ) => Promise<void> | void;
+
+export const toCommandName = (commandName: CommandName): FullCommandName => {
+  return `${extensionId}.${commandName}`;
+};
 
 export class Command extends Component {
   static register(name: string, command: ExtensionCommand) {

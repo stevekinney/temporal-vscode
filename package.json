@@ -1,18 +1,22 @@
 {
-  "name": "temporal-vscode-extension",
+  "name": "temporal-vscode",
   "displayName": "Temporal",
   "publisher": "temporal-technologies",
   "description": "Support for Temporal",
   "version": "0.0.1",
   "type": "module",
   "scripts": {
+    "build": "bun run build.ts",
     "vscode:prepublish": "bun run package",
-    "compile": "bun run check-types && bun run lint && bun esbuild.ts",
+    "compile": "bun run check-types && bun run lint && bun run build",
     "watch": "npm-run-all -p watch:*",
-    "generate": "bun generate.mjs",
-    "watch:esbuild": "bun esbuild.ts --watch",
+    "generate": "bun run generate:commands && bun run generate:types && bun run generate:configuration",
+    "generate:commands": "bun run src/generate/commands",
+    "generate:types": "bun run src/generate/types",
+    "generate:configuration": "bun run src/generate/configuration",
+    "watch:build": "bun run --watch build",
     "watch:tsc": "tsc --noEmit --watch --project tsconfig.json",
-    "package": "bun run check-types && bun run lint && bun esbuild.ts --production",
+    "package": "bun run check-types && bun run lint && bun run build --production",
     "compile-tests": "tsc -p . --outDir out",
     "watch-tests": "tsc -p . -w --outDir out",
     "pretest": "bun run compile-tests && bun run compile && bun run lint",
@@ -22,22 +26,62 @@
   },
   "main": "./dist/extension.cjs",
   "contributes": {
-    "chatParticipants": [
-      {
-        "id": "temporal-vscode.chat",
-        "fullName": "Trudi the Tardigrade",
-        "name": "trudi",
-        "description": "I'm here to help you with Temporal!",
-        "isSticky": true,
-        "commands": [
-          {
-            "name": "query",
-            "description": "Generate a query for a Temporal's Visibility API"
-          }
-        ]
-      }
-    ],
     "commands": [
+      {
+        "command": "temporal-vscode.viewBatchOperations",
+        "title": "View batch operations",
+        "category": "Temporal"
+      },
+      {
+        "command": "temporal-vscode.openBatchOperation",
+        "title": "Open batch operation",
+        "category": "Temporal"
+      },
+      {
+        "command": "temporal-vscode.stopBatchOperation",
+        "title": "Stop batch operation",
+        "category": "Temporal"
+      },
+      {
+        "command": "temporal-vscode.countWorkflows",
+        "title": "Show count of workflows",
+        "category": "Temporal"
+      },
+      {
+        "command": "temporal-vscode.getSystemInfo",
+        "title": "Get system information",
+        "category": "Temporal"
+      },
+      {
+        "command": "temporal-vscode.getClusterInfo",
+        "title": "Get cluster information",
+        "category": "Temporal"
+      },
+      {
+        "command": "temporal-vscode.viewSchedules",
+        "title": "View schedules",
+        "category": "Temporal"
+      },
+      {
+        "command": "temporal-vscode.openSchedule",
+        "title": "Create schedule",
+        "category": "Temporal"
+      },
+      {
+        "command": "temporal-vscode.deleteSchedule",
+        "title": "Delete schedule",
+        "category": "Temporal"
+      },
+      {
+        "command": "temporal-vscode.getSearchAttributes",
+        "title": "List search attributes",
+        "category": "Temporal"
+      },
+      {
+        "command": "temporal-vscode.openSettings",
+        "title": "Open settings",
+        "category": "Temporal"
+      },
       {
         "command": "temporal-vscode.changeDefaultNamespace.user",
         "title": "Change default namespace (User)",
@@ -49,118 +93,8 @@
         "category": "Temporal"
       },
       {
-        "command": "temporal-vscode.countWorkflows",
-        "title": "Show count of workflows",
-        "category": "Temporal"
-      },
-      {
-        "command": "temporal-vscode.deleteSchedule",
-        "title": "Delete schedule",
-        "category": "Temporal"
-      },
-      {
-        "command": "temporal-vscode.getClusterInfo",
-        "title": "Get cluster information",
-        "category": "Temporal"
-      },
-      {
-        "command": "temporal-vscode.getSearchAttributes",
-        "title": "List search attributes",
-        "category": "Temporal"
-      },
-      {
-        "command": "temporal-vscode.getSystemInfo",
-        "title": "Get system information",
-        "category": "Temporal"
-      },
-      {
-        "command": "temporal-vscode.openBatchOperation",
-        "title": "Open batch operation",
-        "category": "Temporal"
-      },
-      {
-        "command": "temporal-vscode.openSchedule",
-        "title": "Create schedule",
-        "category": "Temporal"
-      },
-      {
-        "command": "temporal-vscode.openSettings",
-        "title": "Open settings",
-        "category": "Temporal"
-      },
-      {
-        "command": "temporal-vscode.openWorkflow",
-        "title": "Open workflow",
-        "category": "Temporal"
-      },
-      {
         "command": "temporal-vscode.showTaskQueue",
         "title": "Show task queue",
-        "category": "Temporal"
-      },
-      {
-        "command": "temporal-vscode.startDevelopmentServer",
-        "title": "Start development server",
-        "category": "Temporal"
-      },
-      {
-        "command": "temporal-vscode.startWorkflow",
-        "title": "Start workflow",
-        "category": "Temporal"
-      },
-      {
-        "command": "temporal-vscode.stopBatchOperation",
-        "title": "Stop batch operation",
-        "category": "Temporal"
-      },
-      {
-        "command": "temporal-vscode.stopDevelopmentServer",
-        "title": "Stop development server",
-        "category": "Temporal"
-      },
-      {
-        "command": "temporal-vscode.viewBatchOperations",
-        "title": "View batch operations",
-        "category": "Temporal"
-      },
-      {
-        "command": "temporal-vscode.viewCanceledWorkflows",
-        "title": "View canceled workflows",
-        "category": "Temporal"
-      },
-      {
-        "command": "temporal-vscode.viewCompletedWorkflows",
-        "title": "View completed workflows",
-        "category": "Temporal"
-      },
-      {
-        "command": "temporal-vscode.viewContinuedAsNewWorkflows",
-        "title": "View continued as new workflows",
-        "category": "Temporal"
-      },
-      {
-        "command": "temporal-vscode.viewFailedWorkflows",
-        "title": "View failed workflows",
-        "category": "Temporal"
-      },
-      {
-        "command": "temporal-vscode.viewRunningWorkflows",
-        "title": "View running workflows",
-        "category": "Temporal"
-      },
-      {
-        "command": "temporal-vscode.viewSchedules",
-        "title": "View schedules",
-        "category": "Temporal"
-      },
-      {
-        "command": "temporal-vscode.viewTerminatedWorkflows",
-        "title": "View terminated workflows",
-        "category": "Temporal"
-      },
-      {
-        "command": "temporal-vscode.viewTimedOutWorkflows",
-        "title": "View timed out workflows",
         "category": "Temporal"
       },
       {
@@ -169,8 +103,58 @@
         "category": "Temporal"
       },
       {
+        "command": "temporal-vscode.openWorkflow",
+        "title": "Open workflow",
+        "category": "Temporal"
+      },
+      {
+        "command": "temporal-vscode.viewRunningWorkflows",
+        "title": "View running workflows",
+        "category": "Temporal"
+      },
+      {
+        "command": "temporal-vscode.viewCompletedWorkflows",
+        "title": "View completed workflows",
+        "category": "Temporal"
+      },
+      {
+        "command": "temporal-vscode.viewFailedWorkflows",
+        "title": "View failed workflows",
+        "category": "Temporal"
+      },
+      {
+        "command": "temporal-vscode.viewCanceledWorkflows",
+        "title": "View canceled workflows",
+        "category": "Temporal"
+      },
+      {
+        "command": "temporal-vscode.viewTerminatedWorkflows",
+        "title": "View terminated workflows",
+        "category": "Temporal"
+      },
+      {
+        "command": "temporal-vscode.viewContinuedAsNewWorkflows",
+        "title": "View continued as new workflows",
+        "category": "Temporal"
+      },
+      {
+        "command": "temporal-vscode.viewTimedOutWorkflows",
+        "title": "View timed out workflows",
+        "category": "Temporal"
+      },
+      {
         "command": "temporal-vscode.viewWorkflowsWithQuery",
         "title": "View workflows with custom query",
+        "category": "Temporal"
+      },
+      {
+        "command": "temporal-vscode.startDevelopmentServer",
+        "title": "Start development server",
+        "category": "Temporal"
+      },
+      {
+        "command": "temporal-vscode.stopDevelopmentServer",
+        "title": "Stop development server",
         "category": "Temporal"
       }
     ],
@@ -178,20 +162,56 @@
       "type": "object",
       "title": "Temporal",
       "properties": {
-        "temporal.address.server": {
-          "title": "Temporal Address",
+        "temporal.developmentServer.host": {
+          "title": "Development Server Host or IP",
+          "markdownDescription": " IP address or hostname to bind the development server to.",
           "type": "string",
-          "default": "localhost:7233",
-          "description": "The address where Temporal is running.",
+          "default": "localhost",
           "order": 1
         },
-        "temporal.address.webUI": {
+        "temporal.developmentServer.port": {
+          "title": "Development Server Port",
+          "type": "number",
+          "default": 7233,
+          "description": "Port for the frontend gRPC service.",
+          "order": 2
+        },
+        "temporal.developmentServer.webInterface": {
           "title": "Temporal Web UI Address",
           "type": "string",
           "format": "uri",
           "default": "http://localhost:8233",
-          "markdownDescription": "The address where the Temporal Web UI is running. This should be a fully-qualified URL (e.g. `http://localhost:8233`).",
-          "order": 2
+          "markdownDescription": "The address of the Temporal Web UI.",
+          "order": 3
+        },
+        "temporal.developmentServer.namespaces": {
+          "title": "Namespaces",
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [],
+          "markdownDescription": "Specify namespaces that should be pre-created—`default` is always created.",
+          "order": 4
+        },
+        "temporal.developmentServer.searchAttributes": {
+          "title": "Search Attributes",
+          "type": "object",
+          "markdownDescription": "Search attributes to register with the development server.",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "default": {},
+          "order": 5
+        },
+        "temporal.developmentServer.dynamicConfiguration": {
+          "title": "Search Attributes",
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "default": {},
+          "order": 6
         },
         "temporal.codecEndpoint": {
           "title": "Temporal Codec Endpoint",
@@ -200,21 +220,21 @@
           "patternErrorMessage": "The codec endpoint must be a valid URL or empty.",
           "default": "",
           "markdownDescription": "**Optional**: The address where a data encoder codec server is running.",
-          "order": 3
+          "order": 7
         },
         "temporal.namespace": {
           "title": "Default Namespace",
           "type": "string",
           "default": "default",
           "description": "The namespace to use for workflow queries.",
-          "order": 4
+          "order": 0
         },
         "temporal.connection.apiKey": {
           "title": "API Key",
           "type": "string",
           "default": "",
           "description": "The API key to use when making requests to Temporal.",
-          "order": 3
+          "order": 8
         },
         "temporal.client.identity": {
           "title": "Client Identity",
@@ -239,35 +259,26 @@
     "@temporalio/client": "^1.10.3",
     "@temporalio/common": "^1.11.1",
     "@types/bun": "latest",
-    "@types/mocha": "^10.0.7",
     "@types/pluralize": "^0.0.33",
-    "@types/react-dom": "^18.3.0",
-    "@types/react": "^18.3.3",
+    "@types/vscode": "^1.99.1",
     "@types/vscode-webview": "^1.57.5",
-    "@types/vscode": "^1.92.0",
     "@typescript-eslint/eslint-plugin": "^7.14.1",
     "@typescript-eslint/parser": "^7.11.0",
-    "@vitejs/plugin-react": "^4.3.1",
-    "@vscode/prompt-tsx": "0.2.6-alpha",
     "@vscode/test-cli": "^0.0.9",
     "@vscode/test-electron": "^2.4.0",
     "chalk": "^5.3.0",
     "change-case": "^5.4.4",
     "esbuild": "^0.21.5",
-    "eslint-plugin-react-hooks": "^5.1.0-rc.0",
-    "eslint-plugin-react-refresh": "^0.4.9",
     "eslint": "^8.57.0",
-    "fast-glob": "^3.3.2",
     "globals": "^15.9.0",
+    "json-schema-to-zod": "^2.6.1",
     "npm-run-all": "^4.1.5",
     "pluralize": "^8.0.0",
     "prettier": "^3.3.3",
-    "react-dom": "^18.3.1",
-    "react": "^18.3.1",
-    "typescript-eslint": "^8.0.1",
+    "ts-morph": "^25.0.1",
     "typescript": "^5.5.4",
-    "vite": "^5.4.1",
-    "which": "^4.0.0"
+    "typescript-eslint": "^8.0.1",
+    "zod": "^3.24.3"
   },
   "engines": {
     "vscode": "^1.92.0"

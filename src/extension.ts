@@ -1,11 +1,9 @@
 import * as vscode from 'vscode';
 
 import { setContext } from '$components/component';
-import { createChat } from './models';
 
 export async function activate(context: vscode.ExtensionContext) {
   setContext(context);
-  createChat(context);
 
   try {
     await Promise.all([
@@ -14,7 +12,6 @@ export async function activate(context: vscode.ExtensionContext) {
       import('./commands/task-queue'),
       import('./commands/schedules'),
       import('./commands/batch-operations'),
-      import('./commands/start-workflow'),
       import('./commands/search-attributes'),
       import('./commands/information'),
       import('./commands/settings'),

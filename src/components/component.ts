@@ -1,6 +1,5 @@
+import { extensionId } from '$utilities/extension-id';
 import * as vscode from 'vscode';
-
-export const extensionId = 'temporal-vscode';
 
 export const setContext = (context: vscode.ExtensionContext) => {
   Component.context = context;

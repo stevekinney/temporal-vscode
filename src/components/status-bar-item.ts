@@ -8,7 +8,7 @@ export type StatusBarItemParameters = {
   tooltip?: string;
   text?: string;
   command?: CommandName;
-  color?: vscode.ThemeColor;
+  color?: string;
 };
 
 export class StatusBarItem implements vscode.Disposable {

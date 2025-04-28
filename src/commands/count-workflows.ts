@@ -57,7 +57,7 @@ const statusIcons: Record<ExecutionStatus, string> = {
   TimedOut: '$(clock)',
 } as const;
 
-const statusColors: Record<ExecutionStatus, vscode.ThemeColor> = {
+const statusColors: Record<ExecutionStatus, string> = {
   Running: 'rgb(147, 187, 253)',
   Completed: 'rgb(174, 255, 216)',
   Failed: 'rgb(255, 196, 168)',
@@ -144,7 +144,7 @@ const getIcon = (status: string): string => {
   return status;
 };
 
-const getColor = (status: string): vscode.ThemeColor | undefined => {
+const getColor = (status: string): string | undefined => {
   if (status in statusColors) {
     return statusColors[status as keyof typeof statusColors];
   }

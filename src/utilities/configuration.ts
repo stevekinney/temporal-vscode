@@ -1,37 +1,39 @@
 import * as vscode from 'vscode';
+import { ConfigurationKey, ConfigurationValue } from './configuration-schema';
 
-const getConfiguration = <T = string | undefined>(
-  key: string,
-  section: string = 'temporal',
+const getConfiguration = <
+  K extends ConfigurationKey,
+  T = ConfigurationValue<K>,
+>(
+  key: K,
+  section = 'temporal',
 ) => vscode.workspace.getConfiguration(section).get<T>(key);
 
 export const configuration = {
-  get address() {
-    return getConfiguration('address.server') || 'localhost:7233';
-  },
   get host() {
-    return this.address.split(':')[0];
+    return getConfiguration('developmentServer.host');
   },
   get port() {
-    return parseInt(this.address.split(':')[1]);
+    return getConfiguration('developmentServer.port') || 7233;
   },
   get ui() {
     const address =
-      getConfiguration<string>('address.webUI') || 'http://localhost:8233';
+      getConfiguration('developmentServer.webInterface') ||
+      'http://localhost:8223';
 
     return new URL(address);
   },
   get namespace() {
-    return getConfiguration<string>('namespace') || 'default';
+    return getConfiguration('namespace') || 'default';
   },
   get identity() {
-    return getConfiguration<string>('identity');
+    return getConfiguration('client.identity');
   },
   get apiKey() {
-    return getConfiguration<string | undefined>('apiKey');
+    return getConfiguration('connection.apiKey');
   },
   get codecEndpoint() {
-    const address = getConfiguration('address<string>.codecEndpoint');
+    const address = getConfiguration('codecEndpoint');
 
     if (!address) {
       return;
@@ -40,8 +42,6 @@ export const configuration = {
     return new URL(address);
   },
   get logLevel() {
-    const logLevel = getConfiguration<string>('logLevel') || 'error';
-
-    return logLevel;
+    return getConfiguration('commandLine.logLevel') || 'error';
   },
 };

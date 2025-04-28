@@ -1,25 +1,36 @@
 import { configuration } from '../utilities/configuration';
 
-export const getServerOptions = () => {
-  return {
-    '--ip': configuration.host,
-    '--port': configuration.port,
-    '--ui-ip': configuration.ui.hostname,
-    '--ui-port': configuration.ui.port,
-    '--log-level': configuration.logLevel,
-    '--ui-codec-endpoint': configuration.codecEndpoint?.href,
-  } as const;
+const serverOptions = {
+  get '--ip'() {
+    return configuration.host;
+  },
+  get '--port'() {
+    return configuration.port;
+  },
+  get '--ui-ip'() {
+    return configuration.ui.hostname;
+  },
+  get '--ui-port'() {
+    return configuration.ui.port;
+  },
+  get '--log-level'() {
+    return configuration.logLevel;
+  },
+  get '--ui-codec-endpoint'() {
+    return configuration.codecEndpoint?.href;
+  },
+
+  toString() {
+    let options = '';
+    for (const [key, value] of Object.entries(this)) {
+      if (key.startsWith('--') && value) {
+        options += `${key} ${value} `;
+      }
+    }
+    return options.trim();
+  },
 };
 
 export const getServerCommand = () => {
-  const options = getServerOptions();
-
-  return `temporal server start-dev ${Object.entries(options)
-    .map(([key, value]) => {
-      if (value) {
-        return `${key} ${value}`;
-      }
-      return '';
-    })
-    .join(' ')}`;
+  return `temporal server start-dev ${serverOptions}`;
 };
