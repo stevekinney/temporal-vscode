@@ -7,7 +7,7 @@
 - **countWorkflows** Show count of workflows
 - **getSystemInfo** Get system information
 - **getClusterInfo** Get cluster information
-- **viewSchedules** View schedules in the Ui
+- **viewSchedules** View schedules in the UI
 - **openSchedule** Open schedule in the UI
 - **deleteSchedule** Delete schedule
 - **getSearchAttributes** List search attributes

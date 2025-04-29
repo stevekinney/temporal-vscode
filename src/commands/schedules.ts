@@ -3,7 +3,7 @@ import { Command } from '$components/command';
 import { select } from '$utilities/select';
 
 /**
- * @summary View schedules in the Ui
+ * @summary View schedules in the UI
  */
 Command.register('viewSchedules', ({ openUI }) => {
   return openUI('schedules');
