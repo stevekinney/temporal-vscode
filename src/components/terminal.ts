@@ -9,13 +9,15 @@ export interface TerminalOptions extends vscode.TerminalOptions {
 
 export class Terminal extends Component {
   static async getTemporalCli(): Promise<string> {
-    const cli = which('temporal');
-    if (!cli) {
+    try {
+      const cli = await which('temporal');
+      return cli;
+    } catch (error) {
       throw new Error(
         'Temporal CLI not found. Please install it or add it to your PATH.',
       );
     }
-    return cli;
+  }
   }
 
   /**
