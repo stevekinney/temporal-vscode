@@ -27,17 +27,25 @@ type DisposalListener = () => void;
  * A class that represents a webview panel in Visual Studio Code.
  * It provides methods to create, manage, and dispose of the webview panel.
  * It also provides methods to set timeouts and intervals that are automatically cleared when the webview is disposed.
+ * It's effectively a wrapper around the `vscode.WebviewPanel` and `vscode.Webview` classes.
  */
 export class Webview
   extends Component
   implements vscode.WebviewPanel, vscode.Webview
 {
+  /** The title of the webview panel. */
   title: string;
+  /** The type of the webview panel. */
   viewType: string;
+  /** The view column in which the webview panel is displayed. */
   viewColumn: vscode.ViewColumn;
+  /** Whether the webview panel should preserve focus when revealed. */
   preserveFocus?: boolean;
+  /** Whether the webview panel should be created at initialization. */
   options: vscode.WebviewPanelOptions & vscode.WebviewOptions;
+  /** Zod schema to validate messages sent to the webview. */
   messageSchema: z.Schema;
+  /** The HTML content of the webview panel. */
   html: string = '';
 
   #panel: vscode.WebviewPanel | null = null;
@@ -72,14 +80,27 @@ export class Webview
     if (!hide) this.reveal(viewColumn, preserveFocus);
   }
 
+  /**
+   * Whether the panel is active (focused by the user).
+   * This property is `true` if the panel is currently active and `false` otherwise.
+   */
   get active(): boolean {
     return this.#panel?.active ?? false;
   }
 
+  /**
+   * Whether the panel is visible.
+   * This property is `true` if the panel is currently visible and `false` otherwise.
+   */
   get visible(): boolean {
     return this.#panel?.visible ?? false;
   }
 
+  /**
+   * `Webview` belonging to the panel.
+   * This is the webview that is displayed in the panel.
+   * @throws Error if the panel is not created yet.
+   */
   get webview(): vscode.Webview {
     if (!this.#panel) {
       throw new Error(`Webview panel (${this.title}) is not created yet`);
@@ -87,6 +108,11 @@ export class Webview
     return this.#panel.webview;
   }
 
+  /**
+   * The URI that can be used to access the webview's content.
+   * This is the URI that can be used to access the webview's content.
+   * @throws Error if the panel is not created yet.
+   */
   get cspSource(): string {
     if (!this.#panel) {
       throw new Error(`Webview panel (${this.title}) is not created yet`);
@@ -94,6 +120,11 @@ export class Webview
     return this.#panel.webview.cspSource;
   }
 
+  /**
+   * The URI that can be used to access the webview's content.
+   * This is the URI that can be used to access the webview's content.
+   * @throws Error if the panel is not created yet.
+   */
   get asWebviewUri(): (uri: vscode.Uri) => vscode.Uri {
     if (!this.#panel) {
       throw new Error(`Webview panel (${this.title}) is not created yet`);
@@ -142,6 +173,16 @@ export class Webview
     return panel;
   }
 
+  /**
+   * Post a message to the webview content.
+   * Messages are only sent if the webview is live (either visible or in the background with `retainContextWhenHidden`).
+   *
+   * The message is validated against the provided Zod schema, `this.messageSchema`.
+   * If the message is not valid, an error is thrown.
+   *
+   * @param message
+   * @returns
+   */
   postMessage(message: z.infer<typeof this.messageSchema>) {
     const panel = this.#panel || this.reveal();
     return panel.webview.postMessage(message);
