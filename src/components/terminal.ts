@@ -18,6 +18,16 @@ export class Terminal extends Component {
       );
     }
   }
+
+  /**
+   * Creates a command string with the Temporal CLI and arguments
+   * @param command The command to run
+   * @param args Optional arguments for the command
+   * @returns Promise with the full command string
+   */
+  static async buildCommand(command: string, args: string[] = []): Promise<string> {
+    const cli = await Terminal.getTemporalCli();
+    return [cli, command, ...args].filter(Boolean).join(' ');
   }
 
   /**
