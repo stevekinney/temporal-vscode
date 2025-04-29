@@ -102,6 +102,23 @@ export class Terminal extends Component {
       return this;
     }
   }
+  
+  /**
+   * Executes a Temporal CLI command
+   * @param command The command to run
+   * @param args Command arguments
+   * @returns This terminal instance for chaining
+   */
+  async executeCommand(command: string, args: string[] = []): Promise<Terminal> {
+    try {
+      const fullCommand = await Terminal.buildCommand(command, args);
+      this.instance.sendText(fullCommand);
+      return this;
+    } catch (error) {
+      console.error(`Failed to execute command "${command}":`, error);
+      return this;
+    }
+  }
 
   /**
    * Sends a cancellation signal (Ctrl+C) to the terminal
