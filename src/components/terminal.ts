@@ -181,6 +181,17 @@ export class Terminal extends Component {
   }
 
   /**
+   * Gets the command that would be executed by the Temporal CLI
+   * This can be useful for debugging or displaying commands without executing them
+   * @param command The command to get
+   * @param args Command arguments
+   * @returns Promise with the full command string
+   */
+  async getCommand(command: string, args: string[] = []): Promise<string> {
+    return Terminal.buildCommand(command, args);
+  }
+
+  /**
    * Disposes the terminal
    */
   dispose(): void {
