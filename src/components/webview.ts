@@ -13,14 +13,28 @@ type WebviewOptions = vscode.WebviewPanelOptions &
     hide?: boolean;
   };
 
+/**
+ * A listener for the webview panel's view state change event.
+ * This event is fired when the view state of the webview panel changes.
+ * For example, when the panel is activated or deactivated.
+ * The listener receives an event object that contains information about the view state change.
+ */
 type ViewStateChangeListener = (
   e: vscode.WebviewPanelOnDidChangeViewStateEvent,
 ) => void;
 
-type MessageListener = (
-  e: vscode.WebviewPanelOnDidChangeViewStateEvent,
-) => void;
+/**
+ * A listener for the webview panel's message event.
+ * This event is fired when a message is received from the webview.
+ * The listener receives an event object that contains the message data.
+ */
+type MessageListener = (message: any) => void;
 
+/**
+ * A listener for the webview panel's disposal event.
+ * This event is fired when the webview panel is disposed.
+ * The listener receives an event object that contains information about the disposal.
+ */
 type DisposalListener = () => void;
 
 /**
@@ -51,7 +65,7 @@ export class Webview
   #panel: vscode.WebviewPanel | null = null;
   #intervals: Set<NodeJS.Timeout> = new Set();
   #timeouts: Set<NodeJS.Timeout> = new Set();
-  #dispoalListeners: Set<DisposalListener> = new Set();
+  #disposalListeners: Set<DisposalListener> = new Set();
   #viewStateChangeListeners: Set<ViewStateChangeListener> = new Set();
   #messageListeners: Set<MessageListener> = new Set();
 
@@ -71,7 +85,7 @@ export class Webview
 
     this.title = title;
     this.viewType = viewType;
-    this.viewColumn = vscode.ViewColumn.Active;
+    this.viewColumn = viewColumn;
     this.preserveFocus = preserveFocus;
     this.messageSchema = messageSchema || z.any();
     this.html = html;
@@ -109,8 +123,7 @@ export class Webview
   }
 
   /**
-   * The URI that can be used to access the webview's content.
-   * This is the URI that can be used to access the webview's content.
+   * The Content Security Policy source for the webview.
    * @throws Error if the panel is not created yet.
    */
   get cspSource(): string {
@@ -121,8 +134,8 @@ export class Webview
   }
 
   /**
-   * The URI that can be used to access the webview's content.
-   * This is the URI that can be used to access the webview's content.
+   * Function to convert a URI for use within the webview.
+   * This allows resources to be loaded within the webview context.
    * @throws Error if the panel is not created yet.
    */
   get asWebviewUri(): (uri: vscode.Uri) => vscode.Uri {
@@ -133,10 +146,10 @@ export class Webview
   }
 
   /**
-   *
+   * Creates and reveals the webview panel if it doesn't exist, or reveals an existing panel.
    * @param viewColumn - The view column to show the webview in. If not provided, it will use the current view column.
-   * @param options - Additional options for the webview panel.
-   * @returns
+   * @param preserveFocus - Whether to preserve focus on the current editor after revealing.
+   * @returns The webview panel instance.
    */
   reveal(
     viewColumn = this.viewColumn,
@@ -158,7 +171,7 @@ export class Webview
       panel.onDidChangeViewState(listener);
     }
 
-    for (const listener of this.#dispoalListeners) {
+    for (const listener of this.#disposalListeners) {
       panel.onDidDispose(listener);
     }
 
@@ -289,6 +302,7 @@ export class Webview
    * It should be called when the webview is closed or when the extension is deactivated.
    */
   dispose(): void {
+    // Remove the panel first to prevent further event triggers
     this.#panel?.dispose();
     this.#panel = null;
 
@@ -302,18 +316,23 @@ export class Webview
 
     this.#timeouts.clear();
     this.#intervals.clear();
+    
+    // Clear all listener sets
+    this.#disposalListeners.clear();
+    this.#viewStateChangeListeners.clear();
+    this.#messageListeners.clear();
   }
 
   onDidDispose(listener: DisposalListener) {
-    this.#dispoalListeners.add(listener);
+    this.#disposalListeners.add(listener);
 
     const disposable = new vscode.Disposable(() => {
-      this.#viewStateChangeListeners.delete(listener);
+      this.#disposalListeners.delete(listener);
     });
 
     return {
       dispose: () => {
-        this.#viewStateChangeListeners.delete(listener);
+        this.#disposalListeners.delete(listener);
         disposable.dispose();
       },
     };
