@@ -90,11 +90,12 @@ export class Terminal extends Component {
   /**
    * Sends text to the terminal
    * @param text The text to send
+   * @param addNewLine Whether to add a new line after the text (defaults to true)
    * @returns This terminal instance for chaining
    */
-  sendText(text: string): Terminal {
+  sendText(text: string, addNewLine = true): Terminal {
     try {
-      this.instance.sendText(text);
+      this.instance.sendText(text, addNewLine);
       return this;
     } catch (error) {
       console.error('Failed to send text to terminal:', error);
