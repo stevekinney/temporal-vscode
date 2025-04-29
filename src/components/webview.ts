@@ -316,7 +316,7 @@ export class Webview
 
     this.#timeouts.clear();
     this.#intervals.clear();
-    
+
     // Clear all listener sets
     this.#disposalListeners.clear();
     this.#viewStateChangeListeners.clear();
