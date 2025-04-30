@@ -1,4 +1,5 @@
 import chalk from 'chalk';
+import { watch } from 'node:fs/promises';
 
 const args = {
   production:
@@ -35,7 +36,7 @@ const buildConfig = {
 async function build() {
   const startTime = performance.now();
   log.info(
-    `Building extension in ${args.production ? 'production' : 'development'} mode...`,
+    `Building extension in ${chalk.bgBlue(args.production ? 'production' : 'development')} mode…`,
   );
 
   try {
@@ -64,6 +65,28 @@ async function build() {
     log.error('Build failed with an unexpected error:');
     log.error(error);
     process.exit(1);
+  }
+}
+
+if (args.watch) {
+  log.info('Watching for file changes…');
+
+  const watcher = watch('src', {
+    recursive: true,
+  });
+
+  for await (const event of watcher) {
+    if (event.eventType === 'change') {
+      log.build(
+        'File changed:',
+        chalk.magenta(event.filename),
+        chalk.yellow(event.eventType),
+      );
+      if (args.watch) {
+        log.info(chalk.green('Rebuilding…'));
+        build();
+      }
+    }
   }
 }
 

@@ -14,7 +14,7 @@
     "generate:commands": "bun run src/generate/commands",
     "generate:types": "bun run src/generate/types",
     "generate:configuration": "bun run src/generate/configuration",
-    "watch:build": "bun run --watch build",
+    "watch:build": "bun run build --watch",
     "watch:tsc": "tsc --noEmit --watch --project tsconfig.json",
     "package": "bun run check-types && bun run lint && bun run build --production",
     "compile:tests": "tsc -p . --outDir out",
@@ -90,6 +90,11 @@
       {
         "command": "temporal-vscode.changeDefaultNamespace.workspace",
         "title": "Change default namespace (Workspace)",
+        "category": "Temporal"
+      },
+      {
+        "command": "temporal-vscode.startWorkflow",
+        "title": "Start a new workflow",
         "category": "Temporal"
       },
       {
@@ -246,7 +251,12 @@
         "temporal.commandLine.logLevel": {
           "title": "CLI Log Level",
           "type": "string",
-          "enum": ["debug", "info", "warn", "error"],
+          "enum": [
+            "debug",
+            "info",
+            "warn",
+            "error"
+          ],
           "default": "error",
           "description": "The log level to use for the Temporal CLI.",
           "order": 100
@@ -283,7 +293,9 @@
   "engines": {
     "vscode": "^1.92.0"
   },
-  "categories": ["Other"],
+  "categories": [
+    "Other"
+  ],
   "activationEvents": [],
   "dependencies": {
     "which": "^5.0.0"
