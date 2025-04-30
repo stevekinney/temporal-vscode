@@ -30,6 +30,9 @@ const buildConfig = {
   external: ['vscode'],
   splitting: false,
   env: 'inline',
+  loader: {
+    '.html': 'text',
+  },
   target: 'node',
 } satisfies Bun.BuildConfig;
 
