@@ -7,4 +7,4 @@ export const log = {
   warn: (...args: unknown[]) => console.warn(chalk.yellow('[warn]'), ...args),
   success: (...args: unknown[]) =>
     console.log(chalk.green('[success]'), ...args),
-};
+} as const;
