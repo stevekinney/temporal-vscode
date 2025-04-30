@@ -89,7 +89,7 @@ export class Webview
     this.preserveFocus = preserveFocus;
     this.messageSchema = messageSchema || z.any();
     this.html = html;
-    this.options = options;
+    this.options = { retainContextWhenHidden, ...options };
 
     if (!hide) this.reveal(viewColumn, preserveFocus);
   }
