@@ -6,5 +6,5 @@ import { Webview } from '$components/webview';
  * @description This command opens a webview to start a new workflow.
  */
 Command.register('startWorkflow', async () => {
-  new Webview('Start Workflow', { html: 'start-workflow' });
+  new Webview('Start Workflow', { component: 'start-workflow' });
 });
