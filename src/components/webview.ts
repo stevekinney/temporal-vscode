@@ -9,7 +9,9 @@ type WebviewOptions = vscode.WebviewPanelOptions &
     viewColumn?: vscode.ViewColumn;
     preserveFocus?: boolean;
     messageSchema?: z.Schema;
+    /** The HTML content of the webview panel. The panel will be hidden by default if this is not set at initialization. */
     html?: string;
+    /** Hide the webview until `.reveal` is called. `true` if `html` is falsey. */
     hide?: boolean;
   };
 
@@ -76,8 +78,9 @@ export class Webview
       viewColumn = vscode.ViewColumn.Active,
       preserveFocus,
       messageSchema,
-      hide = false,
       html = '',
+      hide = !!html,
+      retainContextWhenHidden = true,
       ...options
     }: WebviewOptions = {},
   ) {
