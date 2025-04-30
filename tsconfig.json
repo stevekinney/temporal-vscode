@@ -12,6 +12,7 @@
     "noFallthroughCasesInSwitch": true,
     "noUnusedParameters": true,
     "skipLibCheck": true,
+    "jsx": "react-jsx",
     "paths": {
       "$utilities/*": ["./src/utilities/*"],
       "$commands/*": ["./src/commands/*"],

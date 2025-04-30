@@ -14,6 +14,7 @@
 - **openSettings** Open settings
 - **changeDefaultNamespace.user** Change default namespace (User)
 - **changeDefaultNamespace.workspace** Change default namespace (Workspace)
+- **startWorkflow** Start a new workflow
 - **showTaskQueue** Show task queue in the UI
 - **viewWorkflows** View workflows in the UI
 - **openWorkflow** Open workflow in the UI

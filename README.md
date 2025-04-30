@@ -98,6 +98,35 @@ Command.register('listNamespaces', async ({ withClient }) => {
 
 ## Components
 
+### Webviews
+
+`Webview` provides a wrapper around VS Code's terminal API with enhanced functionality and support for loading React components.
+
+```ts
+import { Command } from '$components/command';
+import { Webview } from '$components/webview';
+
+/**
+ * @summary Start a new workflow
+ * @description This command opens a webview to start a new workflow.
+ */
+Command.register('startWorkflow', async () => {
+  new Webview('Start Workflow', { component: 'start-workflow' });
+});
+```
+
+This will go looking for a React component in `src/webviews/start-workflow.tsx`.
+
+```tsx
+import React from 'react';
+
+export default function startWorkflow() {
+  return <p>Start Workflow</p>;
+}
+```
+
+This file must export the component as its default export.
+
 ### Terminal
 
 `Terminal` provides a wrapper around VS Code's terminal API with enhanced functionality:
