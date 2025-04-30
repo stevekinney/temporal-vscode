@@ -3,23 +3,35 @@ import chalk from 'chalk';
 import MagicString from 'magic-string';
 import { watch } from 'node:fs/promises';
 
+import { log } from './src/utilities/log';
+
+/**
+ * Arguments for the build script.
+ */
 const args = {
   production:
     process.argv.includes('--production') ||
     process.env.NODE_ENV === 'production',
   watch: process.argv.includes('--watch'),
   verbose: process.argv.includes('--verbose'),
+} as const;
+
+/**
+ * Logs the error message and exits the process if not in watch mode.
+ */
+const handleError = (type: string, ...error: unknown[]) => {
+  log.error(chalk.bgRed(type), ...error);
+  if (!args.watch) {
+    process.exit(1);
+  }
 };
 
-const handleError =
-  (type: string) =>
-  (...error: unknown[]) => {
-    log.error(chalk.bgRed(type), ...error);
-    if (!args.watch) {
-      process.exit(1);
-    }
-  };
-
+/**
+ * This plugin is used to add in React and createRoot to the webview files.
+ * This allows us to import a complete bundle of React and ReactDOM in the webview files.
+ * This is necessary because the webview files are not bundled with the rest of the extension.
+ * The webview files are loaded in the browser context, so we need to make sure that React and ReactDOM are available.
+ */
 const webview: BunPlugin = {
   name: 'webviews',
   setup(build) {
@@ -41,16 +53,13 @@ const webview: BunPlugin = {
 };
 
 // Logger with color-coded categories
-const log = {
-  info: (...args: unknown[]) => console.log(chalk.cyan('[info]'), ...args),
-  build: (...args: unknown[]) => console.log(chalk.blue('[build]'), ...args),
-  error: (...args: unknown[]) => console.error(chalk.red('[error]'), ...args),
-  warn: (...args: unknown[]) => console.warn(chalk.yellow('[warn]'), ...args),
-  success: (...args: unknown[]) =>
-    console.log(chalk.green('[success]'), ...args),
-};
 
-// Config for main extension build
+/**
+ * Build configuration for the extension.
+ * This configuration is used to build the extension using Bun.
+ * It specifies the entry points, output format, and other options.
+ * The configuration is used to build the extension in both production and development modes.
+ */
 const buildConfig = {
   entrypoints: ['src/extension.ts'],
   format: 'cjs',
@@ -64,6 +73,10 @@ const buildConfig = {
   target: 'node',
 } satisfies Bun.BuildConfig;
 
+/**
+ * Builds the extension using the specified configuration.
+ * @param withWebviews Whether to build webviews or not after the initial build completes.
+ */
 async function build(withWebviews = false) {
   const startTime = performance.now();
   log.info(
@@ -74,7 +87,7 @@ async function build(withWebviews = false) {
     const result = await Bun.build(buildConfig);
 
     if (!result.success) {
-      return handleError('Extension Build Failed')(...result.logs);
+      return handleError('Extension Build Failed', ...result.logs);
     }
 
     const endTime = performance.now();
@@ -93,11 +106,17 @@ async function build(withWebviews = false) {
       await buildWebviews();
     }
   } catch (error) {
-    handleError('Extension Build Failed')(error);
+    handleError('Extension Build Failed', error);
   }
 }
 
+/**
+ * Builds the webviews for the extension.
+ * This function scans the webview files and builds them using Bun.
+ * The webview files are located in the `src/webviews` directory.
+ */
 async function buildWebviews() {
+  /** All of the webviews in `src/webviews` as an `AsyncIterableIterator`. */
   const webviews = new Bun.Glob('src/webviews/**/*.tsx');
 
   log.info('Building webviews…');
@@ -107,6 +126,10 @@ async function buildWebviews() {
   }
 }
 
+/**
+ * Build an individual webview.
+ * @param file The file to build.
+ */
 async function buildWebview(file: string) {
   const filePath = file.replace('src/webviews/', '');
   const outputPath = `dist/${filePath.replace('.tsx', '.js')}`;
@@ -131,14 +154,19 @@ async function buildWebview(file: string) {
     for (const message of result.logs) {
       log.error(message);
     }
-    handleError('Webview Build Failed')(...result.logs);
+    handleError('Webview Build Failed', ...result.logs);
   }
 
   log.success(`Built ${chalk.cyan(filePath)} to ${chalk.cyan(outputPath)}.`);
 }
 
+/**
+ * Main function to run the build script.
+ * This function is called when the script is run.
+ */
 build(true);
 
+// If the --watch flag is passed, watch for file changes and rebuild the extension.
 if (args.watch) {
   log.info('Watching for file changes…');
 
