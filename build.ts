@@ -64,9 +64,13 @@ async function build() {
   } catch (error) {
     log.error('Build failed with an unexpected error:');
     log.error(error);
-    process.exit(1);
+    if (!args.watch) {
+      process.exit(1);
+    }
   }
 }
+
+build();
 
 if (args.watch) {
   log.info('Watching for file changes…');
@@ -77,7 +81,8 @@ if (args.watch) {
 
   for await (const event of watcher) {
     if (event.eventType === 'change') {
-      log.build(
+      //bun.sh/docs/runtime/bunfig#loader
+      https: log.build(
         'File changed:',
         chalk.magenta(event.filename),
         chalk.yellow(event.eventType),
@@ -89,10 +94,3 @@ if (args.watch) {
     }
   }
 }
-
-// Run the build
-build().catch((error) => {
-  log.error('Unhandled error during build:');
-  log.error(error);
-  process.exit(1);
-});
