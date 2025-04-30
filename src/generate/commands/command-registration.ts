@@ -95,7 +95,7 @@ export class CommandRegistration {
     const [documentation] = this.#expressionStatement.getJsDocs();
 
     if (!documentation) {
-      throw new Error('No documentation found');
+      throw new Error(`No documentation found for the command: ${this.name}`);
     }
 
     for (const tag of documentation.getTags()) {
