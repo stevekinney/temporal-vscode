@@ -9,10 +9,8 @@ type WebviewOptions = vscode.WebviewPanelOptions &
     viewColumn?: vscode.ViewColumn;
     preserveFocus?: boolean;
     messageSchema?: z.Schema;
-    /** The HTML content of the webview panel. The panel will be hidden by default if this is not set at initialization. */
-    html?: string;
-    /** Hide the webview until `.reveal` is called. `true` if `html` is falsey. */
-    hide?: boolean;
+    /** A reference to a JSX component found in `src/webviews`. */
+    component: string;
   };
 
 /**
@@ -62,7 +60,7 @@ export class Webview
   /** Zod schema to validate messages sent to the webview. */
   messageSchema: z.Schema;
   /** The HTML content of the webview panel. */
-  html: string = '';
+  #html: string = '';
 
   #panel: vscode.WebviewPanel | null = null;
   #intervals: Set<NodeJS.Timeout> = new Set();
@@ -78,11 +76,11 @@ export class Webview
       viewColumn = vscode.ViewColumn.Active,
       preserveFocus,
       messageSchema,
-      html = '',
-      hide = !!html,
+      component,
       retainContextWhenHidden = true,
+      enableScripts = true,
       ...options
-    }: WebviewOptions = {},
+    }: WebviewOptions,
   ) {
     super();
 
@@ -91,10 +89,34 @@ export class Webview
     this.viewColumn = viewColumn;
     this.preserveFocus = preserveFocus;
     this.messageSchema = messageSchema || z.any();
-    this.html = html;
-    this.options = { retainContextWhenHidden, ...options };
+    this.options = { retainContextWhenHidden, enableScripts, ...options };
 
-    if (!hide) this.reveal(viewColumn, preserveFocus);
+    this.component = component;
+  }
+
+  set component(html: string) {
+    const panel = this.reveal();
+    const uri = vscode.Uri.joinPath(
+      this.context.extensionUri,
+      'dist',
+      `${html}.js`,
+    );
+    const path = panel.webview.asWebviewUri(uri);
+
+    this.#html = [
+      `<div id="root"></div>`,
+      `<script type="module">`,
+      `   import Component, { createRoot, React } from '${path.toString()}';`,
+      `   const root = createRoot(document.getElementById('root'));`,
+      `   root.render(React.createElement(Component, null));`,
+      `</script>`,
+    ].join('\n');
+
+    panel.webview.component = this.#html;
+  }
+
+  get component(): string {
+    return this.#html;
   }
 
   /**
@@ -169,10 +191,6 @@ export class Webview
       { viewColumn, preserveFocus },
       this.options,
     );
-
-    if (!panel.webview.html) {
-      panel.webview.html = this.html;
-    }
 
     for (const listener of this.#viewStateChangeListeners) {
       panel.onDidChangeViewState(listener);

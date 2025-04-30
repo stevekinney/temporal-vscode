@@ -15,6 +15,7 @@ type CommandName =
   | 'openSettings'
   | 'changeDefaultNamespace.user'
   | 'changeDefaultNamespace.workspace'
+  | 'startWorkflow'
   | 'showTaskQueue'
   | 'viewWorkflows'
   | 'openWorkflow'

@@ -9,6 +9,7 @@ export async function activate(context: vscode.ExtensionContext) {
     await Promise.all([
       import('./commands/workflows'),
       import('./commands/count-workflows'),
+      import('./commands/start-workflow'),
       import('./commands/task-queue'),
       import('./commands/schedules'),
       import('./commands/batch-operations'),
