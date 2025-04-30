@@ -112,7 +112,7 @@ export class Webview
       `</script>`,
     ].join('\n');
 
-    panel.webview.component = this.#html;
+    panel.webview.html = this.#html;
   }
 
   get component(): string {
