@@ -29,7 +29,7 @@ export class StatusBarItem implements vscode.Disposable {
    * @returns A new StatusBarItem instance
    */
   static create(parameters: StatusBarItemParameters): StatusBarItem {
-    const existing = this.get(parameters.id);
+    const existing = StatusBarItem.get(parameters.id);
     if (existing) {
       existing.update(parameters);
       return existing;
