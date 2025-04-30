@@ -26,6 +26,7 @@ type CommandName =
   | 'viewContinuedAsNewWorkflows'
   | 'viewTimedOutWorkflows'
   | 'viewWorkflowsWithQuery'
+  | 'viewWorkflowsWithSavedQuery'
   | 'startDevelopmentServer'
   | 'stopDevelopmentServer';
 

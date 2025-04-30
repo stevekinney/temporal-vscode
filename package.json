@@ -148,6 +148,11 @@
         "category": "Temporal"
       },
       {
+        "command": "temporal-vscode.viewWorkflowsWithSavedQuery",
+        "title": "View workflows with a custom saved query in the UI",
+        "category": "Temporal"
+      },
+      {
         "command": "temporal-vscode.startDevelopmentServer",
         "title": "Start development server",
         "category": "Temporal"

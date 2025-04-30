@@ -25,6 +25,7 @@
 - **viewContinuedAsNewWorkflows** View continued as new workflows in the UI
 - **viewTimedOutWorkflows** View timed out workflows in the UI
 - **viewWorkflowsWithQuery** View workflows with custom query in the UI
+- **viewWorkflowsWithSavedQuery** View workflows with a custom saved query in the UI
 - **startDevelopmentServer** Start development server
 - **stopDevelopmentServer** Stop development server
 

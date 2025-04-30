@@ -1,6 +1,13 @@
 import * as vscode from 'vscode';
 import { Command } from '$components/command';
 import { select } from '$utilities/select';
+import { 
+  createAndAddQuery,
+  deleteQueryFromStorage, 
+  formatQueries, 
+  getQueriesFromStorage, 
+  shouldAddQuery
+} from '$utilities/workflow-queries';
 
 /**
  * @summary View workflows in the UI
@@ -107,5 +114,58 @@ Command.register(
     }
 
     openUI('workflows', { query: { query } });
+  },
+);
+
+/**
+ * @summary View workflows with a custom saved query in the UI
+ */
+Command.register(
+  'viewWorkflowsWithSavedQuery',
+  async ({ openUI, context }) => {
+    const quickPick = vscode.window.createQuickPick();
+    quickPick.matchOnDescription = true;
+    quickPick.placeholder = 'Select a query to view workflows';
+
+    const savedQueries = getQueriesFromStorage(context);
+    quickPick.items = formatQueries(savedQueries);
+
+    quickPick.onDidAccept(async () => {
+      const selectedQuery = quickPick.selectedItems[0];
+      if (shouldAddQuery(selectedQuery)) {
+        const updatedQueries = await createAndAddQuery(context);
+        quickPick.items = formatQueries(updatedQueries);
+        quickPick.show();
+      } else {
+        const query = selectedQuery?.description;
+        if (!query) {
+          return;
+        }
+        openUI('workflows', { query: { query } });
+      }
+      
+    });
+
+    quickPick.onDidTriggerItemButton(async event => {
+      const selectedQuery = event.item;
+
+      if (shouldAddQuery(selectedQuery)) { 
+        const updatedQueries = await createAndAddQuery(context);
+        quickPick.items = formatQueries(updatedQueries);
+        quickPick.show();
+      } else {
+        const confirmation = await vscode.window.showWarningMessage(
+            `Are you sure you want to delete the query "${selectedQuery.label}"?`,
+            { modal: true },
+            'Delete'
+        );
+        if (confirmation === 'Delete') {
+          const updatedQueries = await deleteQueryFromStorage(selectedQuery.label, context);
+          quickPick.items = formatQueries(updatedQueries);
+        }
+      }
+    });
+
+    quickPick.show();
   },
 );
