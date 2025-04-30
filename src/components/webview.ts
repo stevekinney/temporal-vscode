@@ -167,6 +167,10 @@ export class Webview
       this.options,
     );
 
+    if (!panel.webview.html) {
+      panel.webview.html = this.html;
+    }
+
     for (const listener of this.#viewStateChangeListeners) {
       panel.onDidChangeViewState(listener);
     }
