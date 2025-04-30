@@ -27,6 +27,7 @@ const webview: BunPlugin = {
       const source = await Bun.file(args.path).text();
 
       const s = new MagicString(source);
+
       s.append('\n');
       s.append('export { React };\n');
       s.append(`export { createRoot } from 'react-dom/client';\n`);
