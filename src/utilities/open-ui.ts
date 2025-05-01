@@ -11,13 +11,10 @@ const buildQuery = (query: Record<string, string | undefined>) => {
 
   return Object.entries(query)
     .filter(([_, value]) => value !== undefined && value !== null)
-    .reduce(
-      (acc, [key, value]) => {
-        acc += `${acc ? '&' : ''}${key}=${value}`;
-        return acc;
-      },
-      '',
-    );
+    .reduce((acc, [key, value]) => {
+      acc += `${acc ? '&' : ''}${key}=${value}`;
+      return acc;
+    }, '');
 };
 
 /**
