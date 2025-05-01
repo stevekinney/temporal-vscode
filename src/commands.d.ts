@@ -8,6 +8,7 @@ type CommandName =
   | 'countWorkflows'
   | 'getSystemInfo'
   | 'getClusterInfo'
+  | 'viewWorkflowsWithSavedQuery'
   | 'viewSchedules'
   | 'openSchedule'
   | 'deleteSchedule'
@@ -26,7 +27,6 @@ type CommandName =
   | 'viewContinuedAsNewWorkflows'
   | 'viewTimedOutWorkflows'
   | 'viewWorkflowsWithQuery'
-  | 'viewWorkflowsWithSavedQuery'
   | 'startDevelopmentServer'
   | 'stopDevelopmentServer';
 

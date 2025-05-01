@@ -58,6 +58,11 @@
         "category": "Temporal"
       },
       {
+        "command": "temporal-vscode.viewWorkflowsWithSavedQuery",
+        "title": "View workflows with a custom saved query in the UI",
+        "category": "Temporal"
+      },
+      {
         "command": "temporal-vscode.viewSchedules",
         "title": "View schedules in the UI",
         "category": "Temporal"
@@ -145,11 +150,6 @@
       {
         "command": "temporal-vscode.viewWorkflowsWithQuery",
         "title": "View workflows with custom query in the UI",
-        "category": "Temporal"
-      },
-      {
-        "command": "temporal-vscode.viewWorkflowsWithSavedQuery",
-        "title": "View workflows with a custom saved query in the UI",
         "category": "Temporal"
       },
       {

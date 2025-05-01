@@ -7,6 +7,7 @@
 - **countWorkflows** Show count of workflows
 - **getSystemInfo** Get system information
 - **getClusterInfo** Get cluster information
+- **viewWorkflowsWithSavedQuery** View workflows with a custom saved query in the UI
 - **viewSchedules** View schedules in the UI
 - **openSchedule** Open schedule in the UI
 - **deleteSchedule** Delete schedule
@@ -25,7 +26,6 @@
 - **viewContinuedAsNewWorkflows** View continued as new workflows in the UI
 - **viewTimedOutWorkflows** View timed out workflows in the UI
 - **viewWorkflowsWithQuery** View workflows with custom query in the UI
-- **viewWorkflowsWithSavedQuery** View workflows with a custom saved query in the UI
 - **startDevelopmentServer** Start development server
 - **stopDevelopmentServer** Stop development server
 
