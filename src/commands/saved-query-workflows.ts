@@ -141,5 +141,6 @@ Command.register('viewWorkflowsWithSavedQuery', async ({ openUI, context }) => {
     }
   });
 
+  quickPick.onDidHide(() => quickPick.dispose());
   quickPick.show();
 });
