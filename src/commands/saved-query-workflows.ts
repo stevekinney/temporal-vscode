@@ -1,16 +1,17 @@
 import * as vscode from 'vscode';
 import { Command } from '$components/command';
+import { v4 as uuid } from 'uuid';
 
-type SavedQuery = vscode.QuickPickItem & { description: string };
+type Query = vscode.QuickPickItem & { id: string; description: string };
 
 const WORKFLOW_QUERIES = 'workflowQueries';
+const ADD_QUERY_ID = 'add-query';
 
-const shouldAddQuery = (query: vscode.QuickPickItem) => {
-  const icon = query.buttons?.[0].iconPath as vscode.ThemeIcon | undefined;
-  return icon?.id === new vscode.ThemeIcon('add').id;
+const shouldAddQuery = (query: Query) => {
+  return query.id === ADD_QUERY_ID;
 };
 
-const createQuery = async () => {
+const createQuery = async (): Promise<Query | undefined> => {
   const description = await vscode.window.showInputBox({
     prompt: 'Enter a custom query',
     placeHolder: 'ExecutionStatus="Running"',
@@ -22,6 +23,7 @@ const createQuery = async () => {
   });
   if (!label) return;
   return {
+    id: uuid(),
     label,
     description,
   };
@@ -35,9 +37,10 @@ const createAndAddQuery = async (context: vscode.ExtensionContext) => {
   return addQueryToStorage(query, context);
 };
 
-const formatQueries = (items: SavedQuery[]) => {
+const formatQueries = (items: Query[]) => {
   return [
     {
+      id: ADD_QUERY_ID,
       label: 'Add Query',
       description: 'Add a custom query to the list',
       buttons: [
@@ -64,28 +67,25 @@ const formatQueries = (items: SavedQuery[]) => {
   ];
 };
 
-const getQueriesFromStorage = (
-  context: vscode.ExtensionContext,
-): SavedQuery[] => {
-  const storedItems = context.workspaceState.get<SavedQuery[]>(
-    WORKFLOW_QUERIES,
-    [],
-  );
+const getQueriesFromStorage = (context: vscode.ExtensionContext): Query[] => {
+  const storedItems = context.workspaceState.get<Query[]>(WORKFLOW_QUERIES, []);
   return storedItems;
 };
 
 const deleteQueryFromStorage = async (
-  label: string,
+  id: string,
   context: vscode.ExtensionContext,
 ) => {
-  const storedItems = getQueriesFromStorage(context);
-  const updatedItems = storedItems.filter((item) => item.label !== label);
-  await context.workspaceState.update(WORKFLOW_QUERIES, updatedItems);
+  if (id) {
+    const storedItems = getQueriesFromStorage(context);
+    const updatedItems = storedItems.filter((item) => item.id !== id);
+    await context.workspaceState.update(WORKFLOW_QUERIES, updatedItems);
+  }
   return getQueriesFromStorage(context);
 };
 
 const addQueryToStorage = async (
-  item: SavedQuery,
+  item: Query,
   context: vscode.ExtensionContext,
 ) => {
   const storedItems = getQueriesFromStorage(context);
@@ -106,7 +106,7 @@ Command.register('viewWorkflowsWithSavedQuery', async ({ openUI, context }) => {
   quickPick.items = formatQueries(savedQueries);
 
   quickPick.onDidAccept(async () => {
-    const selectedQuery = quickPick.selectedItems[0];
+    const selectedQuery = quickPick.selectedItems[0] as Query;
     if (shouldAddQuery(selectedQuery)) {
       const updatedQueries = await createAndAddQuery(context);
       quickPick.items = formatQueries(updatedQueries);
@@ -119,7 +119,7 @@ Command.register('viewWorkflowsWithSavedQuery', async ({ openUI, context }) => {
   });
 
   quickPick.onDidTriggerItemButton(async (event) => {
-    const selectedQuery = event.item;
+    const selectedQuery = event.item as Query;
 
     if (shouldAddQuery(selectedQuery)) {
       const updatedQueries = await createAndAddQuery(context);
@@ -133,14 +133,12 @@ Command.register('viewWorkflowsWithSavedQuery', async ({ openUI, context }) => {
       );
       if (confirmation === 'Delete') {
         const updatedQueries = await deleteQueryFromStorage(
-          selectedQuery.label,
+          selectedQuery.id,
           context,
         );
         quickPick.items = formatQueries(updatedQueries);
       }
     }
   });
-
-  quickPick.onDidHide(() => quickPick.dispose());
   quickPick.show();
 });

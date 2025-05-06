@@ -293,6 +293,7 @@
   "categories": ["Other"],
   "activationEvents": [],
   "dependencies": {
+    "uuid": "^11.1.0",
     "which": "^5.0.0"
   }
 }
