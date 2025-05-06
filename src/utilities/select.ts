@@ -2,7 +2,8 @@ import * as vscode from 'vscode';
 import pluralize from 'pluralize';
 import type { TemporalClient } from './client';
 
-export interface SelectOptions<T, F extends string> extends vscode.QuickPickOptions {
+export interface SelectOptions<T, F extends string>
+  extends vscode.QuickPickOptions {
   client: TemporalClient;
   name: string;
   data: (client: TemporalClient) => Promise<ReadonlyArray<T> | ArrayLike<T>>;

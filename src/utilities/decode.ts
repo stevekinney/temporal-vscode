@@ -41,13 +41,16 @@ function isLongLike(value: unknown): value is LongLike {
 function longToNumber(long: LongLike): number {
   const { low, high, unsigned } = long;
   const lowUnsigned = low >>> 0;
-  
+
   if (!unsigned && high === -1) {
-    return -(~low + 1 >>> 0);
+    return -((~low + 1) >>> 0);
   } else if (!unsigned && high < 0) {
-    return -((~high + (lowUnsigned === 0 ? 1 : 0)) * 0x100000000 + (~lowUnsigned + 1));
+    return -(
+      (~high + (lowUnsigned === 0 ? 1 : 0)) * 0x100000000 +
+      (~lowUnsigned + 1)
+    );
   }
-  
+
   return high * 0x100000000 + lowUnsigned;
 }
 

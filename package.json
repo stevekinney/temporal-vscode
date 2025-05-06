@@ -21,7 +21,9 @@
     "watch:tests": "tsc -p . -w --outDir out",
     "pretest": "bun run compile-tests && bun run compile && bun run lint",
     "check-types": "tsc --noEmit",
-    "lint": "eslint src --ext ts",
+    "lint": "bun prettier; bun eslint",
+    "eslint": "eslint src --ext ts",
+    "prettier": "exec prettier . --write",
     "test": "vscode-test"
   },
   "main": "./dist/extension.cjs",
@@ -58,8 +60,13 @@
         "category": "Temporal"
       },
       {
+        "command": "temporal-vscode.viewWorkflowsWithSavedQuery",
+        "title": "View workflows with a custom saved query in the UI",
+        "category": "Temporal"
+      },
+      {
         "command": "temporal-vscode.viewSchedules",
-        "title": "View schedules in the Ui",
+        "title": "View schedules in the UI",
         "category": "Temporal"
       },
       {
@@ -303,6 +310,7 @@
   ],
   "activationEvents": [],
   "dependencies": {
+    "uuid": "^11.1.0",
     "which": "^5.0.0"
   }
 }

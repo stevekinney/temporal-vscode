@@ -2,22 +2,19 @@ import { env, Uri, window, ProgressLocation } from 'vscode';
 import { configuration } from './configuration';
 
 /**
- * Filter out undefined and null values from the query object.
+ * Build query string and filter out undefined and null values.
  */
-const filterQuery = (query: Record<string, string | undefined>) => {
+const buildQuery = (query: Record<string, string | undefined>) => {
   if (!query) {
-    return {};
+    return '';
   }
 
   return Object.entries(query)
     .filter(([_, value]) => value !== undefined && value !== null)
-    .reduce(
-      (acc, [key, value]) => {
-        acc[key] = String(value);
-        return acc;
-      },
-      {} as Record<string, string>,
-    );
+    .reduce((acc, [key, value]) => {
+      acc += `${acc ? '&' : ''}${key}=${value}`;
+      return acc;
+    }, '');
 };
 
 /**
@@ -94,8 +91,7 @@ export async function openUI(
       },
       async () => {
         // Build the query string
-        const queryString = new URLSearchParams(filterQuery(query)).toString();
-
+        const queryString = buildQuery(query);
         // Build the URI
         const segments = ['namespaces', namespace];
         if (path) {

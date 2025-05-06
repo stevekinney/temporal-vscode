@@ -8,6 +8,7 @@ type CommandName =
   | 'countWorkflows'
   | 'getSystemInfo'
   | 'getClusterInfo'
+  | 'viewWorkflowsWithSavedQuery'
   | 'viewSchedules'
   | 'openSchedule'
   | 'deleteSchedule'

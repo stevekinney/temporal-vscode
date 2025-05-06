@@ -1,10 +1,17 @@
 import * as vscode from 'vscode';
-import { Connection, Client, ConnectionOptions, ClientOptions } from '@temporalio/client';
+import {
+  Connection,
+  Client,
+  ConnectionOptions,
+  ClientOptions,
+} from '@temporalio/client';
 import { configuration } from './configuration';
 import { temporalServer } from '../server';
 
 export type TemporalClient = Client;
-export type CreateClient = (options?: Partial<ClientOptions>) => Promise<TemporalClient>;
+export type CreateClient = (
+  options?: Partial<ClientOptions>,
+) => Promise<TemporalClient>;
 export type WithClient = <T>(
   fn: (client: TemporalClient) => Promise<T> | T,
 ) => Promise<T>;
@@ -34,21 +41,21 @@ export const createClient: CreateClient = async (customOptions = {}) => {
     const connectionOptions: ConnectionOptions = {
       address: configuration.address,
     };
-    
+
     if (configuration.apiKey) {
       connectionOptions.apiKey = configuration.apiKey;
     }
 
     // Create connection
     const connection = await Connection.connect(connectionOptions);
-    
+
     // Prepare client options
     const clientOptions: ClientOptions = {
       connection,
       namespace: configuration.namespace,
-      ...customOptions
+      ...customOptions,
     };
-    
+
     if (configuration.identity) {
       clientOptions.identity = configuration.identity;
     }
@@ -66,7 +73,9 @@ export const createClient: CreateClient = async (customOptions = {}) => {
 /**
  * Executes a function with a client and automatically closes the connection
  */
-export const withClient: WithClient = async <T>(fn: (client: TemporalClient) => Promise<T> | T): Promise<T> => {
+export const withClient: WithClient = async <T>(
+  fn: (client: TemporalClient) => Promise<T> | T,
+): Promise<T> => {
   const client = await createClient();
 
   try {
